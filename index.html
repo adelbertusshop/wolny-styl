@@ -1,392 +1,409 @@
-import React, { useState } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Email Client</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        .bg-blue-25 {
+            background-color: #f0f9ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-interface Email {
-  id: string;
-  from: string;
-  fromEmail: string;
-  subject: string;
-  preview: string;
-  body: string;
-  timestamp: string;
-  read: boolean;
-  starred: boolean;
-  folder: 'inbox' | 'sent' | 'drafts' | 'trash';
-}
+    <script type="text/babel">
+        const { useState } = React;
 
-const mockEmails: Email[] = [
-  {
-    id: '1',
-    from: 'Sarah Johnson',
-    fromEmail: 'sarah.j@company.com',
-    subject: 'Q4 Marketing Strategy Review',
-    preview: 'Hi team, I wanted to share the latest updates on our Q4 marketing initiatives...',
-    body: 'Hi team,\n\nI wanted to share the latest updates on our Q4 marketing initiatives. We have seen great progress in the following areas:\n\n1. Social media engagement is up 45%\n2. Email campaign conversion rates improved by 23%\n3. New customer acquisition exceeded targets by 18%\n\nLet\'s schedule a meeting next week to discuss next steps.\n\nBest regards,\nSarah',
-    timestamp: '10:30 AM',
-    read: false,
-    starred: true,
-    folder: 'inbox'
-  },
-  {
-    id: '2',
-    from: 'LinkedIn',
-    fromEmail: 'notifications@linkedin.com',
-    subject: 'You have 5 new connection requests',
-    preview: 'Expand your professional network by connecting with these people...',
-    body: 'Hi there,\n\nYou have 5 new connection requests waiting for you on LinkedIn. Expand your professional network by connecting with these people.\n\nBest,\nThe LinkedIn Team',
-    timestamp: '9:15 AM',
-    read: false,
-    starred: false,
-    folder: 'inbox'
-  },
-  {
-    id: '3',
-    from: 'David Chen',
-    fromEmail: 'd.chen@techcorp.io',
-    subject: 'Project timeline update',
-    preview: 'Quick update on the project timeline - we are ahead of schedule...',
-    body: 'Hi,\n\nQuick update on the project timeline. Great news - we are ahead of schedule! The development team has completed all major features and we are now in the testing phase.\n\nExpected completion: End of this week\n\nThanks,\nDavid',
-    timestamp: 'Yesterday',
-    read: true,
-    starred: false,
-    folder: 'inbox'
-  },
-  {
-    id: '4',
-    from: 'Netflix',
-    fromEmail: 'info@netflix.com',
-    subject: 'New releases this week',
-    preview: 'Check out the latest movies and TV shows added to Netflix...',
-    body: 'Check out the latest movies and TV shows added to Netflix this week. From thrilling dramas to comedy specials, there\'s something for everyone.\n\nHappy watching!\nNetflix Team',
-    timestamp: 'Dec 10',
-    read: true,
-    starred: false,
-    folder: 'inbox'
-  },
-  {
-    id: '5',
-    from: 'Emily Roberts',
-    fromEmail: 'e.roberts@design.co',
-    subject: 'Design mockups ready for review',
-    preview: 'I have completed the design mockups for the new landing page...',
-    body: 'Hi team,\n\nI have completed the design mockups for the new landing page. Please review and share your feedback by end of day tomorrow.\n\nYou can view the designs here: [Link]\n\nThanks!\nEmily',
-    timestamp: 'Dec 9',
-    read: true,
-    starred: true,
-    folder: 'inbox'
-  },
-  {
-    id: '6',
-    from: 'Me',
-    fromEmail: 'me@email.com',
-    subject: 'Re: Meeting notes',
-    preview: 'Thanks for the detailed notes from yesterday meeting...',
-    body: 'Thanks for the detailed notes from yesterday\'s meeting. I have reviewed everything and it looks great.\n\nBest regards',
-    timestamp: 'Dec 8',
-    read: true,
-    starred: false,
-    folder: 'sent'
-  }
-];
+        const mockEmails = [
+          {
+            id: '1',
+            from: 'Sarah Johnson',
+            fromEmail: 'sarah.j@company.com',
+            subject: 'Q4 Marketing Strategy Review',
+            preview: 'Hi team, I wanted to share the latest updates on our Q4 marketing initiatives...',
+            body: 'Hi team,\n\nI wanted to share the latest updates on our Q4 marketing initiatives. We have seen great progress in the following areas:\n\n1. Social media engagement is up 45%\n2. Email campaign conversion rates improved by 23%\n3. New customer acquisition exceeded targets by 18%\n\nLet\'s schedule a meeting next week to discuss next steps.\n\nBest regards,\nSarah',
+            timestamp: '10:30 AM',
+            read: false,
+            starred: true,
+            folder: 'inbox'
+          },
+          {
+            id: '2',
+            from: 'LinkedIn',
+            fromEmail: 'notifications@linkedin.com',
+            subject: 'You have 5 new connection requests',
+            preview: 'Expand your professional network by connecting with these people...',
+            body: 'Hi there,\n\nYou have 5 new connection requests waiting for you on LinkedIn. Expand your professional network by connecting with these people.\n\nBest,\nThe LinkedIn Team',
+            timestamp: '9:15 AM',
+            read: false,
+            starred: false,
+            folder: 'inbox'
+          },
+          {
+            id: '3',
+            from: 'David Chen',
+            fromEmail: 'd.chen@techcorp.io',
+            subject: 'Project timeline update',
+            preview: 'Quick update on the project timeline - we are ahead of schedule...',
+            body: 'Hi,\n\nQuick update on the project timeline. Great news - we are ahead of schedule! The development team has completed all major features and we are now in the testing phase.\n\nExpected completion: End of this week\n\nThanks,\nDavid',
+            timestamp: 'Yesterday',
+            read: true,
+            starred: false,
+            folder: 'inbox'
+          },
+          {
+            id: '4',
+            from: 'Netflix',
+            fromEmail: 'info@netflix.com',
+            subject: 'New releases this week',
+            preview: 'Check out the latest movies and TV shows added to Netflix...',
+            body: 'Check out the latest movies and TV shows added to Netflix this week. From thrilling dramas to comedy specials, there\'s something for everyone.\n\nHappy watching!\nNetflix Team',
+            timestamp: 'Dec 10',
+            read: true,
+            starred: false,
+            folder: 'inbox'
+          },
+          {
+            id: '5',
+            from: 'Emily Roberts',
+            fromEmail: 'e.roberts@design.co',
+            subject: 'Design mockups ready for review',
+            preview: 'I have completed the design mockups for the new landing page...',
+            body: 'Hi team,\n\nI have completed the design mockups for the new landing page. Please review and share your feedback by end of day tomorrow.\n\nYou can view the designs here: [Link]\n\nThanks!\nEmily',
+            timestamp: 'Dec 9',
+            read: true,
+            starred: true,
+            folder: 'inbox'
+          },
+          {
+            id: '6',
+            from: 'Me',
+            fromEmail: 'me@email.com',
+            subject: 'Re: Meeting notes',
+            preview: 'Thanks for the detailed notes from yesterday meeting...',
+            body: 'Thanks for the detailed notes from yesterday\'s meeting. I have reviewed everything and it looks great.\n\nBest regards',
+            timestamp: 'Dec 8',
+            read: true,
+            starred: false,
+            folder: 'sent'
+          }
+        ];
 
-export default function EmailClient() {
-  const [currentFolder, setCurrentFolder] = useState<string>('inbox');
-  const [emails, setEmails] = useState<Email[]>(mockEmails);
-  const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
-  const [showCompose, setShowCompose] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [composeTo, setComposeTo] = useState('');
-  const [composeSubject, setComposeSubject] = useState('');
-  const [composeBody, setComposeBody] = useState('');
+        function EmailClient() {
+          const [currentFolder, setCurrentFolder] = useState('inbox');
+          const [emails, setEmails] = useState(mockEmails);
+          const [selectedEmail, setSelectedEmail] = useState(null);
+          const [showCompose, setShowCompose] = useState(false);
+          const [searchQuery, setSearchQuery] = useState('');
+          const [composeTo, setComposeTo] = useState('');
+          const [composeSubject, setComposeSubject] = useState('');
+          const [composeBody, setComposeBody] = useState('');
 
-  const folders = [
-    { id: 'inbox', name: 'Inbox', icon: '📥', count: emails.filter(e => e.folder === 'inbox' && !e.read).length },
-    { id: 'starred', name: 'Starred', icon: '⭐', count: emails.filter(e => e.starred).length },
-    { id: 'sent', name: 'Sent', icon: '📤', count: 0 },
-    { id: 'drafts', name: 'Drafts', icon: '📝', count: 0 },
-    { id: 'trash', name: 'Trash', icon: '🗑️', count: 0 }
-  ];
+          const folders = [
+            { id: 'inbox', name: 'Inbox', icon: '📥', count: emails.filter(e => e.folder === 'inbox' && !e.read).length },
+            { id: 'starred', name: 'Starred', icon: '⭐', count: emails.filter(e => e.starred).length },
+            { id: 'sent', name: 'Sent', icon: '📤', count: 0 },
+            { id: 'drafts', name: 'Drafts', icon: '📝', count: 0 },
+            { id: 'trash', name: 'Trash', icon: '🗑️', count: 0 }
+          ];
 
-  const filteredEmails = emails.filter(email => {
-    if (currentFolder === 'starred') {
-      return email.starred && email.folder !== 'trash';
-    }
-    return email.folder === currentFolder;
-  }).filter(email => {
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      return email.from.toLowerCase().includes(query) ||
-             email.subject.toLowerCase().includes(query) ||
-             email.preview.toLowerCase().includes(query);
-    }
-    return true;
-  });
+          const filteredEmails = emails.filter(email => {
+            if (currentFolder === 'starred') {
+              return email.starred && email.folder !== 'trash';
+            }
+            return email.folder === currentFolder;
+          }).filter(email => {
+            if (searchQuery) {
+              const query = searchQuery.toLowerCase();
+              return email.from.toLowerCase().includes(query) ||
+                     email.subject.toLowerCase().includes(query) ||
+                     email.preview.toLowerCase().includes(query);
+            }
+            return true;
+          });
 
-  const handleEmailClick = (email: Email) => {
-    setSelectedEmail(email);
-    if (!email.read) {
-      setEmails(emails.map(e => e.id === email.id ? { ...e, read: true } : e));
-    }
-  };
+          const handleEmailClick = (email) => {
+            setSelectedEmail(email);
+            if (!email.read) {
+              setEmails(emails.map(e => e.id === email.id ? { ...e, read: true } : e));
+            }
+          };
 
-  const handleStarToggle = (emailId: string) => {
-    setEmails(emails.map(e => e.id === emailId ? { ...e, starred: !e.starred } : e));
-    if (selectedEmail?.id === emailId) {
-      setSelectedEmail({ ...selectedEmail, starred: !selectedEmail.starred });
-    }
-  };
+          const handleStarToggle = (emailId) => {
+            setEmails(emails.map(e => e.id === emailId ? { ...e, starred: !e.starred } : e));
+            if (selectedEmail?.id === emailId) {
+              setSelectedEmail({ ...selectedEmail, starred: !selectedEmail.starred });
+            }
+          };
 
-  const handleDelete = (emailId: string) => {
-    setEmails(emails.map(e => e.id === emailId ? { ...e, folder: 'trash' } : e));
-    if (selectedEmail?.id === emailId) {
-      setSelectedEmail(null);
-    }
-  };
+          const handleDelete = (emailId) => {
+            setEmails(emails.map(e => e.id === emailId ? { ...e, folder: 'trash' } : e));
+            if (selectedEmail?.id === emailId) {
+              setSelectedEmail(null);
+            }
+          };
 
-  const handleCompose = () => {
-    if (composeTo && composeSubject) {
-      const newEmail: Email = {
-        id: Date.now().toString(),
-        from: 'Me',
-        fromEmail: 'me@email.com',
-        subject: composeSubject,
-        preview: composeBody.substring(0, 50) + '...',
-        body: composeBody,
-        timestamp: 'Just now',
-        read: true,
-        starred: false,
-        folder: 'sent'
-      };
-      setEmails([newEmail, ...emails]);
-      setShowCompose(false);
-      setComposeTo('');
-      setComposeSubject('');
-      setComposeBody('');
-    }
-  };
+          const handleCompose = () => {
+            if (composeTo && composeSubject) {
+              const newEmail = {
+                id: Date.now().toString(),
+                from: 'Me',
+                fromEmail: 'me@email.com',
+                subject: composeSubject,
+                preview: composeBody.substring(0, 50) + '...',
+                body: composeBody,
+                timestamp: 'Just now',
+                read: true,
+                starred: false,
+                folder: 'sent'
+              };
+              setEmails([newEmail, ...emails]);
+              setShowCompose(false);
+              setComposeTo('');
+              setComposeSubject('');
+              setComposeBody('');
+            }
+          };
 
-  return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-4 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-blue-600">✉️ Mail</h1>
-        </div>
-        
-        <div className="p-4">
-          <button
-            onClick={() => setShowCompose(true)}
-            className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <span className="text-xl">✏️</span>
-            <span>Compose</span>
-          </button>
-        </div>
-
-        <nav className="flex-1 px-2">
-          {folders.map(folder => (
-            <button
-              key={folder.id}
-              onClick={() => {
-                setCurrentFolder(folder.id);
-                setSelectedEmail(null);
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
-                currentFolder === folder.id
-                  ? 'bg-blue-50 text-blue-600 font-medium'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <span className="text-xl">{folder.icon}</span>
-              <span className="flex-1 text-left">{folder.name}</span>
-              {folder.count > 0 && (
-                <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
-                  {folder.count}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-      </div>
-
-      {/* Email List */}
-      <div className="w-96 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-4 border-b border-gray-200">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search mail"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto">
-          {filteredEmails.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              <p className="text-4xl mb-4">📭</p>
-              <p>No emails in {currentFolder}</p>
-            </div>
-          ) : (
-            filteredEmails.map(email => (
-              <div
-                key={email.id}
-                onClick={() => handleEmailClick(email)}
-                className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                  selectedEmail?.id === email.id ? 'bg-blue-50' : ''
-                } ${!email.read ? 'bg-blue-25' : ''}`}
-              >
-                <div className="flex items-start gap-3">
+          return (
+            <div className="flex h-screen bg-gray-50">
+              {/* Sidebar */}
+              <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
+                <div className="p-4 border-b border-gray-200">
+                  <h1 className="text-2xl font-bold text-blue-600">✉️ Mail</h1>
+                </div>
+                
+                <div className="p-4">
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleStarToggle(email.id);
-                    }}
-                    className="text-xl mt-1 hover:scale-110 transition-transform"
+                    onClick={() => setShowCompose(true)}
+                    className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                   >
-                    {email.starred ? '⭐' : '☆'}
+                    <span className="text-xl">✏️</span>
+                    <span>Compose</span>
                   </button>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className={`font-medium truncate ${
-                        !email.read ? 'text-gray-900' : 'text-gray-600'
-                      }`}>
-                        {email.from}
-                      </span>
-                      <span className="text-xs text-gray-500 ml-2">{email.timestamp}</span>
+                </div>
+
+                <nav className="flex-1 px-2">
+                  {folders.map(folder => (
+                    <button
+                      key={folder.id}
+                      onClick={() => {
+                        setCurrentFolder(folder.id);
+                        setSelectedEmail(null);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
+                        currentFolder === folder.id
+                          ? 'bg-blue-50 text-blue-600 font-medium'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span className="text-xl">{folder.icon}</span>
+                      <span className="flex-1 text-left">{folder.name}</span>
+                      {folder.count > 0 && (
+                        <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-medium">
+                          {folder.count}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Email List */}
+              <div className="w-96 bg-white border-r border-gray-200 flex flex-col">
+                <div className="p-4 border-b border-gray-200">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search mail"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto">
+                  {filteredEmails.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500">
+                      <p className="text-4xl mb-4">📭</p>
+                      <p>No emails in {currentFolder}</p>
                     </div>
-                    <div className={`text-sm truncate mb-1 ${
-                      !email.read ? 'font-semibold text-gray-900' : 'text-gray-700'
-                    }`}>
-                      {email.subject}
+                  ) : (
+                    filteredEmails.map(email => (
+                      <div
+                        key={email.id}
+                        onClick={() => handleEmailClick(email)}
+                        className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
+                          selectedEmail?.id === email.id ? 'bg-blue-50' : ''
+                        } ${!email.read ? 'bg-blue-25' : ''}`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStarToggle(email.id);
+                            }}
+                            className="text-xl mt-1 hover:scale-110 transition-transform"
+                          >
+                            {email.starred ? '⭐' : '☆'}
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className={`font-medium truncate ${
+                                !email.read ? 'text-gray-900' : 'text-gray-600'
+                              }`}>
+                                {email.from}
+                              </span>
+                              <span className="text-xs text-gray-500 ml-2">{email.timestamp}</span>
+                            </div>
+                            <div className={`text-sm truncate mb-1 ${
+                              !email.read ? 'font-semibold text-gray-900' : 'text-gray-700'
+                            }`}>
+                              {email.subject}
+                            </div>
+                            <div className="text-sm text-gray-500 truncate">
+                              {email.preview}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Email Detail */}
+              <div className="flex-1 bg-white flex flex-col">
+                {selectedEmail ? (
+                  <>
+                    <div className="p-6 border-b border-gray-200">
+                      <div className="flex items-start justify-between mb-4">
+                        <h2 className="text-2xl font-semibold text-gray-900 flex-1">
+                          {selectedEmail.subject}
+                        </h2>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleStarToggle(selectedEmail.id)}
+                            className="p-2 text-xl hover:bg-gray-100 rounded transition-colors"
+                          >
+                            {selectedEmail.starred ? '⭐' : '☆'}
+                          </button>
+                          <button
+                            onClick={() => handleDelete(selectedEmail.id)}
+                            className="p-2 text-xl hover:bg-gray-100 rounded transition-colors"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">
+                          {selectedEmail.from[0]}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">{selectedEmail.from}</div>
+                          <div className="text-sm text-gray-500">{selectedEmail.fromEmail}</div>
+                        </div>
+                        <div className="text-sm text-gray-500">{selectedEmail.timestamp}</div>
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500 truncate">
-                      {email.preview}
+                    <div className="flex-1 p-6 overflow-y-auto">
+                      <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                        {selectedEmail.body}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex-1 flex items-center justify-center text-gray-400">
+                    <div className="text-center">
+                      <p className="text-6xl mb-4">📧</p>
+                      <p className="text-lg">Select an email to read</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Compose Modal */}
+              {showCompose && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                  <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-screen flex flex-col">
+                    <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                      <h3 className="text-lg font-semibold text-gray-900">New Message</h3>
+                      <button
+                        onClick={() => setShowCompose(false)}
+                        className="text-gray-400 hover:text-gray-600 text-2xl"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <div className="p-4 border-b border-gray-200">
+                      <input
+                        type="email"
+                        placeholder="To"
+                        value={composeTo}
+                        onChange={(e) => setComposeTo(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="p-4 border-b border-gray-200">
+                      <input
+                        type="text"
+                        placeholder="Subject"
+                        value={composeSubject}
+                        onChange={(e) => setComposeSubject(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="flex-1 p-4">
+                      <textarea
+                        placeholder="Compose your message..."
+                        value={composeBody}
+                        onChange={(e) => setComposeBody(e.target.value)}
+                        className="w-full h-64 px-4 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="p-4 border-t border-gray-200 flex justify-between items-center">
+                      <div className="flex gap-2">
+                        <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors">
+                          📎 Attach
+                        </button>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setShowCompose(false)}
+                          className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleCompose}
+                          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium"
+                        >
+                          Send
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+              )}
+            </div>
+          );
+        }
 
-      {/* Email Detail */}
-      <div className="flex-1 bg-white flex flex-col">
-        {selectedEmail ? (
-          <>
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-start justify-between mb-4">
-                <h2 className="text-2xl font-semibold text-gray-900 flex-1">
-                  {selectedEmail.subject}
-                </h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleStarToggle(selectedEmail.id)}
-                    className="p-2 text-xl hover:bg-gray-100 rounded transition-colors"
-                  >
-                    {selectedEmail.starred ? '⭐' : '☆'}
-                  </button>
-                  <button
-                    onClick={() => handleDelete(selectedEmail.id)}
-                    className="p-2 text-xl hover:bg-gray-100 rounded transition-colors"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">
-                  {selectedEmail.from[0]}
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">{selectedEmail.from}</div>
-                  <div className="text-sm text-gray-500">{selectedEmail.fromEmail}</div>
-                </div>
-                <div className="text-sm text-gray-500">{selectedEmail.timestamp}</div>
-              </div>
-            </div>
-            <div className="flex-1 p-6 overflow-y-auto">
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                {selectedEmail.body}
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-400">
-            <div className="text-center">
-              <p className="text-6xl mb-4">📧</p>
-              <p className="text-lg">Select an email to read</p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Compose Modal */}
-      {showCompose && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-screen flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">New Message</h3>
-              <button
-                onClick={() => setShowCompose(false)}
-                className="text-gray-400 hover:text-gray-600 text-2xl"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="p-4 border-b border-gray-200">
-              <input
-                type="email"
-                placeholder="To"
-                value={composeTo}
-                onChange={(e) => setComposeTo(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="p-4 border-b border-gray-200">
-              <input
-                type="text"
-                placeholder="Subject"
-                value={composeSubject}
-                onChange={(e) => setComposeSubject(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="flex-1 p-4">
-              <textarea
-                placeholder="Compose your message..."
-                value={composeBody}
-                onChange={(e) => setComposeBody(e.target.value)}
-                className="w-full h-64 px-4 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="p-4 border-t border-gray-200 flex justify-between items-center">
-              <div className="flex gap-2">
-                <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors">
-                  📎 Attach
-                </button>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowCompose(false)}
-                  className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCompose}
-                  className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium"
-                >
-                  Send
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+        ReactDOM.render(<EmailClient />, document.getElementById('root'));
+    </script>
+</body>
+</html>
