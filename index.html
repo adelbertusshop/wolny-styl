@@ -133,6 +133,7 @@
           const [tags] = useState(['Work', 'Personal', 'Important']);
           const [filterTag, setFilterTag] = useState('');
           const [sortBy, setSortBy] = useState('date');
+          const [isSending, setIsSending] = useState(false);
 
           // Zapisywanie do localStorage
           useEffect(() => {
@@ -256,25 +257,85 @@
             }
             
             if (composeTo && composeSubject) {
-              const newEmail = {
-                id: Date.now().toString(),
-                from: 'Me',
-                fromEmail: 'me@email.com',
-                subject: composeSubject,
-                preview: composeBody.substring(0, 50) + '...',
-                body: composeBody,
-                timestamp: 'Just now',
-                read: true,
-                starred: false,
-                folder: 'sent'
-              };
-              setEmails([newEmail, ...emails]);
-              setShowCompose(false);
-              setComposeTo('');
-              setComposeSubject('');
-              setComposeBody('');
-              setAttachments([]);
-              showToast('Message sent successfully');
+              // EmailJS configuration - wszystkie ID są kompletne
+              const serviceID = 'service_gwz0ja7';
+              const templateID = 'weAF0bgBbHGsAgj9l';
+              const userID = 'v0XHu9rhknNoqzngJ';
+
+              setIsSending(true);
+              showToast('Sending email...');
+
+              // Send email using EmailJS
+              fetch('https://api.emailjs.com/api/v1.0/email/send', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  service_id: serviceID,
+                  template_id: templateID,
+                  user_id: userID,
+                  template_params: {
+                    to_email: composeTo,
+                    subject: composeSubject,
+                    message: composeBody,
+                    from_name: 'Email Client App',
+                    time: new Date().toLocaleString()
+                  }
+                })
+              })
+              .then(response => {
+                if (response.ok) {
+                  // Add email to local list
+                  const newEmail = {
+                    id: Date.now().toString(),
+                    from: 'Me',
+                    fromEmail: 'me@email.com',
+                    subject: composeSubject,
+                    preview: composeBody.substring(0, 50) + '...',
+                    body: composeBody,
+                    timestamp: 'Just now',
+                    read: true,
+                    starred: false,
+                    folder: 'sent'
+                  };
+                  setEmails([newEmail, ...emails]);
+                  setShowCompose(false);
+                  setComposeTo('');
+                  setComposeSubject('');
+                  setComposeBody('');
+                  setAttachments([]);
+                  setIsSending(false);
+                  showToast('Email sent successfully!');
+                } else {
+                  throw new Error('Failed to send email');
+                }
+              })
+              .catch((error) => {
+                console.error('Błąd wysyłania:', error);
+                setIsSending(false);
+                
+                // Fallback - save locally even if EmailJS fails
+                const newEmail = {
+                  id: Date.now().toString(),
+                  from: 'Me',
+                  fromEmail: 'me@email.com',
+                  subject: composeSubject,
+                  preview: composeBody.substring(0, 50) + '...',
+                  body: composeBody,
+                  timestamp: 'Just now',
+                  read: true,
+                  starred: false,
+                  folder: 'sent'
+                };
+                setEmails([newEmail, ...emails]);
+                setShowCompose(false);
+                setComposeTo('');
+                setComposeSubject('');
+                setComposeBody('');
+                setAttachments([]);
+                showToast('Email saved locally (sending failed)');
+              });
             }
           };
 
@@ -491,6 +552,7 @@
                       <button
                         onClick={() => setShowCompose(false)}
                         className="text-gray-400 hover:text-gray-600 text-2xl"
+                        disabled={isSending}
                       >
                         ✕
                       </button>
@@ -502,6 +564,7 @@
                         value={composeTo}
                         onChange={(e) => setComposeTo(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={isSending}
                       />
                     </div>
                     <div className="p-4 border-b border-gray-200">
@@ -511,6 +574,7 @@
                         value={composeSubject}
                         onChange={(e) => setComposeSubject(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={isSending}
                       />
                     </div>
                     <div className="flex-1 p-4">
@@ -519,17 +583,21 @@
                         value={composeBody}
                         onChange={(e) => setComposeBody(e.target.value)}
                         className="w-full h-64 px-4 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={isSending}
                       />
                     </div>
                     <div className="p-4 border-t border-gray-200 flex justify-between items-center">
                       <div className="flex gap-2">
-                        <label className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors cursor-pointer">
+                        <label className={`px-4 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors cursor-pointer ${
+                          isSending ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}>
                           📎 Attach
                           <input
                             type="file"
                             multiple
                             onChange={handleAttachment}
                             className="hidden"
+                            disabled={isSending}
                           />
                         </label>
                         {attachments.length > 0 && (
@@ -542,14 +610,27 @@
                         <button
                           onClick={() => setShowCompose(false)}
                           className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                          disabled={isSending}
                         >
                           Cancel
                         </button>
                         <button
                           onClick={handleCompose}
-                          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium"
+                          disabled={isSending}
+                          className={`px-6 py-2 rounded transition-colors font-medium flex items-center gap-2 ${
+                            isSending 
+                              ? 'bg-gray-400 cursor-not-allowed' 
+                              : 'bg-blue-600 text-white hover:bg-blue-700'
+                          }`}
                         >
-                          Send
+                          {isSending ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              Sending...
+                            </>
+                          ) : (
+                            'Send'
+                          )}
                         </button>
                       </div>
                     </div>
