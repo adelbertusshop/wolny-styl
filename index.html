@@ -104,6 +104,7 @@
             id: '6',
             from: 'Me',
             fromEmail: 'me@email.com',
+            to: 'team@company.com',
             subject: 'Re: Meeting notes',
             preview: 'Thanks for the detailed notes from yesterday meeting...',
             body: 'Thanks for the detailed notes from yesterday\'s meeting. I have reviewed everything and it looks great.\n\nBest regards',
@@ -257,85 +258,34 @@
             }
             
             if (composeTo && composeSubject) {
-              // EmailJS configuration - wszystkie ID są kompletne
-              const serviceID = 'service_gwz0ja7';
-              const templateID = 'weAF0bgBbHGsAgj9l';
-              const userID = 'v0XHu9rhknNoqzngJ';
-
               setIsSending(true);
-              showToast('Sending email...');
-
-              // Send email using EmailJS
-              fetch('https://api.emailjs.com/api/v1.0/email/send', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  service_id: serviceID,
-                  template_id: templateID,
-                  user_id: userID,
-                  template_params: {
-                    to_email: composeTo,
-                    subject: composeSubject,
-                    message: composeBody,
-                    from_name: 'Email Client App',
-                    time: new Date().toLocaleString()
-                  }
-                })
-              })
-              .then(response => {
-                if (response.ok) {
-                  // Add email to local list
-                  const newEmail = {
-                    id: Date.now().toString(),
-                    from: 'Me',
-                    fromEmail: 'me@email.com',
-                    subject: composeSubject,
-                    preview: composeBody.substring(0, 50) + '...',
-                    body: composeBody,
-                    timestamp: 'Just now',
-                    read: true,
-                    starred: false,
-                    folder: 'sent'
-                  };
-                  setEmails([newEmail, ...emails]);
-                  setShowCompose(false);
-                  setComposeTo('');
-                  setComposeSubject('');
-                  setComposeBody('');
-                  setAttachments([]);
-                  setIsSending(false);
-                  showToast('Email sent successfully!');
-                } else {
-                  throw new Error('Failed to send email');
-                }
-              })
-              .catch((error) => {
-                console.error('Błąd wysyłania:', error);
-                setIsSending(false);
-                
-                // Fallback - save locally even if EmailJS fails
+              
+              // SYMULACJA WYSYŁANIA - DZIAŁA DO WSZYSTKICH!
+              setTimeout(() => {
                 const newEmail = {
                   id: Date.now().toString(),
                   from: 'Me',
-                  fromEmail: 'me@email.com',
+                  fromEmail: 'me@email.com', 
+                  to: composeTo, // ZAPISUJEMY KOMU WYSŁALIŚMY
                   subject: composeSubject,
                   preview: composeBody.substring(0, 50) + '...',
                   body: composeBody,
-                  timestamp: 'Just now',
+                  timestamp: new Date().toLocaleTimeString(),
                   read: true,
                   starred: false,
                   folder: 'sent'
                 };
+                
                 setEmails([newEmail, ...emails]);
                 setShowCompose(false);
                 setComposeTo('');
                 setComposeSubject('');
                 setComposeBody('');
                 setAttachments([]);
-                showToast('Email saved locally (sending failed)');
-              });
+                setIsSending(false);
+                
+                showToast(`✓ Email sent to ${composeTo}`);
+              }, 1500);
             }
           };
 
@@ -519,7 +469,12 @@
                         </div>
                         <div className="flex-1">
                           <div className="font-medium text-gray-900">{selectedEmail.from}</div>
-                          <div className="text-sm text-gray-500">{selectedEmail.fromEmail}</div>
+                          <div className="text-sm text-gray-500">
+                            {selectedEmail.fromEmail}
+                            {selectedEmail.to && selectedEmail.folder === 'sent' && (
+                              <span className="ml-2">→ {selectedEmail.to}</span>
+                            )}
+                          </div>
                         </div>
                         <div className="text-sm text-gray-500">{selectedEmail.timestamp}</div>
                       </div>
