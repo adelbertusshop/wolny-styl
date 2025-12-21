@@ -3,34 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rafał Pistrakiewicz Bau & Renovierung - Polskie Usługi Budowlane w Niemczech</title>
+  <title>Rafał Pistrakiewicz Bau & Renovierung</title>
   <meta name="description" content="Rafał Pistrakiewicz Bau & Renovierung - polskie usługi budowlane w Niemczech. Remonty, budowa domów, malowanie. Połączenie polskiej solidności z niemiecką precyzją.">
-  <meta name="keywords" content="budowa, remonty, Niemcy, polskie firmy budowlane, malowanie, elewacje, sucha zabudowa, wykończenia wnętrz">
+  <meta name="keywords" content="budowa, remonty, Niemcy, polskie firmy budowlane, malowanie, elewacje">
   <meta name="author" content="Rafał Pistrakiewicz">
   
-  <!-- SEO Meta Tags -->
-  <meta name="robots" content="index, follow">
-  <meta name="google-site-verification" content="twój-kod-weryfikacyjny">
-  <link rel="canonical" href="https://rafal-pistrakiewicz-bau.de">
-  <meta name="geo.region" content="DE-BE">
-  <meta name="geo.placename" content="Berlin">
-  
   <!-- Open Graph -->
-  <meta property="og:title" content="Rafał Pistrakiewicz Bau & Renovierung - Profesjonalne Usługi Budowlane">
-  <meta property="og:description" content="Polskie usługi budowlane w Niemczech - remonty, budowa domów, malowanie. 10+ lat doświadczenia. Darmowa wycena online!">
+  <meta property="og:title" content="Rafał Pistrakiewicz Bau & Renovierung">
+  <meta property="og:description" content="Polskie usługi budowlane w Niemczech - remonty, budowa domów, malowanie.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://twojastrona.com/og-image.jpg">
-  <meta property="og:url" content="https://rafal-pistrakiewicz-bau.de">
+  <meta property="og:url" content="https://twojastrona.com">
   <meta name="twitter:card" content="summary_large_image">
-  
-  <!-- Security -->
-  <meta http-equiv="Content-Security-Policy" 
-        content="default-src 'self'; 
-                 script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; 
-                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
-                 font-src 'self' https://fonts.gstatic.com;
-                 img-src 'self' data: https:;
-                 connect-src 'self'">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -648,79 +632,6 @@
         font-size: 0.9rem;
       }
     }
-
-    /* 🎯 NOWE STYLE DLA SEKCJI "WYKONANE PRACE" */
-    .work-details {
-      transition: all 0.3s ease;
-    }
-
-    .work-details summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .work-details summary {
-      outline: none;
-    }
-
-    .work-details summary:focus {
-      outline: 2px solid #d4af37;
-      outline-offset: 4px;
-      border-radius: 12px;
-    }
-
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(1, 1fr);
-      gap: 16px;
-      animation: fadeIn 0.5s ease-out;
-    }
-
-    @media (min-width: 768px) {
-      .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .gallery-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
-    .gallery-img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      border-radius: 12px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .gallery-img:hover {
-      transform: scale(1.03);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Responsywność dla nowej sekcji */
-    @media (max-width: 640px) {
-      .gallery-img {
-        height: 200px;
-      }
-      
-      .work-details summary:focus {
-        outline-offset: 2px;
-      }
-    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 smooth-scroll">
@@ -790,15 +701,7 @@
       <p class="text-base md:text-lg text-gray-200 max-w-2xl mx-auto mb-8" data-pl="Zaufaj doświadczeniu i rzetelności. Nasze realizacje mówią same za siebie." data-de="Vertrauen Sie auf Erfahrung und Zuverlässigkeit. Unsere Arbeiten sprechen für sich.">
         Zaufaj doświadczeniu i rzetelności. Nasze realizacje mówią same za siebie.
       </p>
-      
-      <!-- 🎯 DODANE: Pilna oferta -->
-      <div class="mt-6 bg-yellow-100 border border-yellow-400 rounded-lg p-4 inline-block">
-        <p class="text-sm font-semibold text-yellow-800">
-          🎯 <span data-pl="Bezpłatna wycena online w 24h!" data-de="Kostenlose Online-Schätzung in 24h!">Bezpłatna wycena online w 24h!</span>
-        </p>
-      </div>
-      
-      <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="#kontakt" class="bg-[#d4af37] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#b8941f] transition-colors inline-block text-center" 
            data-pl="Zapytaj o wycenę" data-de="Kostenangebot anfordern">Zapytaj o wycenę</a>
         <a href="#realizacje" class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-[#0a1a2f] transition-colors inline-block text-center" 
@@ -883,182 +786,25 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <div class="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer" onclick="openModal('https://i.ibb.co/zTqrdpd8/Messenger-creation-1-BA12-A52-3-A28-4-B89-A181-CEB248-DFA352.jpg')">
           <img src="https://i.ibb.co/zTqrdpd8/Messenger-creation-1-BA12-A52-3-A28-4-B89-A181-CEB248-DFA352.jpg" 
-               alt="Profesjonalna sucha zabudowa - Rafał Pistrakiewicz Bau & Renovierung" 
-               class="w-full h-48 md:h-64 object-cover transition-transform group-hover:scale-105" 
-               loading="lazy"
-               width="400"
-               height="300">
+               alt="Realizacja 1 - Sucha zabudowa i wykończenie" class="w-full h-48 md:h-64 object-cover transition-transform group-hover:scale-105" loading="lazy">
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <span class="text-white font-semibold text-base md:text-lg" data-pl="Sucha zabudowa i wykończenie" data-de="Trockenbau und Ausbau">Sucha zabudowa i wykończenie</span>
           </div>
         </div>
         <div class="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer" onclick="openModal('https://i.ibb.co/JWqHCP9X/Messenger-creation-53-D3-FC19-EF77-4706-B30-E-8-D546-FCAE65-C.jpg')">
           <img src="https://i.ibb.co/JWqHCP9X/Messenger-creation-53-D3-FC19-EF77-4706-B30-E-8-D546-FCAE65-C.jpg" 
-               alt="Kompleksowy remont łazienki - Rafał Pistrakiewicz Bau & Renovierung" 
-               class="w-full h-48 md:h-64 object-cover transition-transform group-hover:scale-105" 
-               loading="lazy"
-               width="400"
-               height="300">
+               alt="Realizacja 2 - Kompleksowy remont łazienki" class="w-full h-48 md:h-64 object-cover transition-transform group-hover:scale-105" loading="lazy">
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <span class="text-white font-semibold text-base md:text-lg" data-pl="Kompleksowy remont łazienki" data-de="Komplette Badezimmerrenovierung">Kompleksowy remont łazienki</span>
           </div>
         </div>
         <div class="group relative overflow-hidden rounded-2xl shadow-lg cursor-pointer" onclick="openModal('https://i.ibb.co/ZRsSc0JS/Messenger-creation-6-C03-E7-ED-0430-4649-A136-2014-E0-F7-F9-D3.jpg')">
           <img src="https://i.ibb.co/ZRsSc0JS/Messenger-creation-6-C03-E7-ED-0430-4649-A136-2014-E0-F7-F9-D3.jpg" 
-               alt="Prace wykończeniowe i montaż - Rafał Pistrakiewicz Bau & Renovierung" 
-               class="w-full h-48 md:h-64 object-cover transition-transform group-hover:scale-105" 
-               loading="lazy"
-               width="400"
-               height="300">
+               alt="Realizacja 3 - Prace wykończeniowe i montaż" class="w-full h-48 md:h-64 object-cover transition-transform group-hover:scale-105" loading="lazy">
           <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <span class="text-white font-semibold text-base md:text-lg" data-pl="Prace wykończeniowe i montaż" data-de="Ausbauarbeiten und Montage">Prace wykończeniowe i montaż</span>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 🔹 WYKONANE PRACE - ROZWIJANE GALERIE (NOWA SEKCJA) -->
-  <section id="wykonane-prace" class="py-12 md:py-16 bg-white">
-    <div class="container mx-auto px-6">
-      <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8 md:mb-12 text-[#0a1a2f]">
-        Wykonane prace
-      </h3>
-      <p class="text-center text-gray-600 max-w-2xl mx-auto mb-10" data-pl="Kliknij w zdjęcie, aby zobaczyć więcej zdjęć z realizacji" data-de="Klicken Sie auf das Bild, um mehr Fotos der Umsetzung zu sehen">
-        Kliknij w zdjęcie, aby zobaczyć więcej zdjęć z realizacji
-      </p>
-      
-      <div class="max-w-6xl mx-auto space-y-12">
-        
-        <!-- Realizacja 1 - Kompleksowy remont łazienki -->
-        <details class="work-details group">
-          <summary class="cursor-pointer list-none">
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div class="relative">
-                <img src="https://i.ibb.co/JWqHCP9X/Messenger-creation-53-D3-FC19-EF77-4706-B30-E-8-D546-FCAE65-C.jpg" 
-                     alt="Kompleksowy remont łazienki - przed i po" 
-                     class="w-full h-64 md:h-80 object-cover"
-                     loading="lazy">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-open:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <span class="text-white font-semibold text-lg">Zwiń galerię</span>
-                </div>
-                <div class="absolute top-4 right-4 bg-[#d4af37] text-white px-4 py-2 rounded-lg font-semibold text-sm">
-                  Kliknij, aby rozwinąć
-                </div>
-              </div>
-              <div class="p-6">
-                <h4 class="text-xl font-semibold text-[#0a1a2f] mb-2">Kompleksowy remont łazienki</h4>
-                <p class="text-gray-600">Demontaż starego wyposażenia, nowa instalacja hydrauliczna i elektryczna, płytki, montaż mebli łazienkowych.</p>
-              </div>
-            </div>
-          </summary>
-          
-          <div class="mt-6 gallery-grid">
-            <img src="https://i.ibb.co/JWqHCP9X/Messenger-creation-53-D3-FC19-EF77-4706-B30-E-8-D546-FCAE65-C.jpg" 
-                 alt="Łazienka - stan wyjściowy" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/fzdtwNvm/Messenger-creation-7-C0-A512-E-AF91-448-F-AD55-AF304-F684-B17.jpg" 
-                 alt="Łazienka - montaż płytek" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/dJMTtp7q/Messenger-creation-FB88904-C-4-EF3-488-A-9386-01782151-CD7-D.jpg" 
-                 alt="Łazienka - nowa armatura" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/cSGSCLV5/Messenger-creation-F17-D7-D1-A-E9-B1-4-A59-9-B0-B-868-D1-E1-E027-A.jpg" 
-                 alt="Łazienka - gotowe wnętrze" 
-                 class="gallery-img"
-                 loading="lazy">
-          </div>
-        </details>
-
-        <!-- Realizacja 2 - Sucha zabudowa i wykończenie -->
-        <details class="work-details group">
-          <summary class="cursor-pointer list-none">
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div class="relative">
-                <img src="https://i.ibb.co/zTqrdpd8/Messenger-creation-1-BA12-A52-3-A28-4-B89-A181-CEB248-DFA352.jpg" 
-                     alt="Sucha zabudowa ścian i sufitu" 
-                     class="w-full h-64 md:h-80 object-cover"
-                     loading="lazy">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-open:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <span class="text-white font-semibold text-lg">Zwiń galerię</span>
-                </div>
-                <div class="absolute top-4 right-4 bg-[#d4af37] text-white px-4 py-2 rounded-lg font-semibold text-sm">
-                  Kliknij, aby rozwinąć
-                </div>
-              </div>
-              <div class="p-6">
-                <h4 class="text-xl font-semibold text-[#0a1a2f] mb-2">Sucha zabudowa i wykończenie</h4>
-                <p class="text-gray-600">Montaż ścianek gipsowo-kartonowych, sufit podwieszany, szpachlowanie, malowanie, montaż oświetlenia LED.</p>
-              </div>
-            </div>
-          </summary>
-          
-          <div class="mt-6 gallery-grid">
-            <img src="https://i.ibb.co/zTqrdpd8/Messenger-creation-1-BA12-A52-3-A28-4-B89-A181-CEB248-DFA352.jpg" 
-                 alt="Sucha zabudowa - montaż profili" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/ZRsSc0JS/Messenger-creation-6-C03-E7-ED-0430-4649-A136-2014-E0-F7-F9-D3.jpg" 
-                 alt="Sucha zabudowa - płyty g-k" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/Cs0bpPcJ/Messenger-creation-1-FF3-E691-2-F08-499-F-86-CC-6-A335486-F382.jpg" 
-                 alt="Sucha zabudowa - szpachlowanie" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/DsVh1Sc/Messenger-creation-F2-CC3-BAC-EBF9-46-AB-8284-A2-A07-B226-A68.jpg" 
-                 alt="Sucha zabudowa - gotowe" 
-                 class="gallery-img"
-                 loading="lazy">
-          </div>
-        </details>
-
-        <!-- Realizacja 3 - Prace wykończeniowe -->
-        <details class="work-details group">
-          <summary class="cursor-pointer list-none">
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div class="relative">
-                <img src="https://i.ibb.co/ZRsSc0JS/Messenger-creation-6-C03-E7-ED-0430-4649-A136-2014-E0-F7-F9-D3.jpg" 
-                     alt="Prace wykończeniowe - montaż" 
-                     class="w-full h-64 md:h-80 object-cover"
-                     loading="lazy">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-open:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <span class="text-white font-semibold text-lg">Zwiń galerię</span>
-                </div>
-                <div class="absolute top-4 right-4 bg-[#d4af37] text-white px-4 py-2 rounded-lg font-semibold text-sm">
-                  Kliknij, aby rozwinąć
-                </div>
-              </div>
-              <div class="p-6">
-                <h4 class="text-xl font-semibold text-[#0a1a2f] mb-2">Prace wykończeniowe i montaż</h4>
-                <p class="text-gray-600">Montaż drzwi i okien, układanie paneli podłogowych, montaż listew przypodłogowych, zabudowy meblowe.</p>
-              </div>
-            </div>
-          </summary>
-          
-          <div class="mt-6 gallery-grid">
-            <img src="https://i.ibb.co/ZRsSc0JS/Messenger-creation-6-C03-E7-ED-0430-4649-A136-2014-E0-F7-F9-D3.jpg" 
-                 alt="Montaż drzwi" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/qL2qy91d/Messenger-creation-42-F18-F14-AE2-B-4126-AEB3-7435-A36-ACB33.jpg" 
-                 alt="Układanie paneli" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/B2k3vcjL/Messenger-creation-ECE98-F7-E-3-EE1-46-E1-A0-C7-23-F7-D70-C002-E.jpg" 
-                 alt="Montaż listew" 
-                 class="gallery-img"
-                 loading="lazy">
-            <img src="https://i.ibb.co/SDXT8ZJr/Messenger-creation-71-AE5-F57-6-DAD-45-BA-BA97-D819-F21807-BA.jpg" 
-                 alt="Gotowe wnętrze" 
-                 class="gallery-img"
-                 loading="lazy">
-          </div>
-        </details>
-
       </div>
     </div>
   </section>
@@ -1165,88 +911,22 @@
     </div>
   </section>
 
-  <!-- 🔹 Partnerzy - ULEPSZONA -->
+  <!-- 🔹 Partnerzy -->
   <section id="partnerzy" class="py-12 md:py-16 container mx-auto px-6">
-    <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8 md:mb-12 text-[#0a1a2f]" 
-         data-pl="Partnerzy i współpraca" 
-         data-de="Partner und Zusammenarbeit">
-         Partnerzy i współpraca
-    </h3>
-
+    <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8 md:mb-12 text-[#0a1a2f]" data-pl="Partnerzy i współpraca" data-de="Partner und Zusammenarbeit">Partnerzy i współpraca</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-center">
-
-      <!-- Partner 1 -->
       <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
-        <img src="https://via.placeholder.com/150x80?text=Partner+1" 
-             alt="Pol-Bau GmbH - Partner budowlany" 
-             class="mx-auto mb-4 h-16 object-contain" 
-             loading="lazy">
-        <p class="font-semibold mb-2">Pol-Bau GmbH</p>
-        <p class="text-sm text-gray-600" data-pl="Materiały budowlane" data-de="Baumaterialien">Materiały budowlane</p>
+        <img src="https://via.placeholder.com/150x80?text=Partner+1" class="mx-auto mb-4" alt="Partner 1" loading="lazy">
+        <p class="font-semibold">Pol-Bau GmbH</p>
       </div>
-
-      <!-- Partner 2 -->
       <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
-        <img src="https://via.placeholder.com/150x80?text=Partner+2" 
-             alt="HausRenovieren24 - Usługi remontowe" 
-             class="mx-auto mb-4 h-16 object-contain" 
-             loading="lazy">
-        <p class="font-semibold mb-2">HausRenovieren24</p>
-        <p class="text-sm text-gray-600" data-pl="Usługi remontowe" data-de="Renovierungsdienstleistungen">Usługi remontowe</p>
+        <img src="https://via.placeholder.com/150x80?text=Partner+2" class="mx-auto mb-4" alt="Partner 2" loading="lazy">
+        <p class="font-semibold">HausRenovieren24</p>
       </div>
-
-      <!-- Partner 3 -->
       <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
-        <img src="https://via.placeholder.com/150x80?text=Partner+3" 
-             alt="ElektroKraft - Instalacje elektryczne" 
-             class="mx-auto mb-4 h-16 object-contain" 
-             loading="lazy">
-        <p class="font-semibold mb-2">ElektroKraft</p>
-        <p class="text-sm text-gray-600" data-pl="Instalacje elektryczne" data-de="Elektroinstallationen">Instalacje elektryczne</p>
+        <img src="https://via.placeholder.com/150x80?text=Partner+3" class="mx-auto mb-4" alt="Partner 3" loading="lazy">
+        <p class="font-semibold">ElektroKraft</p>
       </div>
-
-      <!-- AdelbertusShop - ULEPSZONE -->
-      <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
-        <a href="https://www.adelbertusshop.com" target="_blank" rel="noopener">
-          <img 
-            src="https://i.ibb.co/JWzSCNPd/77-AF1408-EFB9-46-BD-9187-B39-EA9-F67-AAA.png" 
-            alt="AdelbertusShop - Materiały budowlane" 
-            class="mx-auto mb-4 h-16 object-contain"
-            loading="lazy"
-          >
-        </a>
-        <p class="font-semibold mb-2">AdelbertusShop</p>
-        <p class="text-sm text-gray-600" data-pl="Materiały budowlane w atrakcyjnych cenach" data-de="Baumaterialien zu attraktiven Preisen">
-          Materiały budowlane w atrakcyjnych cenach
-        </p>
-      </div>
-
-      <!-- Klaudia - ULEPSZONE -->
-      <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
-        <a href="https://klaudia-3hjx.vercel.app" target="_blank" rel="noopener">
-          <img 
-            src="https://i.ibb.co/fzpVBcz9/att-UHm-HPjc-TKO0db-W4-Omt-IY-UR0srdb4ss-D3y-TY2t5njl-Y-png.jpg" 
-            alt="Partner Klaudia - Współpraca budowlana" 
-            class="mx-auto mb-4 h-16 object-contain"
-            loading="lazy"
-          >
-        </a>
-        <p class="font-semibold mb-2">Klaudia</p>
-        <p class="text-sm text-gray-600" data-pl="Współpraca budowlana" data-de="Bauzusammenarbeit">Współpraca budowlana</p>
-      </div>
-
-      <!-- Partner logo - ULEPSZONE -->
-      <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow">
-        <img 
-          src="https://i.ibb.co/nsTTy8fN/att-vke-Dsz3vqbel-Ns8z5jo-Si3avm-PW1kgy-EMSe5q-QIx9cw.jpg" 
-          alt="Partner budowlany - Współpraca" 
-          class="mx-auto mb-4 h-16 object-contain"
-          loading="lazy"
-        >
-        <p class="font-semibold mb-2">Partner</p>
-        <p class="text-sm text-gray-600" data-pl="Współpraca partnerska" data-de="Partnerschaftliche Zusammenarbeit">Współpraca partnerska</p>
-      </div>
-
     </div>
   </section>
 
@@ -1297,8 +977,7 @@
               style="border:0;" 
               allowfullscreen="" 
               loading="lazy" 
-              referrerpolicy="no-referrer-when-downgrade"
-              title="Nasza lokalizacja - Berlin, Niemcy">
+              referrerpolicy="no-referrer-when-downgrade">
             </iframe>
           </div>
           <p class="text-center text-gray-600 mt-4 text-sm" data-pl="Centralna lokalizacja w Berlinie - dojazd do całych Niemiec" data-de="Zentrale Lage in Berlin - Erreichbar in ganz Deutschland">
@@ -1377,7 +1056,7 @@
     </div>
   </section>
 
-  <!-- 🔹 Regulamin i Polityka Prywatności - ZAKTUALIZOWANE -->
+  <!-- 🔹 Regulamin i Polityka Prywatności -->
   <section id="regulamin" class="py-12 md:py-16 bg-white border-t">
     <div class="container mx-auto px-6">
       <h3 class="text-2xl md:text-3xl font-semibold text-center mb-8 md:mb-12 text-[#0a1a2f]" 
@@ -1550,7 +1229,7 @@
           </div>
         </div>
 
-        <!-- Impressum - ZAKTUALIZOWANE -->
+        <!-- Impressum -->
         <div class="bg-gray-50 rounded-2xl p-6">
           <button class="legal-toggle w-full text-left flex justify-between items-center" data-target="impressum">
             <h4 class="text-lg md:text-xl font-semibold text-[#0a1a2f]">Impressum / Informacja zgodnie z § 5 TMG</h4>
@@ -1559,10 +1238,9 @@
           <div id="impressum" class="legal-section mt-4">
             <div class="space-y-4 text-sm text-gray-600">
               <p><strong>Angaben gemäß § 5 TMG:</strong></p>
-              <p><strong>Rafał Pistrakiewicz Bau & Renovierung</strong><br>
-                 Inhaber: Rafał Pistrakiewicz<br>
-                 Musterstraße 123<br>
-                 10115 Berlin<br>
+              <p><strong>Usługi Budowlane Rafał Pistrakiewicz</strong><br>
+                 (Baudienstleistungen Rafał Pistrakiewicz)<br>
+                 [Adres siedziby w Niemczech]<br>
                  Deutschland</p>
               
               <p><strong>Kontakt:</strong><br>
@@ -1571,22 +1249,22 @@
                  E-Mail: pistrakiewicz@gmail.com</p>
               
               <p><strong>Umsatzsteuer-ID:</strong><br>
-                 Umsatzsteuer-Identifikationsnummer gemäß §27a Umsatzsteuergesetz:<br>
-                 <strong>DE 8842487745</strong></p>
+                 Umsatzsteuer-Identifikationsnummer gemäß §27a Umsatzsteuergesetz: <strong>8842487745</strong></p>
               
-              <p><strong>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:</strong><br>
-                 Rafał Pistrakiewicz<br>
-                 Musterstraße 123, 10115 Berlin</p>
+              <p><strong>Rechtsform:</strong><br>
+                 Einzelunternehmen (Indywidualna Działalność Gospodarcza)</p>
               
+              <p><strong>Gründungsdatum:</strong><br>
+                 05.10.2023</p>
+                 
               <p><strong>Berufsbezeichnung:</strong><br>
-                 Bauhandwerker (Bau- und Ausbaugewerbe)</p>
+                 Bauhandwerker</p>
               
               <p><strong>Aufsichtsbehörde:</strong><br>
-                 Handwerkskammer Berlin</p>
+                 Handwerkskammer [odpowiednia izba rzemieślnicza]</p>
               
-              <p><strong>Streitschlichtung:</strong><br>
-                 Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:<br>
-                 https://ec.europa.eu/consumers/odr/</p>
+              <p><strong>Haftung für Inhalte:</strong><br>
+                 Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.</p>
             </div>
           </div>
         </div>
@@ -1595,25 +1273,11 @@
     </div>
   </section>
 
-  <!-- 🔹 Footer - ZAKTUALIZOWANY -->
+  <!-- 🔹 Footer -->
   <footer class="bg-[#081426] text-gray-400 py-6 text-center text-sm">
     <div class="container mx-auto px-6">
       <p>© 2025 Usługi Budowlane Rafał Pistrakiewicz | <span data-pl="Stworzone z dumą w Niemczech" data-de="Mit Stolz in Deutschland erstellt">Stworzone z dumą w Niemczech</span> 🇵🇱🇩🇪</p>
-      
-      <!-- 🎯 DODANE: Social Media -->
-      <div class="flex justify-center space-x-4 mt-4">
-        <a href="#" class="text-gray-400 hover:text-[#d4af37] transition-colors">
-          <i class="fab fa-linkedin text-lg"></i>
-        </a>
-        <a href="#" class="text-gray-400 hover:text-[#d4af37] transition-colors">
-          <i class="fab fa-facebook text-lg"></i>
-        </a>
-        <a href="https://wa.me/48694526240" class="text-gray-400 hover:text-[#d4af37] transition-colors">
-          <i class="fab fa-whatsapp text-lg"></i>
-        </a>
-      </div>
-      
-      <p class="mt-4">
+      <p class="mt-2">
         <a href="#regulamin" class="hover:text-[#d4af37] transition-colors mx-2" data-pl="Polityka Prywatności" data-de="Datenschutz">Polityka Prywatności</a> |
         <a href="#regulamin" class="hover:text-[#d4af37] transition-colors mx-2" data-pl="Regulamin" data-de="AGB">Regulamin</a> |
         <a href="#regulamin" class="hover:text-[#d4af37] transition-colors mx-2" data-pl="Impressum" data-de="Impressum">Impressum</a>
@@ -1767,19 +1431,189 @@
     <button class="absolute top-4 right-4 text-white text-2xl z-10" onclick="closeModal()">
       <i class="fas fa-times"></i>
     </button>
-    <img id="modalImage" src="" class="max-w-full max-h-full object-contain" alt="Powiększone zdjęcie realizacji">
+    <img id="modalImage" src="" class="max-w-full max-h-full object-contain">
   </div>
 
-  <!-- 📊 DODANE: Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GA_MEASUREMENT_ID');
-  </script>
+    // 🔥 ROZBUDOWANA BAZA WIEDZY BUDOWLANEJ - ULEPSZONA
+    const constructionKnowledge = {
+        'sucha-zabudowa': {
+            name: 'Sucha zabudowa',
+            description: 'Profesjonalne ścianki działowe, sufity podwieszane i zabudowy meblowe',
+            price: '45-75€/m²',
+            time: '2-4 tygodnie',
+            warranty: '24 miesiące',
+            details: `🏗️ **SPECJALIZACJA W SUCHEJ ZABUDOWIE:**
 
-  <script>
+• **Ścianki działowe** - konstrukcje stalowe, płyty G-K 12,5mm, izolacja akustyczna
+• **Sufity podwieszane** - systemy Knauf, możliwość montażu oświetlenia LED
+• **Zabudowy meblowe** - garderoby, szafy wnękowe, zabudowy kuchenne
+• **Prace izolacyjne** - wełna mineralna 50mm, folie paroizolacyjne
+• **Montaż** - zgodnie z normami DIN, precyzyjne wykonanie
+
+**MATERIAŁY:** Profile CW/UW, płyty G-K, wkręty, taśmy, masy szpachlowe
+**CZAS REALIZACJI:** 2-4 tygodnie w zależności od skali projektu
+**GWARANCJA:** 24 miesiące na wykonanie
+
+Potrzebujesz wyceny konkretnego projektu?`
+        },
+        'malowanie': {
+            name: 'Malowanie i szpachlowanie',
+            description: 'Kompleksowe malowanie wnętrz z przygotowaniem powierzchni',
+            price: 'Szpachlowanie: 15-25€/m², Malowanie: 8-15€/m²',
+            time: '1-3 tygodnie',
+            warranty: '36 miesięcy na malowanie',
+            details: `🎨 **PROFESJONALNE MALOWANIE I SZPACHLOWANIE:**
+
+• **Przygotowanie powierzchni** - usuwanie starych powłok, gruntowanie
+• **Szpachlowanie maszynowe** - wyrównywanie ścian, ukrywanie instalacji
+• **Szlifowanie** - ręczne i maszynowe dla idealnie gładkich powierzchni
+• **Malowanie** - farby lateksowe, akrylowe, zmywalne
+• **Zabezpieczenia** - osłony mebli, podłóg, okien
+
+**TECHNOLOGIE:** Szpachlówki maszynowe Knauf, farby Caparol, Śnieżka
+**WARSTWY:** Grunt + 2 warstwy szpachli + 2 warstwy farby
+**CZAS:** 1-3 tygodnie w zależności od metrażu
+
+Chcesz poznać dokładny koszt dla Twojego mieszkania?`
+        },
+        'wykończenia': {
+            name: 'Kompleksowe wykończenia',
+            description: 'Tapety, płytki, podłogi - wykończenie pod klucz',
+            price: 'Tapety: 20-35€/m², Płytki: 45-80€/m², Podłogi: 25-45€/m²',
+            time: '3-6 tygodni',
+            warranty: '24 miesiące',
+            details: `🏠 **KOMPLEKSOWE WYKOŃCZENIA WNĘTRZ:**
+
+• **Układanie płytek** - łazienki, kuchnie, przedpokoje (płytki ceramiczne, gres)
+• **Montaż paneli** - podłogi winylowe, panele laminowane, deski warstwowe
+• **Tapetowanie** - tapety papierowe, winylowe, szklane, fototapety
+• **Montaż listew** - przypodłogowych, przypodłogowych, maskujących
+• **Prace wykończeniowe** - fugowanie, montaż cokołów, osprzętu
+
+**MATERIAŁY:** Płytki Paradyz, Opoczno | Panele Quick-Step, BerryAlloc | Tapety Rasch, Marburg
+**PREPARACJA:** Wyrównanie podłoża, gruntowanie, przygotowanie fug
+**CZAS:** 3-6 tygodni dla średniego mieszkania
+
+Masz już wybrane materiały czy potrzebujesz doradztwa?`
+        },
+        'ocieplenia': {
+            name: 'Ocieplenia i elewacje',
+            description: 'Kompleksowe ocieplenia budynków i prace elewacyjne',
+            price: '120-180€/m² (system kompletny z materiałami)',
+            time: '4-8 tygodni',
+            warranty: '10 lat na ocieplenie',
+            details: `🔥 **SPECJALIZACJA W OCIEPLENIACH I ELEWACJACH:**
+
+• **System ETICS** - ocieplenie metodą lekką mokrą (styropian, wełna mineralna)
+• **Tynki strukturalne** - tynki mineralne, silikonowe, akrylowe
+• **Docieplenie poddasza** - wełna mineralna, folie paroizolacyjne
+• **Elewacje wentylowane** - systemy z okładzinami ceramicznymi
+• **Prace wysokościowe** - rusztowania, podnośniki, zabezpieczenia
+
+**SYSTEMY:** Knauf ETICS, Sto Therm, Weber
+**MATERIAŁY:** Styropian EPS 100, wełna fasadowa, siatki zbrojące
+**GRUBOŚCI:** 12-20cm w zależności od wymagań energetycznych
+
+Potrzebujesz audytu energetycznego budynku?`
+        },
+        'montaz-okien': {
+            name: 'Montaż okien i drzwi',
+            description: 'Profesjonalny montaż okien, drzwi oraz ogólne wykończenia',
+            price: 'Okna: 150-300€/szt, Drzwi: 200-500€/szt',
+            time: '1-2 tygodnie',
+            warranty: '60 miesięcy na montaż',
+            details: `🚪 **SPECJALIZACJA W MONTAŻU OKIEN I DRZWI:**
+
+• **Montaż okien PVC** - zgodnie z normami RAL, uszczelnienia trójwarstwowe
+• **Drzwi wejściowe** - systemy antywłamaniowe, izolacja termiczna
+• **Ościeżnice** - montaż w warstwie ocieplenia, parapety zewnętrzne
+• **Uszczelnienia** - taśmy paroprzepuszczalne, piany poliuretanowe
+• **Regulacja** - precyzyjne ustawienie, konserwacja okuć
+
+**MARKI:** Rehau, Veka, Schüco | Drzwi: Hörmann, Dierre
+**STANDARDY:** Norma DIN EN 14351-1, świadectwa energetyczne
+**GWARANCJA:** 5 lat na montaż, 10 lat na produkty
+
+Potrzebujesz wymiany okien lub drzwi?`
+        },
+        'remonty': {
+            name: 'Remonty kompleksowe',
+            description: 'Od A do Z - kompleksowe remonty mieszkań i domów',
+            price: 'Od 15,000€ za średnie mieszkanie',
+            time: '4-12 tygodni',
+            warranty: '36 miesięcy na całość prac',
+            details: `🔧 **KOMPLEKSOWE REMONTY POD KLUCZ:**
+
+• **Projektowanie** - konsultacje, wizualizacje, dobór materiałów
+• **Prace wyburzeniowe** - bezpieczne rozbiórki, utylizacja odpadów
+• **Instalacje** - elektryczne, hydrauliczne, grzewcze, wentylacja
+• **Prace wykończeniowe** - wszystkie etapy pod nadzorem
+• **Odbiór techniczny** - dokumentacja, gwarancje, instrukcje
+
+**PROCES:** Projekt → Wyburzenia → Instalacje → Wykończenia → Odbiór
+**MATERIAŁY:** Wszystkie z certyfikatami jakości, zgodne z normami UE
+**FINANSOWANIE:** Możliwość rozłożenia płatności, faktury VAT
+
+Masz konkretny projekt remontu do omówienia?`
+        }
+    };
+
+    // 🔥 ULEPSZONA FUNKCJA GENERUJĄCA ODPOWIEDZI
+    function generateExpertResponse(message) {
+        const lowerMessage = message.toLowerCase();
+        
+        // Sprawdź pytania o konkretne usługi
+        for (const [serviceKey, serviceData] of Object.entries(constructionKnowledge)) {
+            if (lowerMessage.includes(serviceKey.replace('-', ' ')) || 
+                lowerMessage.includes(serviceData.name.toLowerCase())) {
+                
+                let response = `🔧 **${serviceData.name.toUpperCase()}**\n\n`;
+                response += `${serviceData.details}\n\n`;
+                
+                response += `💰 **Przybliżona cena:** ${serviceData.price}\n`;
+                response += `⏰ **Czas realizacji:** ${serviceData.time}\n`;
+                response += `🛡️ **Gwarancja:** ${serviceData.warranty}\n\n`;
+                
+                response += `Czy chcesz poznać więcej szczegółów lub umówić bezpłatną wycenę? 📞`;
+                
+                return response;
+            }
+        }
+        
+        // Specjalne odpowiedzi na konkretne pytania
+        if (lowerMessage.includes('wycen') || lowerMessage.includes('koszt') || lowerMessage.includes('cena')) {
+            return `💰 **INFORMACJE O WYCENIE:**\n\nAby przygotować dokładną wycenę, potrzebuję:\n\n• **Powierzchnię** do remontu (m²)\n• **Rodzaj prac** - co konkretnie chcesz zrobić?\n• **Stan obecny** - czy są zdjęcia?\n• **Lokalizację** - gdzie znajduje się obiekt?\n\nMożesz też wysłać zdjęcia na: 📧 pistrakiewicz@gmail.com\nLub zadzwonić: 📞 +48 694 526 240\n\nChcesz, żebym pomógł Ci zebrać potrzebne informacje?`;
+        }
+        
+        if (lowerMessage.includes('termin') || lowerMessage.includes('kiedy') || lowerMessage.includes('dostęp')) {
+            return `📅 **DOSTĘPNE TERMINY:**\n\nAktualnie jesteśmy dostępni w ciągu **2-3 tygodni** od dzisiaj.\n\n• **Berlin i okolice** - najszybszy start\n• **Pozostałe landy** - 3-4 tygodnie\n• **Pilne zlecenia** - możliwość przyspieszenia\n\nCzy chcesz zarezerwować konkretny termin? Możemy omówić szczegóły telefonicznie: 📞 +48 694 526 240`;
+        }
+        
+        if (lowerMessage.includes('gwaranc') || lowerMessage.includes('reklamac') || lowerMessage.includes('jakość')) {
+            return `🛡️ **GWARANCJE I JAKOŚĆ:**\n\nZapewniamy:\n\n• **Sucha zabudowa** - 24 miesiące gwarancji\n• **Malowanie** - 36 miesięcy gwarancji\n• **Ocieplenia** - 10 lat gwarancji\n• **Montaż okien/drzwi** - 60 miesięcy\n• **Remonty kompleksowe** - 36 miesięcy\n\nWszystkie prace wykonujemy zgodnie z:\n• Niemieckimi normami DIN\n• Przepisami budowlanymi\n• Standardami jakości RAL\n\nMasz konkretne pytania dotyczące gwarancji?`;
+        }
+        
+        if (lowerMessage.includes('zdjęc') || lowerMessage.includes('foto') || lowerMessage.includes('obraz')) {
+            return `📸 **PRZESYŁANIE ZDJĘĆ:**\n\nŚwietnie! Zdjęcia pomogą mi przygotować dokładną wycenę.\n\nMożesz je przesłać:\n• **Email:** pistrakiewicz@gmail.com\n• **WhatsApp:** +48 694 526 240\n• **Messenger:** przez profil firmy\n\nNajlepiej jeśli zdjęcia pokazują:\n• Stan obecny pomieszczeń\n• Ewentualne problemy/usterki\n• Metraż i układ pomieszczeń\n• Specjalne wymagania\n\nCzy masz już zdjęcia gotowe do przesłania?`;
+        }
+        
+        if (lowerMessage.includes('niemc') || lowerMessage.includes('deutschland') || lowerMessage.includes('land')) {
+            return `🇩🇪 **OBSZAR DZIAŁANIA W NIEMCZECH:**\n\nDziałamy na terenie całych Niemiec ze szczególnym uwzględnieniem:\n\n🏙️ **Główne regiony:**\n• Berlin i Brandenburgia\n• Bawaria (Monachium, Norymberga)\n• Nadrenia Północna-Westfalia (Kolonia, Düsseldorf)\n• Dolna Saksonia (Hanower, Brunszwik)\n• Hesja (Frankfurt, Kassel)\n\n🚗 **Dojazd:**\n• Do 100 km - wliczone w koszt\n• Powyżej 100 km - negocjowane indywidualnie\n• Możliwość zakwaterowania przy dłuższych projektach\n\nZ jakiego regionu pochodzi Twój projekt?`;
+        }
+        
+        if (lowerMessage.includes('doświadczen') || lowerMessage.includes('staż') || lowerMessage.includes('lat')) {
+            return `📊 **DOŚWIADCZENIE I REFERENCJE:**\n\n• **10+ lat** w branży budowlanej\n• **200+ zrealizowanych projektów** w Niemczech\n• **Specjalizacja** w suchych zabudowach i wykończeniach\n• **Certyfikaty** zgodności z normami niemieckimi\n• **Stały zespół** wykwalifikowanych fachowców\n• **Ubezpieczenie OC** do 5 milionów EUR\n\nWszystkie projekty dokumentujemy i zapewniamy pełne rozliczenie VAT.`;
+        }
+        
+        if (lowerMessage.includes('material') || lowerMessage.includes('produkt') || lowerMessage.includes('marka')) {
+            return `🏭 **MATERIAŁY I MARKI:**\n\nPracujemy wyłącznie z sprawdzonymi materiałami:\n\n• **Płyty g-k:** Knauf, Rigips\n• **Farby:** Caparol, Alpina, Śnieżka\n• **Płytki:** Paradyz, Opoczno, Ceramstic\n• **Podłogi:** Quick-Step, BerryAlloc, Haro\n• **Systemy ociepleń:** Knauf, Sto, Weber\n• **Okna/drzwi:** Rehau, Veka, Hörmann\n\nMogę też pomóc w doborze materiałów pod Twój budżet i preferencje!`;
+        }
+
+        // Domyślna inteligentna odpowiedź
+        return `Rozumiem! Jako specjalista z 10-letnim doświadczeniem w budownictwie w Niemczech, pomogę Ci z każdym aspektem Twojego projektu. 🛠️\n\nCzy chcesz poznać:\n• Szczegóły konkretnej usługi?\n• Przybliżone koszty?\n• Dostępne terminy?\n• A może masz konkretne pytanie techniczne?\n\nJestem tutaj, żeby pomóc! 💪`;
+    }
+
     // 🔥 POPRAWIONE WYSYŁANIE FORMULARZA - BEZPOŚREDNIO DO EMAIL
     document.getElementById('contactForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -1983,116 +1817,6 @@ Wiadomość wysłana ze strony Rafał Pistrakiewicz Bau & Renovierung
             typingDiv.remove();
             callback();
         }, 1500 + Math.random() * 1000);
-    }
-
-    // 🔥 ROZBUDOWANA BAZA WIEDZY BUDOWLANEJ
-    const constructionKnowledge = {
-        'sucha-zabudowa': {
-            name: 'Sucha zabudowa',
-            description: 'Profesjonalne ścianki działowe, sufity podwieszane i zabudowy meblowe',
-            price: '45-75€/m²',
-            time: '2-4 tygodnie',
-            warranty: '24 miesiące',
-            details: `🏗️ **SPECJALIZACJA W SUCHEJ ZABUDOWIE:**
-
-    • **Ścianki działowe** - konstrukcje stalowe, płyty G-K 12,5mm, izolacja akustyczna
-    • **Sufity podwieszane** - systemy Knauf, możliwość montażu oświetlenia LED
-    • **Zabudowy meblowe** - garderoby, szafy wnękowe, zabudowy kuchenne
-    • **Prace izolacyjne** - wełna mineralna 50mm, folie paroizolacyjne
-    • **Montaż** - zgodnie z normami DIN, precyzyjne wykonanie
-
-    **MATERIAŁY:** Profile CW/UW, płyty G-K, wkręty, taśmy, masy szpachlowe
-    **CZAS REALIZACJI:** 2-4 tygodnie w zależności od skali projektu
-    **GWARANCJA:** 24 miesiące na wykonanie
-
-    Potrzebujesz wyceny konkretnego projektu?`
-        },
-        'malowanie': {
-            name: 'Malowanie i szpachlowanie',
-            description: 'Kompleksowe malowanie wnętrz z przygotowaniem powierzchni',
-            price: 'Szpachlowanie: 15-25€/m², Malowanie: 8-15€/m²',
-            time: '1-3 tygodnie',
-            warranty: '36 miesięcy na malowanie',
-            details: `🎨 **PROFESJONALNE MALOWANIE I SZPACHLOWANIE:**
-
-    • **Przygotowanie powierzchni** - usuwanie starych powłok, gruntowanie
-    • **Szpachlowanie maszynowe** - wyrównywanie ścian, ukrywanie instalacji
-    • **Szlifowanie** - ręczne i maszynowe dla idealnie gładkich powierzchni
-    • **Malowanie** - farby lateksowe, akrylowe, zmywalne
-    • **Zabezpieczenia** - osłony mebli, podłóg, okien
-
-    **TECHNOLOGIE:** Szpachlówki maszynowe Knauf, farby Caparol, Śnieżka
-    **WARSTWY:** Grunt + 2 warstwy szpachli + 2 warstwy farby
-    **CZAS:** 1-3 tygodnie w zależności od metrażu
-
-    Chcesz poznać dokładny koszt dla Twojego mieszkania?`
-        },
-        'wykończenia': {
-            name: 'Kompleksowe wykończenia',
-            description: 'Tapety, płytki, podłogi - wykończenie pod klucz',
-            price: 'Tapety: 20-35€/m², Płytki: 45-80€/m², Podłogi: 25-45€/m²',
-            time: '3-6 tygodni',
-            warranty: '24 miesiące',
-            details: `🏠 **KOMPLEKSOWE WYKOŃCZENIA WNĘTRZ:**
-
-    • **Układanie płytek** - łazienki, kuchnie, przedpokoje (płytki ceramiczne, gres)
-    • **Montaż paneli** - podłogi winylowe, panele laminowane, deski warstwowe
-    • **Tapetowanie** - tapety papierowe, winylowe, szklane, fototapety
-    • **Montaż listew** - przypodłogowych, przypodłogowych, maskujących
-    • **Prace wykończeniowe** - fugowanie, montaż cokołów, osprzętu
-
-    **MATERIAŁY:** Płytki Paradyz, Opoczno | Panele Quick-Step, BerryAlloc | Tapety Rasch, Marburg
-    **PREPARACJA:** Wyrównanie podłoża, gruntowanie, przygotowanie fug
-    **CZAS:** 3-6 tygodni dla średniego mieszkania
-
-    Masz już wybrane materiały czy potrzebujesz doradztwa?`
-        },
-        'ocieplenia': {
-            name: 'Ocieplenia i elewacje',
-            description: 'Kompleksowe ocieplenia budynków i prace elewacyjne',
-            price: '120-180€/m² (system kompletny z materiałami)',
-            time: '4-8 tygodni',
-            warranty: '10 lat na ocieplenie',
-            details: `🔥 **SPECJALIZACJA W OCIEPLENIACH I ELEWACJACH:**
-
-    • **System ETICS** - ocieplenie metodą lekką mokrą (styropian, wełna mineralna)
-    • **Tynki strukturalne** - tynki mineralne, silikonowe, akrylowe
-    • **Docieplenie poddasza** - wełna mineralna, folie paroizolacyjne
-    • **Elewacje wentylowane** - systemy z okładzinami ceramicznymi
-    • **Prace wysokościowe** - rusztowania, podnośniki, zabezpieczenia
-
-    **SYSTEMY:** Knauf ETICS, Sto Therm, Weber
-    **MATERIAŁY:** Styropian EPS 100, wełna fasadowa, siatki zbrojące
-    **GRUBOŚCI:** 12-20cm w zależności od wymagań energetycznych
-
-    Potrzebujesz audytu energetycznego budynku?`
-        }
-    };
-
-    // 🔥 ULEPSZONA FUNKCJA GENERUJĄCA ODPOWIEDZI
-    function generateExpertResponse(message) {
-        const lowerMessage = message.toLowerCase();
-        
-        // Sprawdź pytania o konkretne usługi
-        for (const [serviceKey, serviceData] of Object.entries(constructionKnowledge)) {
-            if (lowerMessage.includes(serviceKey.replace('-', ' ')) || 
-                lowerMessage.includes(serviceData.name.toLowerCase())) {
-                
-                let response = `🔧 **${serviceData.name.toUpperCase()}**\n\n`;
-                response += `${serviceData.details}\n\n`;
-                
-                response += `💰 **Przybliżona cena:** ${serviceData.price}\n`;
-                response += `⏰ **Czas realizacji:** ${serviceData.time}\n`;
-                response += `🛡️ **Gwarancja:** ${serviceData.warranty}\n\n`;
-                
-                response += `Czy chcesz poznać więcej szczegółów lub umówić bezpłatną wycenę? 📞`;
-                
-                return response;
-            }
-        }
-        
-        // Domyślna inteligentna odpowiedź
-        return `Rozumiem! Jako specjalista z 10-letnim doświadczeniem w budownictwie w Niemczech, pomogę Ci z każdym aspektem Twojego projektu. 🛠️\n\nCzy chcesz poznać:\n• Szczegóły konkretnej usługi?\n• Przybliżone koszty?\n• Dostępne terminy?\n• A może masz konkretne pytanie techniczne?\n\nJestem tutaj, żeby pomóc! 💪`;
     }
 
     function sendMessage() {
