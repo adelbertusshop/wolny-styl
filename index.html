@@ -1,2395 +1,923 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SmartKalendarz - Zaawansowany kalendarz z AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --cal-hour-height: 60px;
-      --cal-gutter: 70px;
-      --cal-day-min-width: 200px;
-    }
-
-    /* Nowy motyw kolorystyczny */
-    .theme-dark { background-color: #0f172a; color: #f1f5f9; }
-    .theme-light { background-color: #f8fafc; color: #0f172a; }
-    .theme-blue { background-color: #eff6ff; color: #1e3a8a; }
-    
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .gradient-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .gradient-secondary {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    }
-
-    .gradient-success {
-      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    }
-
-    /* Animacje */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(-100%); }
-      to { transform: translateX(0); }
-    }
-
-    .animate-fade-in { animation: fadeIn 0.3s ease-out; }
-    .animate-pulse-slow { animation: pulse 2s infinite; }
-    .animate-slide-in { animation: slideIn 0.3s ease-out; }
-
-    /* Zaawansowane wydarzenia */
-    .event-card {
-      position: absolute;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 13px;
-      line-height: 1.2;
-      overflow: hidden;
-      cursor: move;
-      user-select: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: all 0.2s ease;
-      border-left: 4px solid;
-      z-index: 5;
-    }
-
-    .event-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      z-index: 10;
-    }
-
-    .event-card.priority-high { border-left-color: #ef4444; }
-    .event-card.priority-medium { border-left-color: #f59e0b; }
-    .event-card.priority-low { border-left-color: #10b981; }
-
-    .event-card.with-alert::after {
-      content: "🔔";
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      font-size: 10px;
-    }
-
-    /* Zaawansowana siatka czasu */
-    .time-grid-enhanced {
-      position: relative;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent,
-        transparent calc(var(--cal-hour-height) - 1px),
-        rgba(148,163,184,0.1) calc(var(--cal-hour-height) - 1px),
-        rgba(148,163,184,0.1) var(--cal-hour-height)
-      );
-    }
-
-    .time-grid-enhanced::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      background-image: linear-gradient(to bottom, rgba(148,163,184,0.2) 1px, transparent 1px);
-      background-size: 100% calc(var(--cal-hour-height)/4);
-      pointer-events: none;
-    }
-
-    /* Nowa linia czasu */
-    .timeline-now {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, #ef4444, transparent);
-      z-index: 30;
-    }
-
-    .timeline-now::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: -4px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ef4444;
-      animation: pulse 1.5s infinite;
-    }
-
-    /* Zaawansowany widok miesięczny */
-    .month-cell-enhanced {
-      position: relative;
-      min-height: 130px;
-      transition: all 0.2s;
-    }
-
-    .month-cell-enhanced:hover {
-      background: rgba(59, 130, 246, 0.05);
-    }
-
-    .month-cell-enhanced.today {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.1));
-      box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.3);
-    }
-
-    .month-cell-enhanced.weekend {
-      background: rgba(248, 113, 113, 0.05);
-    }
-
-    /* Progress bar dla wydarzeń */
-    .event-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 0 0 12px 12px;
-      overflow: hidden;
-    }
-
-    .event-progress-bar {
-      height: 100%;
-      background: rgba(255,255,255,0.7);
-      transition: width 0.3s;
-    }
-
-    /* Drag & drop improvements */
-    .drag-ghost {
-      position: absolute;
-      border-radius: 12px;
-      background: rgba(59, 130, 246, 0.2);
-      border: 2px dashed rgba(59, 130, 246, 0.8);
-      z-index: 100;
-      pointer-events: none;
-      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-    }
-
-    .drop-zone {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border: 3px dashed #10b981;
-      border-radius: 12px;
-      background: rgba(16, 185, 129, 0.1);
-      z-index: 50;
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
-    }
-
-    .drop-zone.active {
-      opacity: 1;
-    }
-
-    /* Stats cards */
-    .stats-card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      transition: transform 0.3s;
-    }
-
-    .stats-card:hover {
-      transform: translateY(-5px);
-    }
-
-    /* Custom scrollbar */
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(0,0,0,0.05);
-      border-radius: 10px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(59, 130, 246, 0.5);
-      border-radius: 10px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(59, 130, 246, 0.7);
-    }
-
-    /* Konferencje/Wideorozmowy */
-    .conference-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      background: rgba(59, 130, 246, 0.1);
-      border-radius: 12px;
-      font-size: 10px;
-      color: #3b82f6;
-      margin-top: 4px;
-    }
-
-    /* Responsywność */
-    @media (max-width: 768px) {
-      :root {
-        --cal-hour-height: 50px;
-        --cal-gutter: 60px;
-      }
-      
-      .mobile-hidden {
-        display: none;
-      }
-      
-      .mobile-full-width {
-        width: 100%;
-      }
-    }
-
-    /* Mood indicator */
-    .mood-indicator {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppHub - Nowoczesne aplikacje dla biznesu i produktywności</title>
+    <meta name="description" content="Odkryj profesjonalne aplikacje do zarządzania biznesem, zwiększania produktywności i rozrywki. Dołącz do 1M+ zadowolonych użytkowników.">
+    <meta name="keywords" content="aplikacje, biznes, produktywność, zarządzanie, mobile apps">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #7e22ce;
+            --accent: #06b6d4;
+        }
+        
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, 
+                rgba(79, 70, 229, 0.05) 0%, 
+                rgba(126, 34, 206, 0.05) 50%, 
+                rgba(6, 182, 212, 0.05) 100%);
+        }
+        
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, 
+                rgba(79, 70, 229, 0.1) 0%, 
+                rgba(126, 34, 206, 0.1) 50%, 
+                rgba(6, 182, 212, 0.1) 100%);
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, 
+                #4f46e5 0%, 
+                #7e22ce 50%, 
+                #06b6d4 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .app-card {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .glow-hover:hover {
+            box-shadow: 0 10px 40px rgba(79, 70, 229, 0.15);
+        }
+        
+        .dark .glow-hover:hover {
+            box-shadow: 0 10px 40px rgba(79, 70, 229, 0.3);
+        }
+        
+        .progress-bar {
+            width: 0%;
+            transition: width 1.5s ease-in-out;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .category-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        .dark .loader {
+            border: 3px solid #374151;
+            border-top: 3px solid #4f46e5;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .download-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4f46e5, #10b981);
+            transition: width 0.3s ease;
+        }
+    </style>
 </head>
-<body class="theme-light">
-  <div class="min-h-dvh flex flex-col">
-    <!-- Zaawansowany header -->
-    <header class="sticky top-0 z-50 gradient-primary text-white">
-      <div class="max-w-[1600px] mx-auto px-4 py-3">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur grid place-items-center">
-              <i class="fas fa-calendar-alt text-white"></i>
-            </div>
-            <div>
-              <div class="font-bold text-lg">SmartKalendarz Pro</div>
-              <div class="text-sm opacity-90">AI-powered • Zaawansowane zarządzanie czasem</div>
-            </div>
-          </div>
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-['Inter']">
+    <!-- Theme Toggle -->
+    <button id="themeToggle" class="fixed top-4 right-4 z-50 p-2 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all" aria-label="Przełącz tryb jasny/ciemny">
+        <svg id="sunIcon" class="w-6 h-6 text-gray-800 dark:text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+        </svg>
+        <svg id="moonIcon" class="w-6 h-6 text-gray-400 dark:text-gray-200 hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+        </svg>
+    </button>
 
-          <div class="flex items-center gap-3">
-            <!-- Theme selector -->
-            <div class="flex items-center gap-1 bg-white/10 rounded-xl p-1">
-              <button class="theme-btn active px-3 py-1 rounded-lg bg-white/20" data-theme="light">
-                <i class="fas fa-sun"></i>
-              </button>
-              <button class="theme-btn px-3 py-1 rounded-lg" data-theme="dark">
-                <i class="fas fa-moon"></i>
-              </button>
-              <button class="theme-btn px-3 py-1 rounded-lg" data-theme="blue">
-                <i class="fas fa-palette"></i>
-              </button>
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40">
+        <nav class="container mx-auto px-4 sm:px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
+                        <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800 dark:text-white">AppHub</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Profesjonalne rozwiązania</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#aplikacje" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Aplikacje</a>
+                    <a href="#kategorie" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Kategorie</a>
+                    <a href="#demo" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Demo</a>
+                    <a href="#kontakt" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Kontakt</a>
+                </div>
+                <button class="md:hidden">
+                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
             </div>
-
-            <!-- Quick stats -->
-            <div class="hidden md:flex items-center gap-4">
-              <div class="text-center">
-                <div class="text-xs opacity-80">Dziś</div>
-                <div class="font-bold" id="todayCount">0</div>
-              </div>
-              <div class="text-center">
-                <div class="text-xs opacity-80">Tydzień</div>
-                <div class="font-bold" id="weekCount">0</div>
-              </div>
-              <div class="text-center">
-                <div class="text-xs opacity-80">Zaległe</div>
-                <div class="font-bold text-red-300" id="overdueCount">0</div>
-              </div>
-            </div>
-
-            <!-- Notifications -->
-            <button id="notificationsBtn" class="relative w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 grid place-items-center">
-              <i class="fas fa-bell"></i>
-              <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-xs rounded-full grid place-items-center" id="notificationCount">0</span>
-            </button>
-
-            <!-- User profile -->
-            <div class="flex items-center gap-2 cursor-pointer" id="userMenuBtn">
-              <div class="w-8 h-8 rounded-full gradient-secondary grid place-items-center">
-                <span class="text-white font-bold">U</span>
-              </div>
-              <span class="hidden md:inline text-sm">Użytkownik</span>
-              <i class="fas fa-chevron-down text-xs"></i>
-            </div>
-          </div>
-        </div>
-
-        <!-- Secondary nav -->
-        <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <button id="prevBtn" class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <button id="todayBtn" class="px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 font-medium">
-              <i class="fas fa-calendar-day mr-2"></i>Dzisiaj
-            </button>
-            <button id="nextBtn" class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-            
-            <div class="ml-4 px-4 py-2 bg-white/10 rounded-xl">
-              <span class="font-semibold" id="rangeLabel">—</span>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <!-- View selector -->
-            <div class="flex bg-white/10 rounded-xl overflow-hidden">
-              <button data-view="month" class="viewBtn px-4 py-2 hover:bg-white/20">
-                <i class="fas fa-calendar-alt mr-2"></i>Miesiąc
-              </button>
-              <button data-view="week" class="viewBtn px-4 py-2 hover:bg-white/20">
-                <i class="fas fa-calendar-week mr-2"></i>Tydzień
-              </button>
-              <button data-view="day" class="viewBtn px-4 py-2 hover:bg-white/20">
-                <i class="fas fa-calendar-day mr-2"></i>Dzień
-              </button>
-              <button data-view="year" class="viewBtn px-4 py-2 hover:bg-white/20">
-                <i class="fas fa-calendar mr-2"></i>Rok
-              </button>
-              <button data-view="schedule" class="viewBtn px-4 py-2 hover:bg-white/20">
-                <i class="fas fa-list mr-2"></i>Plan
-              </button>
-            </div>
-
-            <!-- Quick actions -->
-            <div class="flex gap-2">
-              <button id="aiSuggestBtn" class="px-4 py-2 rounded-xl bg-gradient-success text-white font-medium">
-                <i class="fas fa-robot mr-2"></i>AI Sugestie
-              </button>
-              <button id="newEventBtn" class="px-4 py-2 rounded-xl bg-white text-blue-600 font-medium">
-                <i class="fas fa-plus mr-2"></i>Nowe
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+        </nav>
     </header>
 
-    <!-- Główny kontent -->
-    <main class="flex-1 max-w-[1600px] mx-auto w-full px-4 py-6">
-      <div class="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[350px_1fr] gap-6">
-        <!-- Zaawansowany panel boczny -->
-        <aside class="space-y-6">
-          <!-- Stats dashboard -->
-          <div class="stats-card">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold text-lg">Statystyki</h3>
-              <select id="statsPeriod" class="text-sm border rounded-lg px-2 py-1">
-                <option value="week">Ten tydzień</option>
-                <option value="month">Ten miesiąc</option>
-                <option value="year">Ten rok</option>
-              </select>
+    <!-- Hero Section -->
+    <section class="gradient-bg py-20 md:py-28">
+        <div class="container mx-auto px-4 sm:px-6 text-center">
+            <div class="max-w-3xl mx-auto fade-in">
+                <h2 class="text-4xl md:text-6xl font-bold mb-6">
+                    <span class="block">Twój biznes</span>
+                    <span class="hero-gradient font-black">na najwyższym poziomie</span>
+                </h2>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
+                    Profesjonalne aplikacje, które zwiększają efektywność o 42%. Dołącz do liderów.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button id="exploreBtn" class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white px-8 py-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        Przeglądaj Aplikacje
+                    </button>
+                    <button id="demoBtn" class="bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-400 px-8 py-4 rounded-xl font-semibold hover:bg-indigo-50 dark:hover:bg-gray-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        <div class="flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                            </svg>
+                            Zobacz demo
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-12">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover transition-all">
+                    <div class="text-5xl font-bold text-indigo-600 dark:text-indigo-400 mb-3">50+</div>
+                    <div class="text-gray-600 dark:text-gray-300 font-medium">Aplikacji</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">Regularnie aktualizowanych</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover transition-all">
+                    <div class="text-5xl font-bold text-indigo-600 dark:text-indigo-400 mb-3">1M+</div>
+                    <div class="text-gray-600 dark:text-gray-300 font-medium">Użytkowników</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">Zaufanych partnerów</div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover transition-all">
+                    <div class="text-5xl font-bold text-indigo-600 dark:text-indigo-400 mb-3">4.8★</div>
+                    <div class="text-gray-600 dark:text-gray-300 font-medium">Średnia ocena</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">Na bazie 50K opinii</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section id="kategorie" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Kategorie rozwiązań</h2>
+                <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Wybierz obszar, w którym chcesz zwiększyć efektywność</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button class="category-btn category-transition bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400" data-category="all" aria-label="Pokaż wszystkie aplikacje">
+                    <div class="flex flex-col items-center">
+                        <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg mb-4">
+                            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                        </div>
+                        <div class="font-semibold text-gray-700 dark:text-gray-200">Wszystkie</div>
+                    </div>
+                </button>
+                <button class="category-btn category-transition bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400" data-category="biznes" aria-label="Aplikacje biznesowe">
+                    <div class="flex flex-col items-center">
+                        <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg mb-4">
+                            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="font-semibold text-gray-700 dark:text-gray-200">Biznes</div>
+                    </div>
+                </button>
+                <button class="category-btn category-transition bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400" data-category="produktywnosc" aria-label="Aplikacje do produktywności">
+                    <div class="flex flex-col items-center">
+                        <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg mb-4">
+                            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="font-semibold text-gray-700 dark:text-gray-200">Produktywność</div>
+                    </div>
+                </button>
+                <button class="category-btn category-transition bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400" data-category="rozrywka" aria-label="Aplikacje rozrywkowe">
+                    <div class="flex flex-col items-center">
+                        <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg mb-4">
+                            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="font-semibold text-gray-700 dark:text-gray-200">Rozrywka</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Apps Grid -->
+    <section id="aplikacje" class="py-16 bg-gray-50 dark:bg-gray-800/50">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Nasze flagowe aplikacje</h2>
+                <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Przetestowane i rekomendowane przez ekspertów</p>
             </div>
             
-            <div class="space-y-4">
-              <div>
-                <div class="flex justify-between text-sm mb-1">
-                  <span>Produktywność</span>
-                  <span id="productivityPercent">75%</span>
-                </div>
-                <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div class="h-full bg-green-500 rounded-full" style="width: 75%"></div>
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-2 gap-3">
-                <div class="text-center p-3 bg-blue-50 rounded-xl">
-                  <div class="text-2xl font-bold text-blue-600" id="eventsTotal">0</div>
-                  <div class="text-sm text-slate-600">Wydarzenia</div>
-                </div>
-                <div class="text-center p-3 bg-amber-50 rounded-xl">
-                  <div class="text-2xl font-bold text-amber-600" id="tasksTotal">0</div>
-                  <div class="text-sm text-slate-600">Zadania</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quick tasks -->
-          <div class="stats-card">
-            <h3 class="font-bold text-lg mb-4">Szybkie zadania</h3>
-            <div class="space-y-2" id="quickTasks">
-              <!-- Tasks will be added here -->
-            </div>
-            <button id="addQuickTask" class="w-full mt-3 p-2 border border-dashed border-slate-300 rounded-lg text-slate-500 hover:text-slate-700 hover:border-slate-400">
-              <i class="fas fa-plus mr-2"></i>Dodaj zadanie
-            </button>
-          </div>
-
-          <!-- Categories with icons -->
-          <div class="stats-card">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold text-lg">Kategorie</h3>
-              <button id="manageCategories" class="text-sm text-blue-600 hover:text-blue-800">
-                <i class="fas fa-cog"></i>
-              </button>
-            </div>
-            <div class="space-y-2" id="categoryList"></div>
-          </div>
-
-          <!-- AI Assistant -->
-          <div class="stats-card gradient-primary text-white">
-            <h3 class="font-bold text-lg mb-3">Asystent AI</h3>
-            <div class="text-sm opacity-90 mb-4">Analizuje Twój harmonogram i sugeruje optymalizacje</div>
-            
-            <div id="aiSuggestions" class="space-y-3 mb-4">
-              <!-- AI suggestions will appear here -->
+            <div id="loadingIndicator" class="text-center py-12">
+                <div class="loader mx-auto mb-4"></div>
+                <p class="text-gray-600 dark:text-gray-400">Ładowanie aplikacji...</p>
             </div>
             
-            <button id="askAI" class="w-full py-2 bg-white/20 hover:bg-white/30 rounded-lg">
-              <i class="fas fa-comment-dots mr-2"></i>Zapytaj AI
-            </button>
-          </div>
-
-          <!-- Mood tracker -->
-          <div class="stats-card">
-            <h3 class="font-bold text-lg mb-3">Twój nastrój</h3>
-            <div class="flex justify-between mb-4">
-              <div class="mood-indicator bg-red-100 text-red-600" data-mood="1">😞</div>
-              <div class="mood-indicator bg-amber-100 text-amber-600" data-mood="2">😐</div>
-              <div class="mood-indicator bg-blue-100 text-blue-600" data-mood="3">🙂</div>
-              <div class="mood-indicator bg-green-100 text-green-600" data-mood="4">😊</div>
-              <div class="mood-indicator bg-purple-100 text-purple-600" data-mood="5">🤩</div>
+            <div id="appsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 opacity-0 transition-opacity duration-500">
+                <!-- Apps will be loaded here -->
             </div>
-            <div class="text-center text-sm text-slate-600" id="currentMood">Nie ustawiono</div>
-          </div>
-        </aside>
-
-        <!-- Główny kalendarz -->
-        <section>
-          <!-- Calendar controls -->
-          <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-              <div class="flex items-center gap-2">
-                <span class="text-sm text-slate-600">Filtry:</span>
-                <button class="filter-btn active px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm" data-filter="all">
-                  Wszystkie
+            
+            <div id="errorMessage" class="hidden text-center py-12">
+                <div class="text-red-500 mb-4">
+                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Nie udało się załadować aplikacji</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">Spróbuj odświeżyć stronę lub skontaktuj się z nami.</p>
+                <button id="retryBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium">
+                    Spróbuj ponownie
                 </button>
-                <button class="filter-btn px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm" data-filter="work">
-                  Praca
-                </button>
-                <button class="filter-btn px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm" data-filter="personal">
-                  Osobiste
-                </button>
-                <button class="filter-btn px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm" data-filter="urgent">
-                  <i class="fas fa-exclamation-circle mr-1"></i>Pilne
-                </button>
-              </div>
             </div>
+        </div>
+    </section>
 
-            <div class="flex items-center gap-3">
-              <div class="relative">
-                <input type="text" id="searchEvents" 
-                       class="pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                       placeholder="Szukaj wydarzeń...">
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-              </div>
-              
-              <button id="exportBtn" class="px-4 py-2 border rounded-xl hover:bg-slate-50">
-                <i class="fas fa-file-export mr-2"></i>Eksport
-              </button>
-              
-              <div class="relative" id="viewOptions">
-                <button class="px-4 py-2 border rounded-xl hover:bg-slate-50">
-                  <i class="fas fa-sliders-h mr-2"></i>Opcje
+    <!-- Demo Modal -->
+    <div id="demoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Jak działają nasze aplikacje</h3>
+                <button id="closeDemoModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
                 </button>
-              </div>
             </div>
-          </div>
-
-          <!-- Calendar container -->
-          <div class="bg-white border border-slate-200 rounded-2xl shadow-lg overflow-hidden">
-            <div id="calendarRoot" class="min-h-[800px] custom-scrollbar"></div>
-          </div>
-
-          <!-- Mini calendar -->
-          <div class="mt-6 p-4 bg-white border border-slate-200 rounded-2xl shadow">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="font-semibold">Mini kalendarz</h4>
-              <div class="flex gap-2">
-                <button id="miniPrev" class="w-8 h-8 grid place-items-center hover:bg-slate-100 rounded-lg">
-                  <i class="fas fa-chevron-left"></i>
-                </button>
-                <button id="miniToday" class="px-3 py-1 text-sm border rounded-lg hover:bg-slate-50">Dzisiaj</button>
-                <button id="miniNext" class="w-8 h-8 grid place-items-center hover:bg-slate-100 rounded-lg">
-                  <i class="fas fa-chevron-right"></i>
-                </button>
-              </div>
+            <div class="p-6">
+                <div class="aspect-video bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mb-6 flex items-center justify-center">
+                    <div class="text-white text-center">
+                        <svg class="w-20 h-20 mx-auto mb-4 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-xl font-semibold">Demo działania aplikacji</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">1.</div>
+                        <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Wybierz aplikację</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Znajdź rozwiązanie dopasowane do Twoich potrzeb</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">2.</div>
+                        <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Przetestuj demo</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Sprawdź funkcjonalności przed zakupem</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">3.</div>
+                        <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Wdrażaj</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Zacznij korzystać z pełnej wersji</p>
+                    </div>
+                </div>
             </div>
-            <div id="miniCalendar" class="grid grid-cols-7 gap-1"></div>
-          </div>
-        </section>
-      </div>
-    </main>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="kontakt" class="py-16">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="max-w-2xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Zapytaj o szczegóły</h2>
+                    <p class="text-gray-600 dark:text-gray-300">Odpowiadamy w ciągu 24 godzin</p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Imię i nazwisko *</label>
+                            <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700 dark:text-white transition" required>
+                            <div id="nameError" class="text-red-500 text-sm mt-2 hidden"></div>
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Email *</label>
+                            <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700 dark:text-white transition" required>
+                            <div id="emailError" class="text-red-500 text-sm mt-2 hidden"></div>
+                        </div>
+                        
+                        <div>
+                            <label for="company" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Firma (opcjonalnie)</label>
+                            <input type="text" id="company" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700 dark:text-white transition">
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Wiadomość *</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700 dark:text-white transition" required></textarea>
+                            <div id="messageError" class="text-red-500 text-sm mt-2 hidden"></div>
+                        </div>
+                        
+                        <div id="successMessage" class="hidden p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 dark:text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <p class="text-green-700 dark:text-green-300">Wiadomość została wysłana! Skontaktujemy się z Tobą w ciągu 24 godzin.</p>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white py-4 rounded-xl font-semibold transition flex items-center justify-center">
+                            <span id="submitText">Wyślij wiadomość</span>
+                            <div id="submitSpinner" class="loader hidden ml-3"></div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="py-6 border-t border-slate-200">
-      <div class="max-w-[1600px] mx-auto px-4">
-        <div class="flex flex-wrap justify-between items-center gap-4">
-          <div class="text-sm text-slate-600">
-            <span class="font-semibold">SmartKalendarz Pro v2.0</span> • 
-            <span id="eventCount">0 wydarzeń</span> • 
-            <span id="storageStatus">Lokalne przechowywanie</span>
-          </div>
-          
-          <div class="flex items-center gap-4">
-            <button id="syncBtn" class="text-sm text-blue-600 hover:text-blue-800">
-              <i class="fas fa-sync-alt mr-2"></i>Synchronizuj
-            </button>
-            <button id="backupBtn" class="text-sm text-green-600 hover:text-green-800">
-              <i class="fas fa-download mr-2"></i>Kopia zapasowa
-            </button>
-            <button id="settingsBtn" class="text-sm text-slate-600 hover:text-slate-800">
-              <i class="fas fa-cog mr-2"></i>Ustawienia
-            </button>
-          </div>
+    <footer class="bg-gray-800 dark:bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-2 bg-indigo-600 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">AppHub</h3>
+                            <p class="text-gray-400 text-sm">Profesjonalne rozwiązania</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 max-w-md">Tworzymy aplikacje, które naprawdę działają. Od 2018 roku dostarczamy rozwiązania dla biznesu.</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-bold mb-4">Produkt</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#aplikacje" class="text-gray-400 hover:text-white transition">Aplikacje</a></li>
+                            <li><a href="#kategorie" class="text-gray-400 hover:text-white transition">Kategorie</a></li>
+                            <li><a href="#demo" class="text-gray-400 hover:text-white transition">Demo</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-4">Firma</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#kontakt" class="text-gray-400 hover:text-white transition">Kontakt</a></li>
+                            <li class="text-gray-400">+48 123 456 789</li>
+                            <li class="text-gray-400">biuro@apphub.pl</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 AppHub. Wszystkie prawa zastrzeżone.</p>
+            </div>
         </div>
-      </div>
     </footer>
-  </div>
 
-  <!-- Modals and overlays -->
-  
-  <!-- Event detail modal -->
-  <div id="eventModal" class="fixed inset-0 z-[1000] hidden">
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="absolute inset-0 grid place-items-center p-4">
-      <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
-        <!-- Modal content loaded dynamically -->
-      </div>
-    </div>
-  </div>
-
-  <!-- AI Assistant modal -->
-  <div id="aiModal" class="fixed inset-0 z-[1001] hidden">
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="absolute inset-0 grid place-items-center p-4">
-      <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
-        <!-- AI chat interface -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Settings modal -->
-  <div id="settingsModal" class="fixed inset-0 z-[1002] hidden">
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="absolute inset-0 grid place-items-center p-4">
-      <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
-        <!-- Settings content -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Notifications panel -->
-  <div id="notificationsPanel" class="fixed top-20 right-4 w-96 bg-white rounded-2xl shadow-2xl border z-[999] hidden">
-    <!-- Notifications content -->
-  </div>
-
-  <!-- Context menu -->
-  <div id="contextMenu" class="fixed z-[1003] bg-white rounded-xl shadow-xl border hidden">
-    <!-- Context menu options -->
-  </div>
-
-  <script>
-    // ============================
-    // ROZBUDOWANY SYSTEM KALENDARZA
-    // ============================
-
-    // ---------------------------
-    // CORE STATE & CONFIGURATION
-    // ---------------------------
-    const CONFIG = {
-      startHour: 6,
-      endHour: 22,
-      snapInterval: 15,
-      weekStart: 1, // Monday
-      timeFormat: '24h',
-      theme: 'light',
-      aiEnabled: true,
-      notifications: true,
-      defaultDuration: 60,
-      workingHours: { start: 9, end: 17 }
-    };
-
-    const state = {
-      view: 'week',
-      anchorDate: new Date(),
-      selectedEventId: null,
-      events: [],
-      tasks: [],
-      categories: [
-        { 
-          id: 'work', 
-          name: 'Praca', 
-          color: 'bg-blue-500', 
-          text: 'text-blue-700',
-          icon: 'fas fa-briefcase',
-          count: 0
-        },
-        { 
-          id: 'personal', 
-          name: 'Osobiste', 
-          color: 'bg-green-500', 
-          text: 'text-green-700',
-          icon: 'fas fa-user',
-          count: 0
-        },
-        { 
-          id: 'family', 
-          name: 'Rodzina', 
-          color: 'bg-pink-500', 
-          text: 'text-pink-700',
-          icon: 'fas fa-home',
-          count: 0
-        },
-        { 
-          id: 'health', 
-          name: 'Zdrowie', 
-          color: 'bg-emerald-500', 
-          text: 'text-emerald-700',
-          icon: 'fas fa-heart',
-          count: 0
-        },
-        { 
-          id: 'education', 
-          name: 'Edukacja', 
-          color: 'bg-purple-500', 
-          text: 'text-purple-700',
-          icon: 'fas fa-graduation-cap',
-          count: 0
-        },
-        { 
-          id: 'meetings', 
-          name: 'Spotkania', 
-          color: 'bg-amber-500', 
-          text: 'text-amber-700',
-          icon: 'fas fa-users',
-          count: 0
-        },
-        { 
-          id: 'deadlines', 
-          name: 'Terminy', 
-          color: 'bg-red-500', 
-          text: 'text-red-700',
-          icon: 'fas fa-flag',
-          count: 0
-        }
-      ],
-      filters: new Set(['work', 'personal', 'family', 'health', 'education', 'meetings', 'deadlines']),
-      mood: null,
-      stats: {
-        productivity: 75,
-        eventsCompleted: 0,
-        tasksCompleted: 0,
-        timeSpent: 0
-      },
-      ui: {
-        dragState: null,
-        ghostElement: null,
-        isDragging: false,
-        resizeState: null,
-        selectedDate: null,
-        activeModal: null
-      }
-    };
-
-    // ---------------------------
-    // ADVANCED UTILITIES
-    // ---------------------------
-    const Utils = {
-      // Date utilities
-      formatDate: (date, format = 'short') => {
-        const d = new Date(date);
-        const options = {
-          short: { weekday: 'short', day: 'numeric', month: 'short' },
-          long: { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' },
-          month: { month: 'long', year: 'numeric' }
-        };
-        return d.toLocaleDateString('pl-PL', options[format] || options.short);
-      },
-
-      formatTime: (minutes, format = '24h') => {
-        const h = Math.floor(minutes / 60);
-        const m = minutes % 60;
-        if (format === '24h') {
-          return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-        } else {
-          const period = h >= 12 ? 'PM' : 'AM';
-          const hour12 = h % 12 || 12;
-          return `${hour12}:${m.toString().padStart(2, '0')} ${period}`;
-        }
-      },
-
-      timeToMinutes: (timeStr) => {
-        if (!timeStr) return 0;
-        const [h, m] = timeStr.split(':').map(Number);
-        return h * 60 + m;
-      },
-
-      minutesToTime: (minutes) => {
-        const h = Math.floor(minutes / 60);
-        const m = minutes % 60;
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-      },
-
-      // Event utilities
-      generateEventId: () => {
-        return 'evt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      },
-
-      generateTaskId: () => {
-        return 'tsk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      },
-
-      // Color utilities
-      getCategoryColor: (categoryId) => {
-        const cat = state.categories.find(c => c.id === categoryId);
-        return cat ? cat.color : 'bg-gray-500';
-      },
-
-      // Storage
-      saveToStorage: () => {
-        try {
-          const data = {
-            events: state.events,
-            tasks: state.tasks,
-            categories: state.categories,
-            mood: state.mood,
-            stats: state.stats,
-            filters: Array.from(state.filters),
-            config: CONFIG
-          };
-          localStorage.setItem('smartCalendarData', JSON.stringify(data));
-          document.getElementById('storageStatus').textContent = 'Zapisano: ' + new Date().toLocaleTimeString();
-        } catch (e) {
-          console.error('Błąd zapisu:', e);
-        }
-      },
-
-      loadFromStorage: () => {
-        try {
-          const saved = localStorage.getItem('smartCalendarData');
-          if (saved) {
-            const data = JSON.parse(saved);
-            state.events = data.events || [];
-            state.tasks = data.tasks || [];
-            state.categories = data.categories || state.categories;
-            state.mood = data.mood || null;
-            state.stats = data.stats || state.stats;
-            state.filters = new Set(data.filters || Array.from(state.filters));
-            Object.assign(CONFIG, data.config || {});
-            
-            // Update counts
-            state.categories.forEach(cat => {
-              cat.count = state.events.filter(e => e.category === cat.id).length;
-            });
-            
-            return true;
-          }
-        } catch (e) {
-          console.error('Błąd wczytywania:', e);
-        }
-        return false;
-      },
-
-      // Export/Import
-      exportData: (format = 'json') => {
-        const data = {
-          events: state.events,
-          tasks: state.tasks,
-          exportDate: new Date().toISOString()
-        };
-        
-        if (format === 'json') {
-          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `smartcalendar_export_${new Date().toISOString().split('T')[0]}.json`;
-          a.click();
-          URL.revokeObjectURL(url);
-        } else if (format === 'csv') {
-          // CSV export logic
-        }
-      },
-
-      // AI Suggestions
-      generateAISuggestions: () => {
-        const suggestions = [];
-        const now = new Date();
-        
-        // Check for conflicts
-        const todayEvents = state.events.filter(e => {
-          const eventDate = new Date(e.date);
-          return eventDate.toDateString() === now.toDateString();
-        });
-        
-        if (todayEvents.length > 5) {
-          suggestions.push({
-            type: 'warning',
-            icon: 'fas fa-exclamation-triangle',
-            message: 'Masz dużo wydarzeń dzisiaj. Rozważ przesunięcie niektórych.',
-            action: () => {
-              // Auto-reschedule logic
+    <script>
+        class AppHub {
+            constructor() {
+                this.apps = [];
+                this.currentCategory = 'all';
+                this.isDarkMode = false;
+                this.init();
             }
-          });
-        }
-        
-        // Check for breaks
-        const hasBreaks = todayEvents.some((e, i) => {
-          if (i === 0) return false;
-          const prevEnd = Utils.timeToMinutes(todayEvents[i-1].end);
-          const currStart = Utils.timeToMinutes(e.start);
-          return currStart - prevEnd < 15;
-        });
-        
-        if (!hasBreaks && todayEvents.length > 2) {
-          suggestions.push({
-            type: 'info',
-            icon: 'fas fa-coffee',
-            message: 'Dodaj przerwy między spotkaniami dla lepszej produktywności.',
-            action: null
-          });
-        }
-        
-        // Check for overdue tasks
-        const overdueTasks = state.tasks.filter(t => {
-          const taskDate = new Date(t.dueDate);
-          return taskDate < now && !t.completed;
-        });
-        
-        if (overdueTasks.length > 0) {
-          suggestions.push({
-            type: 'urgent',
-            icon: 'fas fa-clock',
-            message: `Masz ${overdueTasks.length} zaległych zadań.`,
-            action: () => {
-              // Show overdue tasks
-            }
-          });
-        }
-        
-        return suggestions;
-      },
 
-      // Conflict detection
-      detectConflicts: (event, excludeId = null) => {
-        return state.events.filter(e => {
-          if (e.id === excludeId) return false;
-          if (e.date !== event.date) return false;
-          
-          const e1Start = Utils.timeToMinutes(event.start);
-          const e1End = Utils.timeToMinutes(event.end);
-          const e2Start = Utils.timeToMinutes(e.start);
-          const e2End = Utils.timeToMinutes(e.end);
-          
-          return (e1Start < e2End && e1End > e2Start);
-        });
-      },
-
-      // Time utilities
-      snapToGrid: (minutes) => {
-        const interval = CONFIG.snapInterval;
-        return Math.round(minutes / interval) * interval;
-      },
-
-      // Weather integration (mock)
-      getWeather: async (date) => {
-        // In a real app, this would call a weather API
-        const conditions = ['☀️', '⛅', '🌧️', '❄️', '🌩️'];
-        const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
-        return {
-          condition: randomCondition,
-          temp: Math.floor(Math.random() * 15) + 10,
-          precipitation: Math.random() * 100
-        };
-      }
-    };
-
-    // ---------------------------
-    // EVENT SYSTEM
-    // ---------------------------
-    class EventSystem {
-      constructor() {
-        this.events = state.events;
-        this.listeners = new Map();
-      }
-
-      createEvent(data) {
-        const defaults = {
-          id: Utils.generateEventId(),
-          title: 'Nowe wydarzenie',
-          date: Utils.formatDate(new Date(), 'iso'),
-          start: '09:00',
-          end: '10:00',
-          category: 'work',
-          priority: 'medium',
-          description: '',
-          location: '',
-          attendees: [],
-          reminders: [],
-          color: null,
-          recurring: null,
-          tags: [],
-          metadata: {
-            created: new Date().toISOString(),
-            modified: new Date().toISOString(),
-            createdBy: 'user'
-          }
-        };
-
-        const event = { ...defaults, ...data };
-        
-        // Auto-calculate end time if not provided
-        if (!data.end && data.duration) {
-          const startMinutes = Utils.timeToMinutes(event.start);
-          event.end = Utils.minutesToTime(startMinutes + data.duration);
-        }
-
-        // Set color based on category
-        if (!event.color) {
-          const category = state.categories.find(c => c.id === event.category);
-          event.color = category ? category.color : 'bg-gray-500';
-        }
-
-        // Check for conflicts
-        const conflicts = Utils.detectConflicts(event);
-        if (conflicts.length > 0) {
-          event.conflicts = conflicts.map(c => c.id);
-          event.hasConflict = true;
-        }
-
-        this.events.push(event);
-        
-        // Update category count
-        const category = state.categories.find(c => c.id === event.category);
-        if (category) category.count++;
-
-        Utils.saveToStorage();
-        this.trigger('event:created', event);
-        
-        return event;
-      }
-
-      updateEvent(id, updates) {
-        const index = this.events.findIndex(e => e.id === id);
-        if (index === -1) return null;
-
-        const oldCategory = this.events[index].category;
-        this.events[index] = { ...this.events[index], ...updates };
-        this.events[index].metadata.modified = new Date().toISOString();
-
-        // Update category counts if category changed
-        if (updates.category && updates.category !== oldCategory) {
-          const oldCat = state.categories.find(c => c.id === oldCategory);
-          const newCat = state.categories.find(c => c.id === updates.category);
-          if (oldCat) oldCat.count--;
-          if (newCat) newCat.count++;
-        }
-
-        // Recheck conflicts
-        const conflicts = Utils.detectConflicts(this.events[index], id);
-        this.events[index].conflicts = conflicts.map(c => c.id);
-        this.events[index].hasConflict = conflicts.length > 0;
-
-        Utils.saveToStorage();
-        this.trigger('event:updated', this.events[index]);
-        
-        return this.events[index];
-      }
-
-      deleteEvent(id) {
-        const index = this.events.findIndex(e => e.id === id);
-        if (index === -1) return false;
-
-        const event = this.events[index];
-        const category = state.categories.find(c => c.id === event.category);
-        if (category) category.count--;
-
-        this.events.splice(index, 1);
-        
-        Utils.saveToStorage();
-        this.trigger('event:deleted', event);
-        
-        return true;
-      }
-
-      getEventsForDate(date) {
-        const dateStr = Utils.formatDate(date, 'iso');
-        return this.events.filter(e => e.date === dateStr && state.filters.has(e.category));
-      }
-
-      getEventsForRange(startDate, endDate) {
-        return this.events.filter(e => {
-          const eventDate = new Date(e.date);
-          return eventDate >= startDate && eventDate <= endDate && state.filters.has(e.category);
-        });
-      }
-
-      // Statistics
-      getStats() {
-        const now = new Date();
-        const todayStr = Utils.formatDate(now, 'iso');
-        
-        const todayEvents = this.events.filter(e => e.date === todayStr);
-        const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - now.getDay() + CONFIG.weekStart);
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
-        
-        const weekEvents = this.getEventsForRange(weekStart, weekEnd);
-        
-        const overdueEvents = this.events.filter(e => {
-          const eventDate = new Date(e.date);
-          return eventDate < now && !e.completed;
-        });
-
-        return {
-          today: todayEvents.length,
-          week: weekEvents.length,
-          overdue: overdueEvents.length,
-          total: this.events.length,
-          byCategory: state.categories.reduce((acc, cat) => {
-            acc[cat.id] = this.events.filter(e => e.category === cat.id).length;
-            return acc;
-          }, {})
-        };
-      }
-
-      // Event listeners
-      on(event, callback) {
-        if (!this.listeners.has(event)) {
-          this.listeners.set(event, []);
-        }
-        this.listeners.get(event).push(callback);
-      }
-
-      off(event, callback) {
-        if (!this.listeners.has(event)) return;
-        const index = this.listeners.get(event).indexOf(callback);
-        if (index > -1) {
-          this.listeners.get(event).splice(index, 1);
-        }
-      }
-
-      trigger(event, data) {
-        if (!this.listeners.has(event)) return;
-        this.listeners.get(event).forEach(callback => callback(data));
-      }
-    }
-
-    // ---------------------------
-    // TASK SYSTEM
-    // ---------------------------
-    class TaskSystem {
-      constructor() {
-        this.tasks = state.tasks;
-      }
-
-      createTask(data) {
-        const task = {
-          id: Utils.generateTaskId(),
-          title: data.title || 'Nowe zadanie',
-          description: data.description || '',
-          dueDate: data.dueDate || Utils.formatDate(new Date(), 'iso'),
-          priority: data.priority || 'medium',
-          completed: false,
-          category: data.category || 'work',
-          subtasks: data.subtasks || [],
-          tags: data.tags || [],
-          estimatedTime: data.estimatedTime || 30, // minutes
-          actualTime: 0,
-          reminders: data.reminders || [],
-          metadata: {
-            created: new Date().toISOString(),
-            modified: new Date().toISOString()
-          }
-        };
-
-        this.tasks.push(task);
-        Utils.saveToStorage();
-        return task;
-      }
-
-      getTasksForDate(date) {
-        const dateStr = Utils.formatDate(date, 'iso');
-        return this.tasks.filter(t => t.dueDate === dateStr && !t.completed);
-      }
-
-      toggleTask(id) {
-        const task = this.tasks.find(t => t.id === id);
-        if (task) {
-          task.completed = !task.completed;
-          task.metadata.modified = new Date().toISOString();
-          Utils.saveToStorage();
-        }
-        return task;
-      }
-    }
-
-    // ---------------------------
-    // RENDERING ENGINE
-    // ---------------------------
-    class RenderEngine {
-      constructor() {
-        this.root = document.getElementById('calendarRoot');
-        this.eventSystem = new EventSystem();
-        this.taskSystem = new TaskSystem();
-        this.currentView = state.view;
-      }
-
-      // View renderers
-      renderMonthView() {
-        const now = new Date();
-        const anchor = new Date(state.anchorDate);
-        const firstDay = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
-        const lastDay = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0);
-        
-        // Calculate start date (Monday of the week containing 1st day of month)
-        const startDate = new Date(firstDay);
-        const dayOfWeek = startDate.getDay();
-        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
-        startDate.setDate(startDate.getDate() + diff);
-
-        const grid = document.createElement('div');
-        grid.className = 'p-4';
-
-        // Header with days
-        const header = document.createElement('div');
-        header.className = 'grid grid-cols-7 gap-1 mb-2';
-        const days = ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb', 'Nd'];
-        days.forEach(day => {
-          const dayEl = document.createElement('div');
-          dayEl.className = 'text-center py-2 text-sm font-semibold text-slate-600';
-          dayEl.textContent = day;
-          header.appendChild(dayEl);
-        });
-        grid.appendChild(header);
-
-        // Days grid
-        const daysGrid = document.createElement('div');
-        daysGrid.className = 'grid grid-cols-7 gap-1';
-
-        for (let i = 0; i < 42; i++) {
-          const currentDate = new Date(startDate);
-          currentDate.setDate(startDate.getDate() + i);
-          
-          const isCurrentMonth = currentDate.getMonth() === anchor.getMonth();
-          const isToday = currentDate.toDateString() === now.toDateString();
-          const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
-          
-          const dayEl = document.createElement('div');
-          dayEl.className = `month-cell-enhanced rounded-lg p-2 border border-slate-200 ${
-            isCurrentMonth ? 'bg-white' : 'bg-slate-50'
-          } ${isToday ? 'today' : ''} ${isWeekend ? 'weekend' : ''}`;
-          
-          // Day number
-          const dayNumber = document.createElement('div');
-          dayNumber.className = `text-sm font-semibold mb-1 ${
-            isToday ? 'text-blue-600' : isCurrentMonth ? 'text-slate-800' : 'text-slate-400'
-          }`;
-          dayNumber.textContent = currentDate.getDate();
-          dayEl.appendChild(dayNumber);
-
-          // Events for this day
-          const dateStr = Utils.formatDate(currentDate, 'iso');
-          const dayEvents = state.events.filter(e => 
-            e.date === dateStr && state.filters.has(e.category)
-          ).slice(0, 3); // Limit to 3 events per day
-
-          const eventsContainer = document.createElement('div');
-          eventsContainer.className = 'space-y-1';
-          
-          dayEvents.forEach(event => {
-            const eventEl = document.createElement('div');
-            eventEl.className = `text-xs p-1 rounded truncate ${Utils.getCategoryColor(event.category)} text-white cursor-pointer`;
-            eventEl.textContent = `${event.start} ${event.title}`;
-            eventEl.title = `${event.title} (${event.start}-${event.end})`;
-            eventEl.addEventListener('click', (e) => {
-              e.stopPropagation();
-              this.showEventDetails(event.id);
-            });
-            eventsContainer.appendChild(eventEl);
-          });
-
-          if (dayEvents.length > 3) {
-            const moreEl = document.createElement('div');
-            moreEl.className = 'text-xs text-slate-500 text-center mt-1';
-            moreEl.textContent = `+${dayEvents.length - 3} więcej`;
-            eventsContainer.appendChild(moreEl);
-          }
-
-          dayEl.appendChild(eventsContainer);
-
-          // Double click to switch to day view
-          dayEl.addEventListener('dblclick', () => {
-            state.anchorDate = currentDate;
-            state.view = 'day';
-            this.render();
-          });
-
-          daysGrid.appendChild(dayEl);
-        }
-
-        grid.appendChild(daysGrid);
-        this.root.innerHTML = '';
-        this.root.appendChild(grid);
-      }
-
-      renderWeekView() {
-        const now = new Date();
-        const anchor = new Date(state.anchorDate);
-        
-        // Find Monday of the current week
-        const startDate = new Date(anchor);
-        const dayOfWeek = startDate.getDay();
-        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        startDate.setDate(startDate.getDate() + diff);
-        
-        const days = [];
-        for (let i = 0; i < 7; i++) {
-          const day = new Date(startDate);
-          day.setDate(startDate.getDate() + i);
-          days.push(day);
-        }
-
-        const container = document.createElement('div');
-        container.className = 'flex flex-col h-full';
-
-        // Header with days
-        const header = document.createElement('div');
-        header.className = 'grid grid-cols-8 border-b border-slate-200';
-        header.style.gridTemplateColumns = 'var(--cal-gutter) repeat(7, 1fr)';
-
-        // Time column header
-        const timeHeader = document.createElement('div');
-        timeHeader.className = 'p-3 bg-slate-50 border-r text-sm font-semibold text-slate-600';
-        timeHeader.textContent = 'Godzina';
-        header.appendChild(timeHeader);
-
-        // Day headers
-        days.forEach((day, i) => {
-          const isToday = day.toDateString() === now.toDateString();
-          const dayEl = document.createElement('div');
-          dayEl.className = `p-3 border-r text-center ${isToday ? 'bg-blue-50' : ''}`;
-          
-          const dayName = document.createElement('div');
-          dayName.className = 'text-sm font-semibold text-slate-600';
-          dayName.textContent = ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb', 'Nd'][i];
-          
-          const dateNum = document.createElement('div');
-          dateNum.className = `text-lg font-bold mt-1 ${isToday ? 'text-blue-600' : 'text-slate-800'}`;
-          dateNum.textContent = day.getDate();
-          
-          const month = document.createElement('div');
-          month.className = 'text-xs text-slate-500';
-          month.textContent = day.toLocaleDateString('pl-PL', { month: 'short' });
-          
-          dayEl.appendChild(dayName);
-          dayEl.appendChild(dateNum);
-          dayEl.appendChild(month);
-          header.appendChild(dayEl);
-        });
-
-        container.appendChild(header);
-
-        // Time grid
-        const timeGrid = document.createElement('div');
-        timeGrid.className = 'flex-1 overflow-auto custom-scrollbar';
-        timeGrid.style.height = 'calc(100vh - 300px)';
-
-        const grid = document.createElement('div');
-        grid.className = 'grid relative';
-        grid.style.gridTemplateColumns = 'var(--cal-gutter) repeat(7, 1fr)';
-
-        // Time column
-        const timeColumn = document.createElement('div');
-        timeColumn.className = 'bg-slate-50 border-r';
-        
-        for (let h = CONFIG.startHour; h <= CONFIG.endHour; h++) {
-          for (let q = 0; q < 4; q++) {
-            const timeSlot = document.createElement('div');
-            timeSlot.className = 'border-b border-slate-200 relative';
-            timeSlot.style.height = `calc(var(--cal-hour-height) / 4)`;
-            
-            if (q === 0) {
-              const timeLabel = document.createElement('div');
-              timeLabel.className = 'absolute top-0 left-0 right-0 text-xs text-slate-500 text-center';
-              timeLabel.style.transform = 'translateY(-50%)';
-              timeLabel.textContent = `${h}:00`;
-              timeSlot.appendChild(timeLabel);
-            }
-            
-            timeColumn.appendChild(timeSlot);
-          }
-        }
-        grid.appendChild(timeColumn);
-
-        // Day columns
-        days.forEach(day => {
-          const dayColumn = document.createElement('div');
-          dayColumn.className = 'relative border-r';
-          dayColumn.dataset.date = Utils.formatDate(day, 'iso');
-          
-          // Add time slots
-          for (let h = CONFIG.startHour; h <= CONFIG.endHour; h++) {
-            for (let q = 0; q < 4; q++) {
-              const timeSlot = document.createElement('div');
-              timeSlot.className = 'border-b border-slate-200';
-              timeSlot.style.height = `calc(var(--cal-hour-height) / 4)`;
-              timeSlot.dataset.time = h * 60 + q * 15;
-              
-              // Click to create event
-              timeSlot.addEventListener('dblclick', (e) => {
-                const rect = timeSlot.getBoundingClientRect();
-                const minutes = parseInt(timeSlot.dataset.time);
-                this.createEventAt(day, minutes);
-              });
-              
-              dayColumn.appendChild(timeSlot);
-            }
-          }
-          
-          // Add events
-          const dateStr = Utils.formatDate(day, 'iso');
-          const dayEvents = state.events.filter(e => 
-            e.date === dateStr && state.filters.has(e.category)
-          );
-          
-          dayEvents.forEach(event => {
-            const eventEl = this.createEventElement(event);
-            dayColumn.appendChild(eventEl);
-          });
-          
-          // Current time indicator for today
-          if (day.toDateString() === now.toDateString()) {
-            const currentTime = new Date();
-            const minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-            const top = (minutes - CONFIG.startHour * 60) * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height')) / 60);
-            
-            const nowLine = document.createElement('div');
-            nowLine.className = 'timeline-now';
-            nowLine.style.top = `${top}px`;
-            dayColumn.appendChild(nowLine);
-          }
-          
-          grid.appendChild(dayColumn);
-        });
-
-        timeGrid.appendChild(grid);
-        container.appendChild(timeGrid);
-        
-        this.root.innerHTML = '';
-        this.root.appendChild(container);
-      }
-
-      renderDayView() {
-        const now = new Date();
-        const day = new Date(state.anchorDate);
-        const isToday = day.toDateString() === now.toDateString();
-        
-        const container = document.createElement('div');
-        container.className = 'flex flex-col h-full';
-
-        // Header
-        const header = document.createElement('div');
-        header.className = 'p-4 border-b border-slate-200';
-        
-        const dateStr = day.toLocaleDateString('pl-PL', {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        });
-        
-        header.innerHTML = `
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-2xl font-bold text-slate-800">${dateStr}</h2>
-              <div class="text-slate-600 mt-1">${isToday ? 'Dzisiaj' : ''}</div>
-            </div>
-            <div class="flex items-center gap-2">
-              <button class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium">
-                <i class="fas fa-plus mr-2"></i>Dodaj wydarzenie
-              </button>
-              <button class="px-4 py-2 border border-slate-300 rounded-lg">
-                <i class="fas fa-print mr-2"></i>Drukuj
-              </button>
-            </div>
-          </div>
-        `;
-        
-        container.appendChild(header);
-
-        // Time grid
-        const timeGrid = document.createElement('div');
-        timeGrid.className = 'flex-1 overflow-auto custom-scrollbar';
-        timeGrid.style.height = 'calc(100vh - 200px)';
-
-        const grid = document.createElement('div');
-        grid.className = 'grid grid-cols-2 relative';
-        grid.style.gridTemplateColumns = '100px 1fr';
-
-        // Time column
-        const timeColumn = document.createElement('div');
-        timeColumn.className = 'bg-slate-50 border-r';
-        
-        for (let h = CONFIG.startHour; h <= CONFIG.endHour; h++) {
-          const hourSlot = document.createElement('div');
-          hourSlot.className = 'border-b border-slate-200 relative';
-          hourSlot.style.height = 'var(--cal-hour-height)';
-          
-          const timeLabel = document.createElement('div');
-          timeLabel.className = 'absolute top-0 left-0 right-0 text-sm text-slate-600 text-center';
-          timeLabel.style.transform = 'translateY(-50%)';
-          timeLabel.textContent = `${h}:00`;
-          hourSlot.appendChild(timeLabel);
-          
-          // Quarter hour markers
-          for (let q = 1; q < 4; q++) {
-            const quarterMarker = document.createElement('div');
-            quarterMarker.className = 'absolute left-0 right-0 border-t border-slate-100';
-            quarterMarker.style.top = `${q * 25}%`;
-            hourSlot.appendChild(quarterMarker);
-          }
-          
-          timeColumn.appendChild(hourSlot);
-        }
-        grid.appendChild(timeColumn);
-
-        // Events column
-        const eventsColumn = document.createElement('div');
-        eventsColumn.className = 'relative';
-        eventsColumn.style.height = `calc(var(--cal-hour-height) * ${CONFIG.endHour - CONFIG.startHour})`;
-        
-        // Hour slots for clicking
-        for (let h = CONFIG.startHour; h < CONFIG.endHour; h++) {
-          const hourSlot = document.createElement('div');
-          hourSlot.className = 'border-b border-slate-200 cursor-pointer hover:bg-slate-50';
-          hourSlot.style.height = 'var(--cal-hour-height)';
-          hourSlot.dataset.hour = h;
-          
-          hourSlot.addEventListener('dblclick', (e) => {
-            const rect = hourSlot.getBoundingClientRect();
-            const clickY = e.clientY - rect.top;
-            const minutes = h * 60 + Math.floor(clickY / (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height')) / 60));
-            this.createEventAt(day, minutes);
-          });
-          
-          eventsColumn.appendChild(hourSlot);
-        }
-
-        // Add events
-        const dateStr = Utils.formatDate(day, 'iso');
-        const dayEvents = state.events.filter(e => 
-          e.date === dateStr && state.filters.has(e.category)
-        );
-        
-        dayEvents.forEach(event => {
-          const eventEl = this.createEventElement(event);
-          eventsColumn.appendChild(eventEl);
-        });
-
-        // Current time indicator
-        if (isToday) {
-          const currentTime = new Date();
-          const minutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-          const top = (minutes - CONFIG.startHour * 60) * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height')) / 60);
-          
-          const nowLine = document.createElement('div');
-          nowLine.className = 'timeline-now';
-          nowLine.style.top = `${top}px`;
-          eventsColumn.appendChild(nowLine);
-        }
-
-        grid.appendChild(eventsColumn);
-        timeGrid.appendChild(grid);
-        container.appendChild(timeGrid);
-        
-        this.root.innerHTML = '';
-        this.root.appendChild(container);
-      }
-
-      renderYearView() {
-        const now = new Date();
-        const anchor = new Date(state.anchorDate);
-        
-        const container = document.createElement('div');
-        container.className = 'p-6';
-        
-        // Year header
-        const header = document.createElement('div');
-        header.className = 'mb-6';
-        header.innerHTML = `<h2 class="text-3xl font-bold text-slate-800">${anchor.getFullYear()}</h2>`;
-        container.appendChild(header);
-        
-        // Months grid
-        const monthsGrid = document.createElement('div');
-        monthsGrid.className = 'grid grid-cols-3 gap-6';
-        
-        for (let m = 0; m < 12; m++) {
-          const monthDate = new Date(anchor.getFullYear(), m, 1);
-          const monthEl = this.renderMiniMonth(monthDate);
-          monthsGrid.appendChild(monthEl);
-        }
-        
-        container.appendChild(monthsGrid);
-        this.root.innerHTML = '';
-        this.root.appendChild(container);
-      }
-
-      renderScheduleView() {
-        const container = document.createElement('div');
-        container.className = 'p-6';
-        
-        // Upcoming events
-        const upcoming = document.createElement('div');
-        upcoming.className = 'mb-8';
-        upcoming.innerHTML = `
-          <h3 class="text-xl font-bold text-slate-800 mb-4">Nadchodzące wydarzenia</h3>
-          <div id="upcomingEvents" class="space-y-3"></div>
-        `;
-        container.appendChild(upcoming);
-        
-        // Tasks
-        const tasks = document.createElement('div');
-        tasks.innerHTML = `
-          <h3 class="text-xl font-bold text-slate-800 mb-4">Zadania do wykonania</h3>
-          <div id="scheduleTasks" class="space-y-3"></div>
-        `;
-        container.appendChild(tasks);
-        
-        this.root.innerHTML = '';
-        this.root.appendChild(container);
-        
-        // Populate with data
-        this.renderUpcomingEvents();
-        this.renderScheduleTasks();
-      }
-
-      // Helper methods
-      createEventElement(event) {
-        const startMin = Utils.timeToMinutes(event.start);
-        const endMin = Utils.timeToMinutes(event.end);
-        const duration = endMin - startMin;
-        
-        const top = (startMin - CONFIG.startHour * 60) * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height')) / 60);
-        const height = duration * (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height')) / 60);
-        
-        const eventEl = document.createElement('div');
-        eventEl.className = `event-card absolute left-1 right-1 rounded-lg p-3 cursor-move shadow-sm ${
-          event.hasConflict ? 'border-2 border-red-400' : ''
-        } priority-${event.priority || 'medium'}`;
-        eventEl.style.top = `${top}px`;
-        eventEl.style.height = `${Math.max(height, 30)}px`;
-        eventEl.style.backgroundColor = this.getEventColor(event);
-        eventEl.dataset.eventId = event.id;
-        
-        // Add progress bar for long events
-        if (duration > 120) { // More than 2 hours
-          const progressEl = document.createElement('div');
-          progressEl.className = 'event-progress';
-          const progressBar = document.createElement('div');
-          progressBar.className = 'event-progress-bar';
-          progressBar.style.width = '0%';
-          progressEl.appendChild(progressBar);
-          eventEl.appendChild(progressEl);
-          
-          // Simulate progress (in real app, this would be based on actual progress)
-          setTimeout(() => {
-            progressBar.style.width = '30%';
-          }, 100);
-        }
-        
-        // Event content
-        eventEl.innerHTML = `
-          <div class="font-semibold text-sm truncate mb-1">${event.title}</div>
-          <div class="text-xs opacity-90">${event.start} - ${event.end}</div>
-          ${event.location ? `<div class="text-xs mt-1"><i class="fas fa-map-marker-alt mr-1"></i>${event.location}</div>` : ''}
-          ${event.attendees && event.attendees.length > 0 ? 
-            `<div class="text-xs mt-1"><i class="fas fa-users mr-1"></i>${event.attendees.length}</div>` : ''}
-        `;
-        
-        // Add event listeners
-        eventEl.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.showEventDetails(event.id);
-        });
-        
-        // Drag and drop
-        eventEl.addEventListener('mousedown', (e) => this.startEventDrag(e, eventEl));
-        
-        return eventEl;
-      }
-
-      getEventColor(event) {
-        // Return CSS color based on event properties
-        const colors = {
-          work: '#3b82f6',
-          personal: '#10b981',
-          family: '#ec4899',
-          health: '#10b981',
-          education: '#8b5cf6',
-          meetings: '#f59e0b',
-          deadlines: '#ef4444'
-        };
-        
-        return colors[event.category] || '#6b7280';
-      }
-
-      renderMiniMonth(date) {
-        const monthEl = document.createElement('div');
-        monthEl.className = 'bg-white border border-slate-200 rounded-xl p-4';
-        
-        const monthName = date.toLocaleDateString('pl-PL', { month: 'long' });
-        monthEl.innerHTML = `
-          <h4 class="font-bold text-lg mb-3">${monthName} ${date.getFullYear()}</h4>
-          <div class="grid grid-cols-7 gap-1 text-center">
-            <div class="text-xs text-slate-500">Pn</div>
-            <div class="text-xs text-slate-500">Wt</div>
-            <div class="text-xs text-slate-500">Śr</div>
-            <div class="text-xs text-slate-500">Czw</div>
-            <div class="text-xs text-slate-500">Pt</div>
-            <div class="text-xs text-slate-500">Sb</div>
-            <div class="text-xs text-slate-500">Nd</div>
-          </div>
-          <div id="monthDays-${date.getMonth()}" class="grid grid-cols-7 gap-1 mt-2"></div>
-        `;
-        
-        // Populate days (simplified)
-        const daysContainer = monthEl.querySelector(`#monthDays-${date.getMonth()}`);
-        const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-        
-        // Add empty cells for days before 1st
-        const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-        const offset = firstDay === 0 ? 6 : firstDay - 1; // Adjust for Monday start
-        
-        for (let i = 0; i < offset; i++) {
-          const empty = document.createElement('div');
-          empty.className = 'h-8';
-          daysContainer.appendChild(empty);
-        }
-        
-        // Add day cells
-        const now = new Date();
-        for (let day = 1; day <= daysInMonth; day++) {
-          const dayEl = document.createElement('div');
-          const currentDate = new Date(date.getFullYear(), date.getMonth(), day);
-          const isToday = currentDate.toDateString() === now.toDateString();
-          
-          dayEl.className = `h-8 flex items-center justify-center rounded text-sm cursor-pointer ${
-            isToday ? 'bg-blue-600 text-white' : 'hover:bg-slate-100'
-          }`;
-          dayEl.textContent = day;
-          dayEl.title = `${day} ${monthName}`;
-          
-          dayEl.addEventListener('click', () => {
-            state.anchorDate = currentDate;
-            state.view = 'day';
-            this.render();
-          });
-          
-          daysContainer.appendChild(dayEl);
-        }
-        
-        return monthEl;
-      }
-
-      renderUpcomingEvents() {
-        const container = document.getElementById('upcomingEvents');
-        if (!container) return;
-        
-        const now = new Date();
-        const upcoming = state.events
-          .filter(e => new Date(e.date) >= now)
-          .sort((a, b) => new Date(a.date) - new Date(b.date))
-          .slice(0, 10);
-        
-        container.innerHTML = '';
-        
-        if (upcoming.length === 0) {
-          container.innerHTML = '<div class="text-slate-500 text-center py-4">Brak nadchodzących wydarzeń</div>';
-          return;
-        }
-        
-        upcoming.forEach(event => {
-          const eventEl = document.createElement('div');
-          eventEl.className = 'p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer';
-          eventEl.addEventListener('click', () => this.showEventDetails(event.id));
-          
-          const date = new Date(event.date);
-          const dateStr = date.toLocaleDateString('pl-PL', {
-            weekday: 'short',
-            day: 'numeric',
-            month: 'short'
-          });
-          
-          eventEl.innerHTML = `
-            <div class="flex items-center justify-between">
-              <div class="font-medium">${event.title}</div>
-              <div class="text-sm text-slate-600">${dateStr}</div>
-            </div>
-            <div class="text-sm text-slate-500 mt-1">${event.start} - ${event.end}</div>
-            <div class="flex items-center gap-2 mt-2">
-              <span class="px-2 py-1 text-xs rounded-full ${Utils.getCategoryColor(event.category)} text-white">
-                ${state.categories.find(c => c.id === event.category)?.name || event.category}
-              </span>
-              ${event.location ? `<span class="text-xs text-slate-500"><i class="fas fa-map-marker-alt mr-1"></i>${event.location}</span>` : ''}
-            </div>
-          `;
-          
-          container.appendChild(eventEl);
-        });
-      }
-
-      renderScheduleTasks() {
-        const container = document.getElementById('scheduleTasks');
-        if (!container) return;
-        
-        const tasks = state.tasks
-          .filter(t => !t.completed)
-          .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-          .slice(0, 10);
-        
-        container.innerHTML = '';
-        
-        if (tasks.length === 0) {
-          container.innerHTML = '<div class="text-slate-500 text-center py-4">Brak zadań</div>';
-          return;
-        }
-        
-        tasks.forEach(task => {
-          const taskEl = document.createElement('div');
-          taskEl.className = 'flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50';
-          
-          const date = new Date(task.dueDate);
-          const dateStr = date.toLocaleDateString('pl-PL', {
-            day: 'numeric',
-            month: 'short'
-          });
-          
-          taskEl.innerHTML = `
-            <div class="flex-1">
-              <div class="flex items-center gap-3">
-                <input type="checkbox" class="task-checkbox" data-task-id="${task.id}" ${task.completed ? 'checked' : ''}>
-                <div>
-                  <div class="font-medium">${task.title}</div>
-                  <div class="text-sm text-slate-500">Termin: ${dateStr}</div>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-700">
-                ${task.priority === 'high' ? 'Wysoki' : task.priority === 'medium' ? 'Średni' : 'Niski'} priorytet
-              </span>
-              <button class="text-slate-400 hover:text-slate-600">
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-            </div>
-          `;
-          
-          const checkbox = taskEl.querySelector('.task-checkbox');
-          checkbox.addEventListener('change', () => {
-            this.taskSystem.toggleTask(task.id);
-            this.renderScheduleTasks();
-          });
-          
-          container.appendChild(taskEl);
-        });
-      }
-
-      // Event handlers
-      showEventDetails(eventId) {
-        const event = state.events.find(e => e.id === eventId);
-        if (!event) return;
-        
-        state.selectedEventId = eventId;
-        
-        // Show modal with event details
-        const modal = document.getElementById('eventModal');
-        modal.classList.remove('hidden');
-        
-        // Populate modal content
-        const modalContent = modal.querySelector('.absolute > div > div') || modal;
-        modalContent.innerHTML = `
-          <div class="p-6">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-2xl font-bold">${event.title}</h3>
-              <button id="closeEventModal" class="text-2xl text-slate-400 hover:text-slate-600">&times;</button>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-6">
-              <div>
-                <div class="mb-4">
-                  <label class="block text-sm font-medium text-slate-700 mb-1">Data</label>
-                  <div class="p-3 bg-slate-50 rounded-lg">${Utils.formatDate(event.date, 'long')}</div>
-                </div>
+            async init() {
+                // Theme
+                this.initTheme();
                 
-                <div class="mb-4">
-                  <label class="block text-sm font-medium text-slate-700 mb-1">Czas</label>
-                  <div class="p-3 bg-slate-50 rounded-lg">${event.start} - ${event.end}</div>
-                </div>
+                // Load apps
+                await this.loadApps();
                 
-                <div class="mb-4">
-                  <label class="block text-sm font-medium text-slate-700 mb-1">Kategoria</label>
-                  <div class="p-3 rounded-lg ${Utils.getCategoryColor(event.category)} text-white">
-                    ${state.categories.find(c => c.id === event.category)?.name || event.category}
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <div class="mb-4">
-                  <label class="block text-sm font-medium text-slate-700 mb-1">Priorytet</label>
-                  <div class="p-3 bg-slate-50 rounded-lg capitalize">${event.priority}</div>
-                </div>
+                // Event listeners
+                this.setupEventListeners();
                 
-                ${event.location ? `
-                  <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Lokalizacja</label>
-                    <div class="p-3 bg-slate-50 rounded-lg">${event.location}</div>
-                  </div>
-                ` : ''}
+                // Initial render
+                this.renderApps();
+            }
+
+            async loadApps() {
+                const loadingIndicator = document.getElementById('loadingIndicator');
+                const appsGrid = document.getElementById('appsGrid');
+                const errorMessage = document.getElementById('errorMessage');
+
+                try {
+                    // Mock apps data
+                    this.apps = [
+                        {
+                            id: 1,
+                            name: "TaskMaster Pro",
+                            category: "produktywnosc",
+                            description: "Zaawansowane zarządzanie projektami z AI",
+                            rating: 4.9,
+                            users: "500K+",
+                            features: ["AI Planning", "Team Collaboration", "Time Tracking"],
+                            color: "indigo"
+                        },
+                        {
+                            id: 2,
+                            name: "BizConnect",
+                            category: "biznes",
+                            description: "Platforma networkingowa dla profesjonalistów",
+                            rating: 4.7,
+                            users: "250K+",
+                            features: ["Smart Matching", "Video Calls", "CRM Integration"],
+                            color: "blue"
+                        },
+                        {
+                            id: 3,
+                            name: "GameZone",
+                            category: "rozrywka",
+                            description: "Curated collection of premium mobile games",
+                            rating: 4.8,
+                            users: "2M+",
+                            features: ["Exclusive Titles", "Cloud Saves", "Tournaments"],
+                            color: "purple"
+                        },
+                        {
+                            id: 4,
+                            name: "SmartNote",
+                            category: "produktywnosc",
+                            description: "Inteligentne notatki z analizą kontekstu",
+                            rating: 4.6,
+                            users: "750K+",
+                            features: ["Voice Notes", "OCR Scanning", "Smart Search"],
+                            color: "green"
+                        },
+                        {
+                            id: 5,
+                            name: "FinanceTrack",
+                            category: "biznes",
+                            description: "Kompleksowe zarządzanie finansami firmy",
+                            rating: 4.8,
+                            users: "1M+",
+                            features: ["Real-time Reports", "Invoice Automation", "Tax Prep"],
+                            color: "emerald"
+                        },
+                        {
+                            id: 6,
+                            name: "MediaStream",
+                            category: "rozrywka",
+                            description: "4K streaming platform with original content",
+                            rating: 4.5,
+                            users: "3M+",
+                            features: ["4K/HDR", "Offline Mode", "Family Sharing"],
+                            color: "red"
+                        },
+                        {
+                            id: 7,
+                            name: "CloudSync",
+                            category: "produktywnosc",
+                            description: "Enterprise cloud synchronization solution",
+                            rating: 4.7,
+                            users: "1.5M+",
+                            features: ["End-to-End Encryption", "Version Control", "Team Folders"],
+                            color: "cyan"
+                        },
+                        {
+                            id: 8,
+                            name: "SalesPro",
+                            category: "biznes",
+                            description: "AI-powered sales optimization platform",
+                            rating: 4.9,
+                            users: "300K+",
+                            features: ["Predictive Analytics", "Lead Scoring", "Auto Follow-ups"],
+                            color: "orange"
+                        },
+                        {
+                            id: 9,
+                            name: "FitQuest",
+                            category: "rozrywka",
+                            description: "Gamified fitness with virtual coaching",
+                            rating: 4.6,
+                            users: "800K+",
+                            features: ["AR Workouts", "Community Challenges", "Progress Tracking"],
+                            color: "pink"
+                        }
+                    ];
+
+                    // Simulate network delay
+                    await new Promise(resolve => setTimeout(resolve, 800));
+
+                    loadingIndicator.classList.add('hidden');
+                    appsGrid.classList.remove('opacity-0');
+                    appsGrid.classList.add('opacity-100');
+
+                } catch (error) {
+                    console.error('Failed to load apps:', error);
+                    loadingIndicator.classList.add('hidden');
+                    errorMessage.classList.remove('hidden');
+                }
+            }
+
+            initTheme() {
+                this.isDarkMode = localStorage.getItem('darkMode') === 'true';
                 
-                ${event.description ? `
-                  <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Opis</label>
-                    <div class="p-3 bg-slate-50 rounded-lg">${event.description}</div>
-                  </div>
-                ` : ''}
-              </div>
-            </div>
+                if (this.isDarkMode) {
+                    document.documentElement.classList.add('dark');
+                    document.getElementById('sunIcon').classList.add('hidden');
+                    document.getElementById('moonIcon').classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.getElementById('sunIcon').classList.remove('hidden');
+                    document.getElementById('moonIcon').classList.add('hidden');
+                }
+            }
+
+            toggleTheme() {
+                this.isDarkMode = !this.isDarkMode;
+                
+                if (this.isDarkMode) {
+                    document.documentElement.classList.add('dark');
+                    document.getElementById('sunIcon').classList.add('hidden');
+                    document.getElementById('moonIcon').classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.getElementById('sunIcon').classList.remove('hidden');
+                    document.getElementById('moonIcon').classList.add('hidden');
+                }
+                
+                localStorage.setItem('darkMode', this.isDarkMode);
+            }
+
+            setupEventListeners() {
+                // Theme toggle
+                document.getElementById('themeToggle').addEventListener('click', () => {
+                    this.toggleTheme();
+                });
+
+                // Explore button
+                document.getElementById('exploreBtn').addEventListener('click', () => {
+                    document.getElementById('aplikacje').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+
+                // Demo button
+                document.getElementById('demoBtn').addEventListener('click', () => {
+                    document.getElementById('demoModal').classList.remove('hidden');
+                    document.getElementById('demoModal').classList.add('flex');
+                });
+
+                // Close demo modal
+                document.getElementById('closeDemoModal').addEventListener('click', () => {
+                    document.getElementById('demoModal').classList.add('hidden');
+                    document.getElementById('demoModal').classList.remove('flex');
+                });
+
+                // Category buttons
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const category = e.currentTarget.dataset.category;
+                        this.filterApps(category);
+                        
+                        // Update active state with animation
+                        document.querySelectorAll('.category-btn').forEach(b => {
+                            b.classList.remove('ring-2', 'ring-indigo-500', 'border-indigo-500');
+                        });
+                        
+                        e.currentTarget.classList.add('ring-2', 'ring-indigo-500', 'border-indigo-500');
+                    });
+                });
+
+                // Retry button
+                document.getElementById('retryBtn')?.addEventListener('click', () => {
+                    this.loadApps();
+                });
+
+                // Contact form
+                document.getElementById('contactForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleFormSubmit(e);
+                });
+
+                // Input validation
+                ['name', 'email', 'message'].forEach(field => {
+                    const input = document.getElementById(field);
+                    input.addEventListener('blur', () => this.validateField(field));
+                });
+
+                // Close modal on background click
+                document.getElementById('demoModal').addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) {
+                        e.currentTarget.classList.add('hidden');
+                        e.currentTarget.classList.remove('flex');
+                    }
+                });
+            }
+
+            async filterApps(category) {
+                this.currentCategory = category;
+                const appsGrid = document.getElementById('appsGrid');
+                
+                // Fade out
+                appsGrid.classList.add('opacity-0');
+                
+                // Wait for fade out
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Render new apps
+                this.renderApps();
+                
+                // Fade in
+                setTimeout(() => {
+                    appsGrid.classList.remove('opacity-0');
+                    appsGrid.classList.add('opacity-100');
+                }, 10);
+            }
+
+            renderApps() {
+                const appsGrid = document.getElementById('appsGrid');
+                const filteredApps = this.currentCategory === 'all' 
+                    ? this.apps 
+                    : this.apps.filter(app => app.category === this.currentCategory);
+
+                appsGrid.innerHTML = filteredApps.map((app, index) => {
+                    const icon = '📱';
+                    const colorClass = `bg-indigo-100 dark:bg-indigo-900`;
+                    const textColorClass = `text-indigo-600 dark:text-indigo-400`;
+
+                    return `
+                        <div class="app-card" style="animation-delay: ${index * 0.1}s">
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden glow-hover h-full flex flex-col">
+                                <div class="p-8">
+                                    <div class="flex justify-between items-start mb-6">
+                                        <div class="p-4 ${colorClass} rounded-xl">
+                                            <span class="text-3xl">${icon}</span>
+                                        </div>
+                                        <span class="text-yellow-500 font-bold text-lg">★ ${app.rating}</span>
+                                    </div>
+                                    
+                                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-3">${app.name}</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 mb-6">${app.description}</p>
+                                    
+                                    <div class="mb-6">
+                                        <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-3">Kluczowe funkcje:</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            ${app.features?.map(feature => `
+                                                <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">
+                                                    ${feature}
+                                                </span>
+                                            `).join('') || ''}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-auto p-6 pt-0">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <span class="text-gray-500 dark:text-gray-400 text-sm">
+                                            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                                            </svg>
+                                            ${app.users}
+                                        </span>
+                                        <span class="text-sm ${textColorClass} font-medium">
+                                            ${app.category === 'biznes' ? 'Biznes' : 
+                                              app.category === 'produktywnosc' ? 'Produktywność' : 'Rozrywka'}
+                                        </span>
+                                    </div>
+                                    
+                                    <button class="download-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition-all relative overflow-hidden group" data-app-id="${app.id}">
+                                        <span class="relative z-10">Pobierz teraz</span>
+                                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Add download handlers
+                this.setupDownloadButtons();
+            }
+
+            setupDownloadButtons() {
+                document.querySelectorAll('.download-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const appId = e.currentTarget.dataset.appId;
+                        const button = e.currentTarget;
+                        const originalHTML = button.innerHTML;
+                        
+                        // Create progress bar
+                        const progressBar = document.createElement('div');
+                        progressBar.className = 'download-progress';
+                        button.appendChild(progressBar);
+                        
+                        // Disable button and show loading
+                        button.disabled = true;
+                        button.innerHTML = `<span class="relative z-10">Pobieranie...</span>`;
+                        button.appendChild(progressBar);
+                        
+                        // Simulate download progress
+                        let progress = 0;
+                        const interval = setInterval(() => {
+                            progress += Math.random() * 15;
+                            progressBar.style.width = `${Math.min(progress, 100)}%`;
+                            
+                            if (progress >= 100) {
+                                clearInterval(interval);
+                                
+                                // Success animation
+                                setTimeout(() => {
+                                    button.innerHTML = `<span class="relative z-10">✓ Pobrano!</span>`;
+                                    button.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                                    button.classList.add('bg-green-600', 'hover:bg-green-700');
+                                    
+                                    // Confetti effect
+                                    confetti({
+                                        particleCount: 100,
+                                        spread: 70,
+                                        origin: { y: 0.6 }
+                                    });
+                                    
+                                    // Revert after 3 seconds
+                                    setTimeout(() => {
+                                        button.innerHTML = originalHTML;
+                                        button.classList.remove('bg-green-600', 'hover:bg-green-700');
+                                        button.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                                        button.disabled = false;
+                                        progressBar.remove();
+                                    }, 3000);
+                                }, 500);
+                            }
+                        }, 100);
+                    });
+                });
+            }
+
+            validateField(fieldName) {
+                const field = document.getElementById(fieldName);
+                const errorElement = document.getElementById(`${fieldName}Error`);
+                
+                let isValid = true;
+                let message = '';
+                
+                switch(fieldName) {
+                    case 'name':
+                        isValid = field.value.trim().length >= 2;
+                        message = isValid ? '' : 'Imię musi mieć co najmniej 2 znaki';
+                        break;
+                    case 'email':
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        isValid = emailRegex.test(field.value);
+                        message = isValid ? '' : 'Podaj poprawny adres email';
+                        break;
+                    case 'message':
+                        isValid = field.value.trim().length >= 10;
+                        message = isValid ? '' : 'Wiadomość musi mieć co najmniej 10 znaków';
+                        break;
+                }
+                
+                if (isValid) {
+                    field.classList.remove('border-red-500');
+                    field.classList.add('border-gray-300', 'dark:border-gray-600');
+                    errorElement.classList.add('hidden');
+                } else {
+                    field.classList.remove('border-gray-300', 'dark:border-gray-600');
+                    field.classList.add('border-red-500');
+                    errorElement.textContent = message;
+                    errorElement.classList.remove('hidden');
+                }
+                
+                return isValid;
+            }
+
+            async handleFormSubmit(e) {
+                e.preventDefault();
+                
+                // Validate all fields
+                const fields = ['name', 'email', 'message'];
+                let isValid = true;
+                
+                fields.forEach(field => {
+                    if (!this.validateField(field)) {
+                        isValid = false;
+                    }
+                });
+                
+                if (!isValid) {
+                    return;
+                }
+                
+                const form = e.target;
+                const submitBtn = document.getElementById('submitBtn');
+                const submitText = document.getElementById('submitText');
+                const submitSpinner = document.getElementById('submitSpinner');
+                const successMessage = document.getElementById('successMessage');
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                submitText.textContent = 'Wysyłanie...';
+                submitSpinner.classList.remove('hidden');
+                
+                // Simulate API call
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Show success
+                    successMessage.classList.remove('hidden');
+                    form.reset();
+                    
+                    // Scroll to success message
+                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    alert('Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie.');
+                } finally {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Wyślij wiadomość';
+                    submitSpinner.classList.add('hidden');
+                    
+                    // Hide success message after 10 seconds
+                    setTimeout(() => {
+                        successMessage.classList.add('hidden');
+                    }, 10000);
+                }
+            }
+        }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new AppHub();
+        });
+
+        // Accessibility: Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('demoModal');
+                if (!modal.classList.contains('hidden')) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            }
             
-            <div class="mt-8 flex justify-end gap-3">
-              <button id="deleteEventBtn" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium">
-                <i class="fas fa-trash mr-2"></i>Usuń
-              </button>
-              <button id="editEventBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">
-                <i class="fas fa-edit mr-2"></i>Edytuj
-              </button>
-            </div>
-          </div>
-        `;
-        
-        // Add event listeners
-        modal.querySelector('#closeEventModal').addEventListener('click', () => {
-          modal.classList.add('hidden');
-        });
-        
-        modal.querySelector('#deleteEventBtn').addEventListener('click', () => {
-          if (confirm('Czy na pewno chcesz usunąć to wydarzenie?')) {
-            this.eventSystem.deleteEvent(eventId);
-            modal.classList.add('hidden');
-            this.render();
-          }
-        });
-        
-        modal.querySelector('#editEventBtn').addEventListener('click', () => {
-          this.showEventEditor(eventId);
-        });
-      }
-
-      createEventAt(date, startMinutes) {
-        const newEvent = {
-          title: 'Nowe wydarzenie',
-          date: Utils.formatDate(date, 'iso'),
-          start: Utils.formatTime(startMinutes),
-          end: Utils.formatTime(startMinutes + CONFIG.defaultDuration),
-          category: 'work',
-          priority: 'medium'
-        };
-        
-        const event = this.eventSystem.createEvent(newEvent);
-        this.showEventEditor(event.id);
-      }
-
-      startEventDrag(e, eventEl) {
-        // Implement advanced drag and drop
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const eventId = eventEl.dataset.eventId;
-        const event = state.events.find(e => e.id === eventId);
-        if (!event) return;
-        
-        state.ui.isDragging = true;
-        state.ui.dragState = {
-          type: 'event',
-          eventId: eventId,
-          element: eventEl,
-          startX: e.clientX,
-          startY: e.clientY,
-          originalDate: event.date,
-          originalStart: Utils.timeToMinutes(event.start)
-        };
-        
-        document.body.classList.add('no-select');
-        document.addEventListener('mousemove', this.handleDragMove.bind(this));
-        document.addEventListener('mouseup', this.handleDragEnd.bind(this));
-      }
-
-      handleDragMove(e) {
-        if (!state.ui.isDragging || !state.ui.dragState) return;
-        
-        // Calculate drag distance
-        const dx = e.clientX - state.ui.dragState.startX;
-        const dy = e.clientY - state.ui.dragState.startY;
-        
-        // Update ghost element position
-        if (!state.ui.ghostElement) {
-          state.ui.ghostElement = state.ui.dragState.element.cloneNode(true);
-          state.ui.ghostElement.classList.add('drag-ghost');
-          state.ui.dragState.element.parentElement.appendChild(state.ui.ghostElement);
-        }
-        
-        state.ui.ghostElement.style.transform = `translate(${dx}px, ${dy}px)`;
-      }
-
-      handleDragEnd(e) {
-        if (!state.ui.isDragging || !state.ui.dragState) return;
-        
-        // Clean up
-        if (state.ui.ghostElement) {
-          state.ui.ghostElement.remove();
-          state.ui.ghostElement = null;
-        }
-        
-        state.ui.isDragging = false;
-        state.ui.dragState = null;
-        
-        document.body.classList.remove('no-select');
-        document.removeEventListener('mousemove', this.handleDragMove);
-        document.removeEventListener('mouseup', this.handleDragEnd);
-        
-        this.render(); // Re-render to update positions
-      }
-
-      showEventEditor(eventId) {
-        // Implement event editor modal
-        console.log('Edit event:', eventId);
-      }
-
-      // Main render method
-      render() {
-        switch (state.view) {
-          case 'month':
-            this.renderMonthView();
-            break;
-          case 'week':
-            this.renderWeekView();
-            break;
-          case 'day':
-            this.renderDayView();
-            break;
-          case 'year':
-            this.renderYearView();
-            break;
-          case 'schedule':
-            this.renderScheduleView();
-            break;
-          default:
-            this.renderWeekView();
-        }
-        
-        // Update UI state
-        this.updateUI();
-      }
-
-      updateUI() {
-        // Update stats
-        const stats = this.eventSystem.getStats();
-        document.getElementById('todayCount').textContent = stats.today;
-        document.getElementById('weekCount').textContent = stats.week;
-        document.getElementById('overdueCount').textContent = stats.overdue;
-        document.getElementById('eventsTotal').textContent = stats.total;
-        document.getElementById('eventCount').textContent = `${stats.total} wydarzeń, ${state.tasks.length} zadań`;
-        
-        // Update range label
-        document.getElementById('rangeLabel').textContent = this.getRangeLabel();
-        
-        // Update category list
-        this.renderCategoryList();
-        
-        // Update AI suggestions
-        if (CONFIG.aiEnabled) {
-          this.renderAISuggestions();
-        }
-        
-        // Update quick tasks
-        this.renderQuickTasks();
-        
-        // Update mini calendar
-        this.renderMiniCalendar();
-      }
-
-      getRangeLabel() {
-        switch (state.view) {
-          case 'month':
-            return Utils.formatDate(state.anchorDate, 'month');
-          case 'week':
-            const start = new Date(state.anchorDate);
-            const dayOfWeek = start.getDay();
-            const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-            start.setDate(start.getDate() + diff);
-            const end = new Date(start);
-            end.setDate(start.getDate() + 6);
-            
-            return `${Utils.formatDate(start, 'short')} - ${Utils.formatDate(end, 'short')}`;
-          case 'day':
-            return Utils.formatDate(state.anchorDate, 'long');
-          case 'year':
-            return state.anchorDate.getFullYear().toString();
-          default:
-            return Utils.formatDate(state.anchorDate, 'long');
-        }
-      }
-
-      renderCategoryList() {
-        const container = document.getElementById('categoryList');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        state.categories.forEach(category => {
-          const isActive = state.filters.has(category.id);
-          const item = document.createElement('div');
-          item.className = `flex items-center gap-3 p-2 rounded-lg cursor-pointer ${isActive ? 'bg-slate-100' : 'hover:bg-slate-50'}`;
-          
-          item.innerHTML = `
-            <div class="flex items-center gap-3 flex-1">
-              <div class="w-3 h-3 rounded-full ${category.color}"></div>
-              <span class="text-sm">${category.name}</span>
-              <span class="text-xs text-slate-500 ml-auto">${category.count}</span>
-            </div>
-            <input type="checkbox" class="category-checkbox" data-category="${category.id}" ${isActive ? 'checked' : ''}>
-          `;
-          
-          const checkbox = item.querySelector('.category-checkbox');
-          checkbox.addEventListener('change', (e) => {
-            e.stopPropagation();
-            if (checkbox.checked) {
-              state.filters.add(category.id);
-            } else {
-              state.filters.delete(category.id);
+            // Tab key navigation for categories
+            if (e.key === 'Enter' && e.target.classList.contains('category-btn')) {
+                e.target.click();
             }
-            this.render();
-          });
-          
-          item.addEventListener('click', (e) => {
-            if (e.target !== checkbox) {
-              checkbox.checked = !checkbox.checked;
-              checkbox.dispatchEvent(new Event('change'));
-            }
-          });
-          
-          container.appendChild(item);
         });
-      }
-
-      renderAISuggestions() {
-        const container = document.getElementById('aiSuggestions');
-        if (!container) return;
-        
-        const suggestions = Utils.generateAISuggestions();
-        container.innerHTML = '';
-        
-        if (suggestions.length === 0) {
-          container.innerHTML = '<div class="text-sm opacity-80">Brak sugestii. Wszystko wygląda dobrze!</div>';
-          return;
-        }
-        
-        suggestions.forEach(suggestion => {
-          const suggestionEl = document.createElement('div');
-          suggestionEl.className = `p-3 rounded-lg ${suggestion.type === 'urgent' ? 'bg-red-500/20' : suggestion.type === 'warning' ? 'bg-amber-500/20' : 'bg-blue-500/20'}`;
-          
-          suggestionEl.innerHTML = `
-            <div class="flex items-center gap-3">
-              <i class="${suggestion.icon}"></i>
-              <div class="text-sm flex-1">${suggestion.message}</div>
-            </div>
-          `;
-          
-          if (suggestion.action) {
-            suggestionEl.classList.add('cursor-pointer');
-            suggestionEl.addEventListener('click', suggestion.action);
-          }
-          
-          container.appendChild(suggestionEl);
-        });
-      }
-
-      renderQuickTasks() {
-        const container = document.getElementById('quickTasks');
-        if (!container) return;
-        
-        const tasks = state.tasks
-          .filter(t => !t.completed)
-          .slice(0, 5);
-        
-        container.innerHTML = '';
-        
-        tasks.forEach(task => {
-          const taskEl = document.createElement('div');
-          taskEl.className = 'flex items-center gap-3 p-2 hover:bg-slate-50 rounded';
-          
-          taskEl.innerHTML = `
-            <input type="checkbox" class="task-checkbox" data-task-id="${task.id}">
-            <div class="flex-1">
-              <div class="text-sm">${task.title}</div>
-              <div class="text-xs text-slate-500">${new Date(task.dueDate).toLocaleDateString('pl-PL')}</div>
-            </div>
-          `;
-          
-          const checkbox = taskEl.querySelector('.task-checkbox');
-          checkbox.addEventListener('change', () => {
-            this.taskSystem.toggleTask(task.id);
-            this.renderQuickTasks();
-            this.updateUI();
-          });
-          
-          container.appendChild(taskEl);
-        });
-      }
-
-      renderMiniCalendar() {
-        const container = document.getElementById('miniCalendar');
-        if (!container) return;
-        
-        const now = new Date();
-        const anchor = new Date(state.anchorDate);
-        const firstDay = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
-        const lastDay = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0);
-        
-        // Clear container
-        container.innerHTML = '';
-        
-        // Day headers
-        const days = ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb', 'Nd'];
-        days.forEach(day => {
-          const dayEl = document.createElement('div');
-          dayEl.className = 'text-center text-xs text-slate-500 py-1';
-          dayEl.textContent = day;
-          container.appendChild(dayEl);
-        });
-        
-        // Calculate starting position
-        const startDate = new Date(firstDay);
-        const dayOfWeek = startDate.getDay();
-        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        startDate.setDate(startDate.getDate() + diff);
-        
-        // Generate 42 days (6 weeks)
-        for (let i = 0; i < 42; i++) {
-          const currentDate = new Date(startDate);
-          currentDate.setDate(startDate.getDate() + i);
-          
-          const isCurrentMonth = currentDate.getMonth() === anchor.getMonth();
-          const isToday = currentDate.toDateString() === now.toDateString();
-          const isSelected = currentDate.toDateString() === state.anchorDate.toDateString();
-          
-          const dayEl = document.createElement('div');
-          dayEl.className = `text-center text-sm py-1 rounded cursor-pointer ${
-            isToday ? 'bg-blue-600 text-white' :
-            isSelected ? 'bg-blue-100 text-blue-700' :
-            isCurrentMonth ? 'text-slate-800 hover:bg-slate-100' : 'text-slate-400'
-          }`;
-          dayEl.textContent = currentDate.getDate();
-          dayEl.title = currentDate.toLocaleDateString('pl-PL');
-          
-          dayEl.addEventListener('click', () => {
-            state.anchorDate = currentDate;
-            if (state.view === 'month') {
-              this.render();
-            } else {
-              state.view = 'day';
-              this.render();
-            }
-          });
-          
-          container.appendChild(dayEl);
-        }
-      }
-    }
-
-    // ---------------------------
-    // INITIALIZATION
-    // ---------------------------
-    document.addEventListener('DOMContentLoaded', () => {
-      const renderEngine = new RenderEngine();
-      
-      // Load data from storage
-      if (!Utils.loadFromStorage()) {
-        // Create sample data if no saved data
-        renderEngine.eventSystem.createEvent({
-          title: 'Spotkanie zespołu',
-          date: Utils.formatDate(new Date(), 'iso'),
-          start: '10:00',
-          end: '11:30',
-          category: 'work',
-          priority: 'high',
-          location: 'Sala konferencyjna A'
-        });
-        
-        renderEngine.eventSystem.createEvent({
-          title: 'Lunch z klientem',
-          date: Utils.formatDate(new Date(), 'iso'),
-          start: '13:00',
-          end: '14:30',
-          category: 'meetings',
-          priority: 'medium',
-          location: 'Restauracja "Pod Kogutem"'
-        });
-        
-        renderEngine.taskSystem.createTask({
-          title: 'Przygotować prezentację',
-          dueDate: Utils.formatDate(new Date(), 'iso'),
-          priority: 'high',
-          category: 'work'
-        });
-      }
-      
-      // Initial render
-      renderEngine.render();
-      
-      // Event listeners
-      document.getElementById('prevBtn').addEventListener('click', () => {
-        const delta = state.view === 'month' ? -1 : state.view === 'week' ? -7 : -1;
-        state.anchorDate.setDate(state.anchorDate.getDate() + delta);
-        renderEngine.render();
-      });
-      
-      document.getElementById('nextBtn').addEventListener('click', () => {
-        const delta = state.view === 'month' ? 1 : state.view === 'week' ? 7 : 1;
-        state.anchorDate.setDate(state.anchorDate.getDate() + delta);
-        renderEngine.render();
-      });
-      
-      document.getElementById('todayBtn').addEventListener('click', () => {
-        state.anchorDate = new Date();
-        renderEngine.render();
-      });
-      
-      // View buttons
-      document.querySelectorAll('.viewBtn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          state.view = btn.dataset.view;
-          document.querySelectorAll('.viewBtn').forEach(b => b.classList.remove('bg-white/20'));
-          btn.classList.add('bg-white/20');
-          renderEngine.render();
-        });
-      });
-      
-      // Theme buttons
-      document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          
-          const theme = btn.dataset.theme;
-          document.body.className = `theme-${theme}`;
-          CONFIG.theme = theme;
-          Utils.saveToStorage();
-        });
-      });
-      
-      // New event button
-      document.getElementById('newEventBtn').addEventListener('click', () => {
-        const now = new Date();
-        renderEngine.createEventAt(now, 9 * 60); // 9:00 AM
-      });
-      
-      // AI suggestions button
-      document.getElementById('aiSuggestBtn').addEventListener('click', () => {
-        const suggestions = Utils.generateAISuggestions();
-        alert(`AI znalazł ${suggestions.length} sugestii dla Ciebie!`);
-      });
-      
-      // Export button
-      document.getElementById('exportBtn').addEventListener('click', () => {
-        Utils.exportData('json');
-      });
-      
-      // Sync button
-      document.getElementById('syncBtn').addEventListener('click', () => {
-        Utils.saveToStorage();
-        alert('Zsynchronizowano!');
-      });
-      
-      // Add quick task
-      document.getElementById('addQuickTask').addEventListener('click', () => {
-        const title = prompt('Wpisz zadanie:');
-        if (title) {
-          renderEngine.taskSystem.createTask({
-            title: title,
-            dueDate: Utils.formatDate(new Date(), 'iso')
-          });
-          renderEngine.renderQuickTasks();
-          renderEngine.updateUI();
-        }
-      });
-      
-      // Mood indicators
-      document.querySelectorAll('.mood-indicator').forEach(indicator => {
-        indicator.addEventListener('click', () => {
-          const mood = indicator.dataset.mood;
-          state.mood = mood;
-          document.getElementById('currentMood').textContent = 
-            ['Bardzo zły', 'Zły', 'Neutralny', 'Dobry', 'Świetny'][mood - 1];
-          Utils.saveToStorage();
-        });
-      });
-      
-      // Search
-      document.getElementById('searchEvents').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        // Implement search highlighting
-        console.log('Searching for:', query);
-      });
-      
-      // Initialize active view button
-      document.querySelector(`.viewBtn[data-view="${state.view}"]`).classList.add('bg-white/20');
-      
-      // Auto-save every minute
-      setInterval(() => {
-        Utils.saveToStorage();
-      }, 60000);
-      
-      // Update time indicators every minute
-      setInterval(() => {
-        if (state.view === 'week' || state.view === 'day') {
-          renderEngine.render();
-        }
-      }, 60000);
-    });
-  </script>
+    </script>
 </body>
 </html>
