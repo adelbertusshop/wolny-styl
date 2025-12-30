@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calendar (Month / Week / Day)</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>Kalendarz (Miesiąc / Tydzień / Dzień)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root{
-      --cal-hour-height: 56px; /* px per hour */
+      --cal-hour-height: 56px;
       --cal-gutter: 56px;
       --cal-day-min-width: 180px;
     }
 
-    /* Better text rendering */
     html { -webkit-text-size-adjust: 100%; }
 
-    /* Subtle scrollbars */
     .thin-scroll::-webkit-scrollbar{ height: 10px; width: 10px; }
     .thin-scroll::-webkit-scrollbar-thumb{ background: rgba(100,116,139,.35); border-radius: 999px; }
     .thin-scroll::-webkit-scrollbar-track{ background: transparent; }
 
-    /* Time grid */
     .time-grid { position: relative; }
-    .time-grid::before{ content:""; position:absolute; left:0; right:0; top:0; bottom:0;
+    .time-grid::before{ 
+      content:""; position:absolute; left:0; right:0; top:0; bottom:0;
       background-image: linear-gradient(to bottom, rgba(148,163,184,.35) 1px, transparent 1px);
       background-size: 100% calc(var(--cal-hour-height)/2);
       pointer-events:none;
@@ -31,7 +29,8 @@
     .now-line{ position:absolute; left:0; right:0; height:2px; background:#ef4444; z-index:30; }
     .now-dot{ position:absolute; left: calc(var(--cal-gutter) - 6px); width:10px; height:10px; border-radius:999px; background:#ef4444; transform: translate(-50%, -50%); z-index:31; }
 
-    .event{ position:absolute; border-radius: 10px; padding: 6px 8px; font-size: 12px; line-height: 1.1;
+    .event{ 
+      position:absolute; border-radius: 10px; padding: 6px 8px; font-size: 12px; line-height: 1.1;
       overflow:hidden; cursor: grab; user-select:none; box-shadow: 0 1px 2px rgba(0,0,0,.08);
     }
     .event:active{ cursor: grabbing; }
@@ -42,21 +41,27 @@
     .resize-handle{ position:absolute; left:0; right:0; height:10px; bottom:-2px; cursor: ns-resize; opacity:.0; }
     .event:hover .resize-handle{ opacity:.15; }
 
-    .ghost{ position:absolute; border-radius: 10px; background: rgba(59,130,246,.18); border: 1px dashed rgba(59,130,246,.6);
-      z-index: 40; pointer-events:none;
+    .ghost{ 
+      position:absolute; border-radius: 10px; background: rgba(59,130,246,.18); 
+      border: 1px dashed rgba(59,130,246,.6); z-index: 40; pointer-events:none;
     }
 
     .month-cell{ position:relative; min-height: 110px; }
     .month-events{ display:flex; flex-direction:column; gap:6px; padding-top: 26px; }
     .month-pill{ font-size: 11px; padding: 4px 6px; border-radius: 999px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 
-    .kbd{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    .kbd{ 
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px; padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(148,163,184,.5);
       background: rgba(248,250,252,.8);
     }
 
-    /* Prevent accidental selection during drag */
     .no-select, .no-select * { user-select: none !important; }
+
+    .allday-event { 
+      position: absolute; top: 2px; left: 6px; right: 6px; height: 24px; 
+      border-radius: 6px; padding: 2px 8px; font-size: 11px; z-index: 20;
+    }
 
     @media (max-width: 900px){
       :root{ --cal-hour-height: 52px; --cal-gutter: 50px; }
@@ -65,14 +70,14 @@
 </head>
 <body class="bg-slate-50 text-slate-900">
   <div class="min-h-dvh flex flex-col">
-    <!-- Top bar -->
+    <!-- Górny pasek -->
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
       <div class="max-w-[1400px] mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white grid place-items-center font-bold">C</div>
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white grid place-items-center font-bold">K</div>
           <div>
-            <div class="font-semibold leading-tight">Calendar</div>
-            <div class="text-xs text-slate-500 leading-tight">Month / Week / Day • drag to create • drag events</div>
+            <div class="font-semibold leading-tight">Kalendarz</div>
+            <div class="text-xs text-slate-500 leading-tight">Miesiąc / Tydzień / Dzień • przeciągnij aby utworzyć</div>
           </div>
         </div>
 
@@ -80,7 +85,7 @@
 
         <div class="flex items-center gap-2">
           <button id="prevBtn" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm">◀</button>
-          <button id="todayBtn" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm">Today</button>
+          <button id="todayBtn" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm">Dzisiaj</button>
           <button id="nextBtn" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm">▶</button>
           <div class="w-px h-8 bg-slate-200 mx-1"></div>
           <div class="text-sm font-semibold" id="rangeLabel">—</div>
@@ -90,72 +95,97 @@
 
         <div class="flex items-center gap-2">
           <div class="hidden md:flex items-center gap-2 text-xs text-slate-500">
-            <span class="kbd">Drag</span> create • <span class="kbd">Esc</span> cancel • <span class="kbd">⌫</span> delete
+            <span class="kbd">Przeciągnij</span> utwórz • <span class="kbd">Esc</span> anuluj • <span class="kbd">⌫</span> usuń
           </div>
           <div class="w-px h-8 bg-slate-200 mx-1 hidden md:block"></div>
           <div class="inline-flex rounded-xl border border-slate-200 bg-white overflow-hidden">
-            <button data-view="month" class="viewBtn px-3 py-2 text-sm hover:bg-slate-50">Month</button>
-            <button data-view="week" class="viewBtn px-3 py-2 text-sm hover:bg-slate-50">Week</button>
-            <button data-view="day" class="viewBtn px-3 py-2 text-sm hover:bg-slate-50">Day</button>
+            <button data-view="month" class="viewBtn px-3 py-2 text-sm hover:bg-slate-50">Miesiąc</button>
+            <button data-view="week" class="viewBtn px-3 py-2 text-sm hover:bg-slate-50">Tydzień</button>
+            <button data-view="day" class="viewBtn px-3 py-2 text-sm hover:bg-slate-50">Dzień</button>
+            <button data-view="list" class="viewBtn px-3 py-2 text-sm hover:bg-slate-50">Lista</button>
           </div>
-          <button id="newBtn" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm">+ New</button>
+          <button id="newBtn" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm">+ Nowe</button>
         </div>
       </div>
     </header>
 
-    <!-- Main -->
+    <!-- Główna zawartość -->
     <main class="flex-1 max-w-[1400px] mx-auto w-full px-4 py-4">
       <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4">
-        <!-- Sidebar -->
+        <!-- Panel boczny -->
         <aside class="lg:sticky lg:top-[76px] self-start">
           <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
             <div class="flex items-center justify-between">
-              <div class="font-semibold">Event categories</div>
-              <button id="resetFilters" class="text-xs text-slate-600 hover:text-slate-900">Reset</button>
+              <div class="font-semibold">Kategorie</div>
+              <button id="resetFilters" class="text-xs text-slate-600 hover:text-slate-900">Resetuj</button>
             </div>
             <div class="mt-3 space-y-2" id="categoryList"></div>
 
             <div class="mt-4 pt-4 border-t border-slate-200">
-              <div class="font-semibold">Quick add</div>
+              <div class="font-semibold">Szybkie dodawanie</div>
               <div class="mt-2 grid grid-cols-1 gap-2">
-                <input id="quickTitle" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Title" />
+                <input id="quickTitle" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Tytuł" />
                 <div class="grid grid-cols-2 gap-2">
                   <input id="quickDate" type="date" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
                   <input id="quickTime" type="time" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
                 </div>
-                <select id="quickCategory" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200"></select>
-                <button id="quickAddBtn" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm">Add event</button>
-                <div class="text-xs text-slate-500">Tip: In Week/Day view you can also drag on the grid to create events.</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <select id="quickCategory" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200"></select>
+                  <select id="quickType" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                    <option value="timed">Z godzinami</option>
+                    <option value="allday">Całodniowe</option>
+                  </select>
+                </div>
+                <button id="quickAddBtn" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm">Dodaj</button>
+                <div class="text-xs text-slate-500">Widok Tydzień/Dzień: przeciągnij na siatce aby utworzyć.</div>
               </div>
             </div>
           </div>
 
           <div class="mt-4 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-            <div class="font-semibold">Selected event</div>
-            <div id="inspectorEmpty" class="mt-2 text-sm text-slate-500">Click an event to edit details.</div>
+            <div class="font-semibold">Wybrane wydarzenie</div>
+            <div id="inspectorEmpty" class="mt-2 text-sm text-slate-500">Kliknij wydarzenie aby edytować.</div>
             <div id="inspector" class="mt-3 hidden">
               <div class="space-y-2">
                 <input id="insTitle" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
                 <div class="grid grid-cols-2 gap-2">
                   <input id="insDate" type="date" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
+                  <select id="insType" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                    <option value="timed">Z godzinami</option>
+                    <option value="allday">Całodniowe</option>
+                  </select>
+                </div>
+                <div id="timeFields" class="grid grid-cols-2 gap-2">
                   <input id="insStart" type="time" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
+                  <input id="insEnd" type="time" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="insEnd" type="time" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
                   <select id="insCategory" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200"></select>
+                  <select id="insRepeat" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                    <option value="none">Nie powtarzaj</option>
+                    <option value="daily">Codziennie</option>
+                    <option value="weekly">Co tydzień</option>
+                  </select>
                 </div>
-                <textarea id="insNotes" rows="3" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Notes"></textarea>
+                <textarea id="insNotes" rows="3" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Notatki"></textarea>
                 <div class="flex items-center justify-between gap-2 pt-1">
-                  <button id="deleteBtn" class="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-sm">Delete</button>
-                  <button id="saveBtn" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm">Save</button>
+                  <button id="deleteBtn" class="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-sm">Usuń</button>
+                  <button id="saveBtn" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm">Zapisz</button>
                 </div>
-                <div class="text-xs text-slate-500">Drag events to move. Drag the bottom edge to resize (Week/Day).</div>
+                <div class="text-xs text-slate-500">Przeciągaj aby przenieść. Za dolną krawędź aby zmienić czas.</div>
               </div>
             </div>
           </div>
+
+          <!-- Wyszukiwarka -->
+          <div class="mt-4 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+            <div class="font-semibold">Wyszukiwanie</div>
+            <input id="searchInput" type="text" class="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Szukaj wydarzeń..." />
+            <div id="searchResults" class="mt-2 space-y-2 max-h-60 overflow-y-auto"></div>
+          </div>
         </aside>
 
-        <!-- Calendar surface -->
+        <!-- Kalendarz -->
         <section class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
           <div id="calendarRoot" class="min-h-[720px]"></div>
         </section>
@@ -163,35 +193,46 @@
     </main>
 
     <footer class="py-4 text-center text-xs text-slate-500">
-      Local-only demo (no backend). Events stored in-memory.
+      Dane przechowywane lokalnie w przeglądarce.
     </footer>
   </div>
 
-  <!-- Modal (New event) -->
+  <!-- Modal nowego wydarzenia -->
   <div id="modal" class="fixed inset-0 z-[100] hidden">
     <div class="absolute inset-0 bg-slate-900/40"></div>
     <div class="absolute inset-0 grid place-items-center p-4">
       <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
         <div class="p-4 flex items-center justify-between border-b border-slate-200">
-          <div class="font-semibold">New event</div>
+          <div class="font-semibold">Nowe wydarzenie</div>
           <button id="modalClose" class="px-3 py-1.5 rounded-lg hover:bg-slate-100">✕</button>
         </div>
         <div class="p-4 space-y-3">
-          <input id="mTitle" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Title" />
+          <input id="mTitle" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Tytuł" />
           <div class="grid grid-cols-2 gap-2">
             <input id="mDate" type="date" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
             <select id="mCategory" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200"></select>
           </div>
           <div class="grid grid-cols-2 gap-2">
+            <select id="mType" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200">
+              <option value="timed">Z godzinami</option>
+              <option value="allday">Całodniowe</option>
+            </select>
+            <select id="mRepeat" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200">
+              <option value="none">Nie powtarzaj</option>
+              <option value="daily">Codziennie</option>
+              <option value="weekly">Co tydzień</option>
+            </select>
+          </div>
+          <div id="mTimeFields" class="grid grid-cols-2 gap-2">
             <input id="mStart" type="time" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
             <input id="mEnd" type="time" class="px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" />
           </div>
-          <textarea id="mNotes" rows="3" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Notes"></textarea>
+          <textarea id="mNotes" rows="3" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-200" placeholder="Notatki"></textarea>
           <div class="flex items-center justify-end gap-2">
-            <button id="modalCancel" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm">Cancel</button>
-            <button id="modalCreate" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm">Create</button>
+            <button id="modalCancel" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm">Anuluj</button>
+            <button id="modalCreate" class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm">Utwórz</button>
           </div>
-          <div class="text-xs text-slate-500">In Week/Day view you can also create by dragging on the timeline.</div>
+          <div class="text-xs text-slate-500">Przeciągnij na siatce w widoku Tydzień/Dzień aby szybko utworzyć.</div>
         </div>
       </div>
     </div>
@@ -199,7 +240,7 @@
 
   <script>
     // ---------------------------
-    // Utilities
+    // Narzędzia
     // ---------------------------
     const pad2 = (n) => String(n).padStart(2,'0');
 
@@ -232,7 +273,7 @@
     function startOfWeek(d, weekStartsOnMonday=true){
       const x = new Date(d);
       x.setHours(0,0,0,0);
-      const day = x.getDay(); // 0 Sun
+      const day = x.getDay();
       const offset = weekStartsOnMonday ? (day === 0 ? -6 : 1 - day) : -day;
       x.setDate(x.getDate() + offset);
       return x;
@@ -245,20 +286,24 @@
     }
 
     function formatMonthYear(d){
-      return d.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+      const months = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'];
+      return `${months[d.getMonth()]} ${d.getFullYear()}`;
     }
 
     function formatRangeLabel(view, anchor){
       const d = new Date(anchor);
+      const days = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'];
+      const months = ['Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
+      
       if(view === 'month') return formatMonthYear(d);
-      if(view === 'day') return d.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric', year:'numeric' });
+      if(view === 'day') return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+      
       const s = startOfWeek(d, true);
       const e = addDays(s, 6);
       const sameMonth = s.getMonth() === e.getMonth() && s.getFullYear()===e.getFullYear();
-      const opts1 = { month:'short', day:'numeric' };
-      const opts2 = { month: sameMonth ? undefined : 'short', day:'numeric', year:'numeric' };
-      const left = s.toLocaleDateString(undefined, opts1);
-      const right = e.toLocaleDateString(undefined, opts2);
+      const left = `${s.getDate()} ${months[s.getMonth()]}`;
+      const right = sameMonth ? `${e.getDate()} ${months[e.getMonth()]} ${e.getFullYear()}` 
+                             : `${e.getDate()} ${months[e.getMonth()]} ${e.getFullYear()}`;
       return `${left} – ${right}`;
     }
 
@@ -268,119 +313,79 @@
       return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
     }
 
-    // Event overlap layout (simple greedy columns)
-    function layoutDayEvents(events){
-      // expects events of same date with {startMin,endMin}
-      const sorted = [...events].sort((a,b)=> a.startMin - b.startMin || a.endMin - b.endMin);
-      const columns = []; // array of arrays of event ids
-      const placements = new Map();
-
-      for(const ev of sorted){
-        let placedCol = -1;
-        for(let c=0;c<columns.length;c++){
-          const lastId = columns[c][columns[c].length-1];
-          const last = placements.get(lastId)?.ev;
-          if(!last) continue;
-          if(ev.startMin >= last.endMin){ placedCol=c; break; }
-        }
-        if(placedCol === -1){
-          placedCol = columns.length;
-          columns.push([]);
-        }
-        columns[placedCol].push(ev.id);
-        placements.set(ev.id, { col: placedCol, ev });
+    function saveToLocalStorage(){
+      try {
+        localStorage.setItem('calendarEvents', JSON.stringify(state.events));
+      } catch(e) {
+        console.warn('Nie udało się zapisać do localStorage');
       }
+    }
 
-      // Determine max concurrent for each event by scanning overlaps
-      const out = new Map();
-      for(const ev of sorted){
-        // count overlaps
-        let maxCol = 1;
-        const overlaps = sorted.filter(o => !(o.endMin<=ev.startMin || o.startMin>=ev.endMin));
-        // greedy columns on overlaps
-        const tempCols = [];
-        for(const o of overlaps){
-          let c = tempCols.findIndex(col => col[col.length-1].endMin <= o.startMin);
-          if(c===-1){ tempCols.push([o]); }
-          else tempCols[c].push(o);
+    function loadFromLocalStorage(){
+      try {
+        const saved = localStorage.getItem('calendarEvents');
+        if(saved) {
+          const parsed = JSON.parse(saved);
+          if(Array.isArray(parsed)) {
+            return parsed;
+          }
         }
-        maxCol = tempCols.length;
-
-        const placement = placements.get(ev.id);
-        out.set(ev.id, { col: placement.col, cols: maxCol });
+      } catch(e) {
+        console.warn('Nie udało się wczytać z localStorage');
       }
-      return out;
+      return null;
     }
 
     // ---------------------------
-    // State
+    // Stan
     // ---------------------------
     const state = {
       view: 'week',
       anchorDate: new Date(),
       selectedId: null,
       categories: [
-        { id: 'work', name: 'Work', color: 'bg-blue-600', light: 'bg-blue-50', ring: 'ring-blue-200', text: 'text-blue-700' },
-        { id: 'personal', name: 'Personal', color: 'bg-emerald-600', light: 'bg-emerald-50', ring: 'ring-emerald-200', text: 'text-emerald-700' },
-        { id: 'family', name: 'Family', color: 'bg-amber-500', light: 'bg-amber-50', ring: 'ring-amber-200', text: 'text-amber-800' },
-        { id: 'focus', name: 'Focus', color: 'bg-violet-600', light: 'bg-violet-50', ring: 'ring-violet-200', text: 'text-violet-700' },
-        { id: 'travel', name: 'Travel', color: 'bg-rose-600', light: 'bg-rose-50', ring: 'ring-rose-200', text: 'text-rose-700' },
+        { id: 'work', name: 'Praca', color: 'bg-blue-600', light: 'bg-blue-50', ring: 'ring-blue-200', text: 'text-blue-700' },
+        { id: 'personal', name: 'Osobiste', color: 'bg-emerald-600', light: 'bg-emerald-50', ring: 'ring-emerald-200', text: 'text-emerald-700' },
+        { id: 'family', name: 'Rodzina', color: 'bg-amber-500', light: 'bg-amber-50', ring: 'ring-amber-200', text: 'text-amber-800' },
+        { id: 'focus', name: 'Skupienie', color: 'bg-violet-600', light: 'bg-violet-50', ring: 'ring-violet-200', text: 'text-violet-700' },
+        { id: 'travel', name: 'Podróże', color: 'bg-rose-600', light: 'bg-rose-50', ring: 'ring-rose-200', text: 'text-rose-700' },
       ],
       filters: new Set(['work','personal','family','focus','travel']),
       events: [],
       ui: {
-        drag: null, // {type:'move'|'create'|'resize', ...}
+        drag: null,
         ghostEl: null,
         nowTimer: null,
       }
     };
 
-    // Sample events (relative to today)
+    // Przykładowe wydarzenia
     function seedSampleEvents(){
       const today = new Date();
       const isoToday = toISODate(today);
       const monday = startOfWeek(today, true);
-      const isoMon = toISODate(monday);
 
-      const make = (dateISO, start, end, title, cat, notes='') => ({
+      const make = (dateISO, start, end, title, cat, notes='', type='timed', repeat='none') => ({
         id: uid(),
-        title, date: dateISO, start, end, category: cat, notes
+        title, date: dateISO, start, end, category: cat, notes, type, repeat
       });
 
       const d1 = toISODate(addDays(monday, 0));
       const d2 = toISODate(addDays(monday, 1));
       const d3 = toISODate(addDays(monday, 2));
-      const d4 = toISODate(addDays(monday, 3));
-      const d5 = toISODate(addDays(monday, 4));
-      const d6 = toISODate(addDays(monday, 5));
-      const d7 = toISODate(addDays(monday, 6));
 
       state.events = [
-        make(d1, '09:00', '10:15', 'Weekly planning', 'work', 'Review goals and priorities.'),
-        make(d1, '13:00', '13:30', '1:1 with Sam', 'work', 'Career growth + current project status.'),
-        make(d2, '11:00', '12:00', 'Gym', 'personal', 'Leg day.'),
-        make(d2, '14:30', '16:00', 'Design review', 'work', 'Walk through the new flow.'),
-        make(d3, '08:00', '10:00', 'Deep work: roadmap', 'focus', 'No meetings; write proposal.'),
-        make(d3, '18:00', '19:30', 'Dinner w/ family', 'family', 'Try the new place.'),
-        make(d4, '10:00', '11:00', 'Doctor appointment', 'personal', ''),
-        make(d4, '15:00', '17:00', 'Sprint demo prep', 'work', 'Slides + run-through.'),
-        make(d5, '09:30', '10:30', 'Sprint demo', 'work', 'Share progress with stakeholders.'),
-        make(d5, '12:00', '13:00', 'Lunch walk', 'personal', ''),
-        make(d6, '07:30', '09:00', 'Coffee + reading', 'focus', ''),
-        make(d7, '16:00', '18:00', 'Pack for trip', 'travel', 'Checklist + chargers.'),
-        // Today highlights
-        make(isoToday, '10:30', '11:00', 'Check-in: today', 'work', 'Quick status update.'),
-        make(isoToday, '19:00', '20:00', 'Call parents', 'family', ''),
+        make(d1, '09:00', '10:15', 'Planowanie tygodnia', 'work', 'Przegląd celów i priorytetów.'),
+        make(d1, '13:00', '13:30', 'Spotkanie 1:1 z Samem', 'work'),
+        make(d2, '11:00', '12:00', 'Siłownia', 'personal', 'Dzień nóg.'),
+        make(d2, '14:30', '16:00', 'Przegląd projektu', 'work'),
+        make(isoToday, '00:00', '23:59', 'Urodziny żony', 'family', '', 'allday'),
+        make(isoToday, '19:00', '20:00', 'Telefon do rodziców', 'family'),
       ];
-
-      // A couple month-spanning all-day-ish (represented as timed blocks)
-      const near = addDays(today, 10);
-      state.events.push(make(toISODate(near), '09:00', '17:00', 'Offsite (day 1)', 'travel', 'Bring badge + notebook.'));
-      state.events.push(make(toISODate(addDays(near, 1)), '09:00', '17:00', 'Offsite (day 2)', 'travel', 'Team dinner.'));
     }
 
     // ---------------------------
-    // DOM refs
+    // Referencje DOM
     // ---------------------------
     const els = {
       calendarRoot: document.getElementById('calendarRoot'),
@@ -396,8 +401,9 @@
       quickDate: document.getElementById('quickDate'),
       quickTime: document.getElementById('quickTime'),
       quickCategory: document.getElementById('quickCategory'),
+      quickType: document.getElementById('quickType'),
       quickAddBtn: document.getElementById('quickAddBtn'),
-
+      
       inspectorEmpty: document.getElementById('inspectorEmpty'),
       inspector: document.getElementById('inspector'),
       insTitle: document.getElementById('insTitle'),
@@ -405,10 +411,16 @@
       insStart: document.getElementById('insStart'),
       insEnd: document.getElementById('insEnd'),
       insCategory: document.getElementById('insCategory'),
+      insType: document.getElementById('insType'),
+      insRepeat: document.getElementById('insRepeat'),
+      timeFields: document.getElementById('timeFields'),
       insNotes: document.getElementById('insNotes'),
       saveBtn: document.getElementById('saveBtn'),
       deleteBtn: document.getElementById('deleteBtn'),
-
+      
+      searchInput: document.getElementById('searchInput'),
+      searchResults: document.getElementById('searchResults'),
+      
       modal: document.getElementById('modal'),
       modalClose: document.getElementById('modalClose'),
       modalCancel: document.getElementById('modalCancel'),
@@ -418,26 +430,15 @@
       mStart: document.getElementById('mStart'),
       mEnd: document.getElementById('mEnd'),
       mCategory: document.getElementById('mCategory'),
+      mType: document.getElementById('mType'),
+      mTimeFields: document.getElementById('mTimeFields'),
+      mRepeat: document.getElementById('mRepeat'),
       mNotes: document.getElementById('mNotes'),
     };
 
     // ---------------------------
-    // Rendering: shared
+    // Renderowanie
     // ---------------------------
-    function categoryById(id){
-      return state.categories.find(c=>c.id===id) || state.categories[0];
-    }
-
-    function filteredEvents(){
-      return state.events.filter(e => state.filters.has(e.category));
-    }
-
-    function eventToMins(e){
-      const startMin = timeToMinutes(e.start);
-      const endMin = Math.max(startMin+15, timeToMinutes(e.end));
-      return { startMin, endMin };
-    }
-
     function setView(view){
       state.view = view;
       state.selectedId = null;
@@ -453,77 +454,6 @@
       render();
     }
 
-    function openModal(prefill={}){
-      els.modal.classList.remove('hidden');
-      const todayISO = toISODate(new Date());
-      els.mTitle.value = prefill.title ?? '';
-      els.mDate.value = prefill.date ?? todayISO;
-      els.mStart.value = prefill.start ?? '09:00';
-      els.mEnd.value = prefill.end ?? '10:00';
-      els.mCategory.value = prefill.category ?? state.categories[0].id;
-      els.mNotes.value = prefill.notes ?? '';
-      setTimeout(()=> els.mTitle.focus(), 0);
-    }
-
-    function closeModal(){
-      els.modal.classList.add('hidden');
-    }
-
-    function selectEvent(id){
-      state.selectedId = id;
-      renderInspector();
-      // highlight selection in current view
-      const el = document.querySelector(`[data-event-id="${CSS.escape(id)}"]`);
-      if(el){
-        el.classList.add('ring-2','ring-blue-300');
-      }
-    }
-
-    function renderInspector(){
-      const ev = state.events.find(e=>e.id===state.selectedId);
-      if(!ev){
-        els.inspector.classList.add('hidden');
-        els.inspectorEmpty.classList.remove('hidden');
-        return;
-      }
-      els.inspectorEmpty.classList.add('hidden');
-      els.inspector.classList.remove('hidden');
-      els.insTitle.value = ev.title;
-      els.insDate.value = ev.date;
-      els.insStart.value = ev.start;
-      els.insEnd.value = ev.end;
-      els.insCategory.value = ev.category;
-      els.insNotes.value = ev.notes || '';
-    }
-
-    function updateRangeLabel(){
-      els.rangeLabel.textContent = formatRangeLabel(state.view, state.anchorDate);
-    }
-
-    function renderCategories(){
-      els.categoryList.innerHTML = '';
-      for(const c of state.categories){
-        const row = document.createElement('label');
-        row.className = `flex items-center gap-3 px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer`;
-        row.innerHTML = `
-          <input type="checkbox" class="h-4 w-4" ${state.filters.has(c.id)?'checked':''} data-cat="${c.id}" />
-          <span class="w-3 h-3 rounded-full ${c.color}"></span>
-          <span class="text-sm flex-1">${c.name}</span>
-          <span class="text-xs text-slate-500">${state.events.filter(e=>e.category===c.id).length}</span>
-        `;
-        els.categoryList.appendChild(row);
-      }
-
-      // selects
-      const options = state.categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-      els.quickCategory.innerHTML = options;
-      els.insCategory.innerHTML = options;
-      els.mCategory.innerHTML = options;
-    }
-
-    // ---------------------------
-    // Month view
-    // ---------------------------
     function renderMonthView(root){
       const d = new Date(state.anchorDate);
       const first = new Date(d.getFullYear(), d.getMonth(), 1);
@@ -533,10 +463,10 @@
 
       const header = document.createElement('div');
       header.className = 'grid grid-cols-7 border-b border-slate-200 bg-slate-50';
-      const names = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      const names = ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb', 'Nd'];
       for(const n of names){
         const h = document.createElement('div');
-        h.className = 'px-3 py-2 text-xs font-semibold text-slate-600';
+        h.className = 'px-3 py-2 text-xs font-semibold text-slate-600 text-center';
         h.textContent = n;
         header.appendChild(h);
       }
@@ -570,19 +500,18 @@
           const cat = categoryById(ev.category);
           const pill = document.createElement('button');
           pill.className = `month-pill ${cat.light} ${cat.text} border border-slate-200 hover:brightness-95 text-left`;
-          pill.textContent = `${ev.start} ${ev.title}`;
-          pill.title = `${ev.title} (${ev.start}-${ev.end})`;
+          pill.textContent = ev.type === 'allday' ? ev.title : `${ev.start} ${ev.title}`;
+          pill.title = `${ev.title} ${ev.type === 'timed' ? `(${ev.start}-${ev.end})` : '(całodniowe)'}`;
           pill.addEventListener('click', ()=>{ selectEvent(ev.id); });
           eventsWrap.appendChild(pill);
         }
         if(todays.length>maxToShow){
           const more = document.createElement('div');
           more.className='text-xs text-slate-500 px-1';
-          more.textContent = `+${todays.length-maxToShow} more`;
+          more.textContent = `+${todays.length-maxToShow} więcej`;
           eventsWrap.appendChild(more);
         }
 
-        // click on empty area to jump to day view
         cell.addEventListener('dblclick', (e)=>{
           state.anchorDate = day;
           setView('day');
@@ -593,54 +522,55 @@
         grid.appendChild(cell);
       }
 
-      // Fix right border on last column
       Array.from(grid.children).forEach((c,i)=>{
         if((i+1)%7===0) c.classList.remove('border-r');
       });
 
       root.appendChild(header);
       root.appendChild(grid);
-
-      // Month view: selection in inspector still works
       renderInspector();
     }
 
-    // ---------------------------
-    // Week/Day view (time grid)
-    // ---------------------------
-    function renderTimeHeader(container, days){
+    function renderWeekView(root){
+      const start = startOfWeek(state.anchorDate, true);
+      const days = Array.from({length:7}, (_,i)=> addDays(start, i));
+      const container = document.createElement('div');
+      container.className = 'w-full';
+
+      // Nagłówek z dniami
       const header = document.createElement('div');
       header.className = 'grid border-b border-slate-200 bg-white';
       header.style.gridTemplateColumns = `${getComputedStyle(document.documentElement).getPropertyValue('--cal-gutter')} repeat(${days.length}, minmax(var(--cal-day-min-width), 1fr))`;
 
       const gutter = document.createElement('div');
       gutter.className = 'px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-50 border-r border-slate-200';
-      gutter.textContent = '';
       header.appendChild(gutter);
 
       const today = new Date();
-      for(const day of days){
+      const dayNames = ['Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb', 'Nd'];
+      const monthNames = ['Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
+      
+      for(let i = 0; i < days.length; i++){
+        const day = days[i];
         const isToday = isSameDay(day, today);
         const col = document.createElement('div');
-        col.className = `px-3 py-2 text-xs font-semibold border-r border-slate-200 ${isToday?'bg-blue-50':''}`;
-        const weekday = day.toLocaleDateString(undefined, { weekday:'short' });
+        col.className = `px-3 py-2 text-xs border-r border-slate-200 ${isToday?'bg-blue-50':''}`;
         col.innerHTML = `
           <div class="flex items-center justify-between">
-            <div class="text-slate-600">${weekday}</div>
-            <div class="text-slate-500">${day.toLocaleDateString(undefined,{month:'short', day:'numeric'})}</div>
+            <div class="font-semibold text-slate-600">${dayNames[i]}</div>
+            <div class="text-slate-500">${day.getDate()} ${monthNames[day.getMonth()]}</div>
           </div>
           <div class="mt-1">
-            ${isToday ? `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white text-xs">${day.getDate()}</span>` : `<span class="text-slate-900">${day.getDate()}</span>`}
+            ${isToday ? `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white text-xs">${day.getDate()}</span>` 
+                      : `<span class="text-slate-900">${day.getDate()}</span>`}
           </div>
         `;
         header.appendChild(col);
       }
-      // remove last border
       header.lastElementChild?.classList.remove('border-r');
       container.appendChild(header);
-    }
 
-    function renderTimeBody(container, days){
+      // Główna siatka
       const wrapper = document.createElement('div');
       wrapper.className = 'relative overflow-auto thin-scroll';
       wrapper.style.height = 'calc(100dvh - 220px)';
@@ -649,10 +579,10 @@
       grid.className = 'grid';
       grid.style.gridTemplateColumns = `${getComputedStyle(document.documentElement).getPropertyValue('--cal-gutter')} repeat(${days.length}, minmax(var(--cal-day-min-width), 1fr))`;
 
-      // gutter with times
-      const gutter = document.createElement('div');
-      gutter.className = 'relative bg-slate-50 border-r border-slate-200';
-      gutter.style.height = `calc(var(--cal-hour-height) * 24)`;
+      // Lewa kolumna z godzinami
+      const timeCol = document.createElement('div');
+      timeCol.className = 'relative bg-slate-50 border-r border-slate-200';
+      timeCol.style.height = `calc(var(--cal-hour-height) * 24)`;
 
       for(let h=0; h<24; h++){
         const t = document.createElement('div');
@@ -660,45 +590,51 @@
         t.style.top = `calc(var(--cal-hour-height) * ${h})`;
         t.style.transform = 'translateY(-50%)';
         t.style.textAlign = 'right';
-        t.textContent = h===0 ? '' : `${((h+11)%12+1)}${h<12?'am':'pm'}`;
-        gutter.appendChild(t);
+        t.textContent = h===0 ? '' : `${h}:00`;
+        timeCol.appendChild(t);
       }
-      grid.appendChild(gutter);
+      grid.appendChild(timeCol);
 
-      const today = new Date();
+      // Kolumny z dniami
       const evs = filteredEvents();
-
-      // For each day column: time grid + events layer
       for(const day of days){
         const iso = toISODate(day);
         const col = document.createElement('div');
         col.className = `relative border-r border-slate-200 ${isSameDay(day,today)?'bg-blue-50/30':''}`;
 
-        const time = document.createElement('div');
-        time.className = 'time-grid relative';
-        time.style.height = `calc(var(--cal-hour-height) * 24)`;
-        time.dataset.date = iso;
+        const timeGrid = document.createElement('div');
+        timeGrid.className = 'time-grid relative';
+        timeGrid.style.height = `calc(var(--cal-hour-height) * 24)`;
+        timeGrid.dataset.date = iso;
+        timeGrid.addEventListener('mousedown', (e)=> beginCreateDrag(e, timeGrid));
 
-        // Click background to clear selection
-        time.addEventListener('mousedown', (e)=> beginCreateDrag(e, time, days.length));
+        // Wydarzenia całodniowe na górze
+        const alldays = evs.filter(e=>e.date===iso && e.type==='allday');
+        const alldayContainer = document.createElement('div');
+        alldayContainer.className = 'absolute top-0 left-0 right-0 h-8 border-b border-slate-200 bg-slate-50';
+        
+        alldays.forEach((ev, idx) => {
+          const alldayEl = document.createElement('div');
+          alldayEl.className = `allday-event ${categoryById(ev.category).color} text-white`;
+          alldayEl.textContent = ev.title;
+          alldayEl.title = ev.title;
+          alldayEl.style.top = `${2 + idx * 26}px`;
+          alldayEl.addEventListener('click', (e)=>{ e.stopPropagation(); selectEvent(ev.id); });
+          timeGrid.appendChild(alldayEl);
+        });
 
-        // events for day
-        const todays = evs.filter(e=>e.date===iso).map(e=>({ ...e, ...eventToMins(e) }));
-        const placements = layoutDayEvents(todays);
-
-        for(const ev of todays){
-          const { col: c, cols } = placements.get(ev.id) || { col:0, cols:1 };
+        // Wydarzenia z godzinami
+        const timed = evs.filter(e=>e.date===iso && e.type==='timed').map(e=>({ ...e, startMin: timeToMinutes(e.start), endMin: timeToMinutes(e.end) }));
+        
+        timed.forEach(ev => {
           const cat = categoryById(ev.category);
-
           const block = document.createElement('div');
           block.className = `event ${cat.color} text-white`;
           block.dataset.eventId = ev.id;
           block.style.top = `calc(var(--cal-hour-height) * ${ev.startMin/60})`;
           block.style.height = `calc(var(--cal-hour-height) * ${Math.max(0.25, (ev.endMin-ev.startMin)/60)})`;
-          const leftPct = (c/cols)*100;
-          const widthPct = (1/cols)*100;
-          block.style.left = `calc(${leftPct}% + 6px)`;
-          block.style.width = `calc(${widthPct}% - 12px)`;
+          block.style.left = '6px';
+          block.style.right = '6px';
 
           block.innerHTML = `
             <div class="title truncate">${escapeHtml(ev.title)}</div>
@@ -712,10 +648,10 @@
           const handle = block.querySelector('.resize-handle');
           handle.addEventListener('mousedown', (e)=> beginResizeDrag(e, block));
 
-          time.appendChild(block);
-        }
+          timeGrid.appendChild(block);
+        });
 
-        // now indicator for today
+        // Wskaźnik bieżącego czasu
         if(isSameDay(day, today)){
           const nowLine = document.createElement('div');
           nowLine.className = 'now-line';
@@ -723,27 +659,235 @@
           const nowDot = document.createElement('div');
           nowDot.className = 'now-dot';
           nowDot.dataset.nowDot = '1';
-          time.appendChild(nowLine);
-          time.appendChild(nowDot);
+          timeGrid.appendChild(nowLine);
+          timeGrid.appendChild(nowDot);
         }
 
-        col.appendChild(time);
+        col.appendChild(timeGrid);
         grid.appendChild(col);
       }
 
       grid.lastElementChild?.classList.remove('border-r');
       wrapper.appendChild(grid);
       container.appendChild(wrapper);
-
-      // Scroll to 8am-ish on render
+      root.appendChild(container);
+      
+      // Przewiń do 8:00
       requestAnimationFrame(()=>{
         wrapper.scrollTop = (8 * parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height'))) - 40;
         updateNowIndicator(container);
       });
 
-      // Update now indicator periodically
       if(state.ui.nowTimer) clearInterval(state.ui.nowTimer);
       state.ui.nowTimer = setInterval(()=> updateNowIndicator(container), 30*1000);
+      
+      renderInspector();
+    }
+
+    function renderDayView(root){
+      const day = new Date(state.anchorDate);
+      day.setHours(0,0,0,0);
+      const days = [day];
+      const container = document.createElement('div');
+      container.className = 'w-full';
+
+      // Nagłówek
+      const header = document.createElement('div');
+      header.className = 'grid border-b border-slate-200 bg-white';
+      header.style.gridTemplateColumns = `${getComputedStyle(document.documentElement).getPropertyValue('--cal-gutter')} minmax(var(--cal-day-min-width), 1fr)`;
+
+      const gutter = document.createElement('div');
+      gutter.className = 'px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-50 border-r border-slate-200';
+      header.appendChild(gutter);
+
+      const today = new Date();
+      const isToday = isSameDay(day, today);
+      const dayNames = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'];
+      const monthNames = ['Stycznia', 'Lutego', 'Marca', 'Kwietnia', 'Maja', 'Czerwca', 'Lipca', 'Sierpnia', 'Września', 'Października', 'Listopada', 'Grudnia'];
+      
+      const col = document.createElement('div');
+      col.className = `px-3 py-2 text-sm border-r border-slate-200 ${isToday?'bg-blue-50':''}`;
+      col.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div class="font-semibold text-slate-900">${dayNames[day.getDay()]}</div>
+          <div class="text-slate-600">${day.getDate()} ${monthNames[day.getMonth()]} ${day.getFullYear()}</div>
+        </div>
+        ${isToday ? '<div class="mt-1 text-xs text-blue-600">Dzisiaj</div>' : ''}
+      `;
+      header.appendChild(col);
+      container.appendChild(header);
+
+      // Siatka
+      const wrapper = document.createElement('div');
+      wrapper.className = 'relative overflow-auto thin-scroll';
+      wrapper.style.height = 'calc(100dvh - 220px)';
+
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      grid.style.gridTemplateColumns = `${getComputedStyle(document.documentElement).getPropertyValue('--cal-gutter')} minmax(var(--cal-day-min-width), 1fr)`;
+
+      // Godziny
+      const timeCol = document.createElement('div');
+      timeCol.className = 'relative bg-slate-50 border-r border-slate-200';
+      timeCol.style.height = `calc(var(--cal-hour-height) * 24)`;
+
+      for(let h=0; h<24; h++){
+        const t = document.createElement('div');
+        t.className = 'absolute left-0 right-0 text-[11px] text-slate-500 pr-2';
+        t.style.top = `calc(var(--cal-hour-height) * ${h})`;
+        t.style.transform = 'translateY(-50%)';
+        t.style.textAlign = 'right';
+        t.textContent = h===0 ? '0:00' : `${h}:00`;
+        timeCol.appendChild(t);
+        
+        if(h < 23){
+          const half = document.createElement('div');
+          half.className = 'absolute left-0 right-0 text-[10px] text-slate-400 pr-2';
+          half.style.top = `calc(var(--cal-hour-height) * ${h + 0.5})`;
+          half.style.transform = 'translateY(-50%)';
+          half.style.textAlign = 'right';
+          half.textContent = `${h}:30`;
+          timeCol.appendChild(half);
+        }
+      }
+      grid.appendChild(timeCol);
+
+      // Główna kolumna
+      const mainCol = document.createElement('div');
+      mainCol.className = `relative border-r border-slate-200 ${isToday?'bg-blue-50/30':''}`;
+      const iso = toISODate(day);
+      
+      const timeGrid = document.createElement('div');
+      timeGrid.className = 'time-grid relative';
+      timeGrid.style.height = `calc(var(--cal-hour-height) * 24)`;
+      timeGrid.dataset.date = iso;
+      timeGrid.addEventListener('mousedown', (e)=> beginCreateDrag(e, timeGrid));
+
+      // Wydarzenia
+      const evs = filteredEvents().filter(e=>e.date===iso);
+      evs.forEach(ev => {
+        const cat = categoryById(ev.category);
+        if(ev.type === 'allday'){
+          const alldayEl = document.createElement('div');
+          alldayEl.className = `allday-event ${cat.color} text-white`;
+          alldayEl.textContent = ev.title;
+          alldayEl.title = ev.title;
+          alldayEl.style.top = '2px';
+          alldayEl.addEventListener('click', (e)=>{ e.stopPropagation(); selectEvent(ev.id); });
+          timeGrid.appendChild(alldayEl);
+        } else {
+          const startMin = timeToMinutes(ev.start);
+          const endMin = timeToMinutes(ev.end);
+          const block = document.createElement('div');
+          block.className = `event ${cat.color} text-white`;
+          block.dataset.eventId = ev.id;
+          block.style.top = `calc(var(--cal-hour-height) * ${startMin/60})`;
+          block.style.height = `calc(var(--cal-hour-height) * ${Math.max(0.25, (endMin-startMin)/60)})`;
+          block.style.left = '6px';
+          block.style.right = '6px';
+
+          block.innerHTML = `
+            <div class="title truncate">${escapeHtml(ev.title)}</div>
+            <div class="meta truncate">${ev.start}–${ev.end}</div>
+            <div class="resize-handle bg-black"></div>
+          `;
+
+          block.addEventListener('mousedown', (e)=> beginMoveDrag(e, block));
+          block.addEventListener('click', (e)=>{ e.stopPropagation(); selectEvent(ev.id); });
+
+          const handle = block.querySelector('.resize-handle');
+          handle.addEventListener('mousedown', (e)=> beginResizeDrag(e, block));
+
+          timeGrid.appendChild(block);
+        }
+      });
+
+      // Wskaźnik czasu
+      if(isToday){
+        const nowLine = document.createElement('div');
+        nowLine.className = 'now-line';
+        nowLine.dataset.nowLine = '1';
+        const nowDot = document.createElement('div');
+        nowDot.className = 'now-dot';
+        nowDot.dataset.nowDot = '1';
+        timeGrid.appendChild(nowLine);
+        timeGrid.appendChild(nowDot);
+      }
+
+      mainCol.appendChild(timeGrid);
+      grid.appendChild(mainCol);
+      wrapper.appendChild(grid);
+      container.appendChild(wrapper);
+      root.appendChild(container);
+      
+      requestAnimationFrame(()=>{
+        const now = new Date();
+        const currentHour = now.getHours();
+        wrapper.scrollTop = (currentHour * parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height'))) - 100;
+        updateNowIndicator(container);
+      });
+
+      if(state.ui.nowTimer) clearInterval(state.ui.nowTimer);
+      state.ui.nowTimer = setInterval(()=> updateNowIndicator(container), 30*1000);
+      
+      renderInspector();
+    }
+
+    function renderListView(root){
+      const container = document.createElement('div');
+      container.className = 'p-4';
+      
+      const header = document.createElement('div');
+      header.className = 'mb-4 pb-2 border-b border-slate-200';
+      header.innerHTML = '<h2 class="text-lg font-semibold">Lista wydarzeń</h2>';
+      container.appendChild(header);
+
+      const events = filteredEvents()
+        .sort((a,b) => {
+          const dateComp = new Date(a.date) - new Date(b.date);
+          if(dateComp !== 0) return dateComp;
+          return timeToMinutes(a.start) - timeToMinutes(b.start);
+        });
+
+      if(events.length === 0){
+        const empty = document.createElement('div');
+        empty.className = 'text-center py-8 text-slate-500';
+        empty.textContent = 'Brak wydarzeń';
+        container.appendChild(empty);
+      } else {
+        const list = document.createElement('div');
+        list.className = 'space-y-2';
+        
+        events.forEach(ev => {
+          const item = document.createElement('div');
+          item.className = 'p-3 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer';
+          item.addEventListener('click', () => selectEvent(ev.id));
+          
+          const cat = categoryById(ev.category);
+          const date = new Date(ev.date);
+          const dayNames = ['Nd', 'Pn', 'Wt', 'Śr', 'Czw', 'Pt', 'Sb'];
+          
+          item.innerHTML = `
+            <div class="flex items-start gap-3">
+              <div class="w-2 h-2 mt-1.5 rounded-full ${cat.color}"></div>
+              <div class="flex-1">
+                <div class="font-medium">${escapeHtml(ev.title)}</div>
+                <div class="text-sm text-slate-600 mt-1">
+                  ${dayNames[date.getDay()]}, ${date.getDate()} ${date.toLocaleDateString('pl-PL', {month: 'short'})}
+                  ${ev.type === 'timed' ? ` • ${ev.start}-${ev.end}` : ' • Całodniowe'}
+                </div>
+                ${ev.notes ? `<div class="text-sm text-slate-500 mt-1">${escapeHtml(ev.notes)}</div>` : ''}
+              </div>
+              <div class="text-xs text-slate-500">${cat.name}</div>
+            </div>
+          `;
+          list.appendChild(item);
+        });
+        container.appendChild(list);
+      }
+      
+      root.appendChild(container);
+      renderInspector();
     }
 
     function updateNowIndicator(container){
@@ -754,60 +898,187 @@
       container.querySelectorAll('[data-now-dot="1"]').forEach(el=>{ el.style.top = top; });
     }
 
-    function renderWeekView(root){
-      const start = startOfWeek(state.anchorDate, true);
-      const days = Array.from({length:7}, (_,i)=> addDays(start, i));
+    function render(){
+      updateRangeLabel();
+      els.viewBtns.forEach(b=>{
+        const active = b.dataset.view === state.view;
+        b.classList.toggle('bg-slate-900', active);
+        b.classList.toggle('text-white', active);
+        b.classList.toggle('bg-white', !active);
+      });
 
-      const container = document.createElement('div');
-      container.className = 'w-full';
+      renderCategories();
+      els.calendarRoot.innerHTML = '';
+      
+      switch(state.view){
+        case 'month': renderMonthView(els.calendarRoot); break;
+        case 'week': renderWeekView(els.calendarRoot); break;
+        case 'day': renderDayView(els.calendarRoot); break;
+        case 'list': renderListView(els.calendarRoot); break;
+      }
 
-      renderTimeHeader(container, days);
-      renderTimeBody(container, days);
-      root.appendChild(container);
-      renderInspector();
+      if(state.selectedId){
+        const el = document.querySelector(`[data-event-id="${CSS.escape(state.selectedId)}"]`);
+        if(el) el.classList.add('ring-2','ring-blue-300');
+      }
+      
+      performSearch();
     }
 
-    function renderDayView(root){
-      const day = new Date(state.anchorDate);
-      day.setHours(0,0,0,0);
-      const days = [day];
+    function renderCategories(){
+      els.categoryList.innerHTML = '';
+      state.categories.forEach(c => {
+        const count = state.events.filter(e=>e.category===c.id).length;
+        const row = document.createElement('label');
+        row.className = 'flex items-center gap-3 px-3 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer';
+        row.innerHTML = `
+          <input type="checkbox" class="h-4 w-4" ${state.filters.has(c.id)?'checked':''} data-cat="${c.id}" />
+          <span class="w-3 h-3 rounded-full ${c.color}"></span>
+          <span class="text-sm flex-1">${c.name}</span>
+          <span class="text-xs text-slate-500">${count}</span>
+        `;
+        els.categoryList.appendChild(row);
+      });
 
-      const container = document.createElement('div');
-      container.className = 'w-full';
-      renderTimeHeader(container, days);
-      renderTimeBody(container, days);
-      root.appendChild(container);
+      const options = state.categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+      els.quickCategory.innerHTML = options;
+      els.insCategory.innerHTML = options;
+      els.mCategory.innerHTML = options;
+    }
+
+    function renderInspector(){
+      const ev = state.events.find(e=>e.id===state.selectedId);
+      if(!ev){
+        els.inspector.classList.add('hidden');
+        els.inspectorEmpty.classList.remove('hidden');
+        return;
+      }
+      
+      els.inspectorEmpty.classList.add('hidden');
+      els.inspector.classList.remove('hidden');
+      els.insTitle.value = ev.title;
+      els.insDate.value = ev.date;
+      els.insType.value = ev.type || 'timed';
+      els.insRepeat.value = ev.repeat || 'none';
+      els.insCategory.value = ev.category;
+      els.insNotes.value = ev.notes || '';
+      
+      if(ev.type === 'allday'){
+        els.timeFields.classList.add('hidden');
+        els.insStart.value = '';
+        els.insEnd.value = '';
+      } else {
+        els.timeFields.classList.remove('hidden');
+        els.insStart.value = ev.start;
+        els.insEnd.value = ev.end;
+      }
+    }
+
+    function performSearch(){
+      const query = els.searchInput.value.toLowerCase().trim();
+      if(!query){
+        els.searchResults.innerHTML = '<div class="text-sm text-slate-500">Wpisz aby wyszukać</div>';
+        return;
+      }
+      
+      const results = state.events.filter(ev => 
+        ev.title.toLowerCase().includes(query) || 
+        ev.notes.toLowerCase().includes(query) ||
+        ev.category.toLowerCase().includes(query)
+      ).slice(0, 10);
+      
+      if(results.length === 0){
+        els.searchResults.innerHTML = '<div class="text-sm text-slate-500">Brak wyników</div>';
+        return;
+      }
+      
+      let html = '';
+      results.forEach(ev => {
+        const cat = categoryById(ev.category);
+        const date = new Date(ev.date);
+        html += `
+          <div class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer" 
+               onclick="selectEvent('${ev.id}'); state.view='day'; state.anchorDate=new Date('${ev.date}'); render();">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full ${cat.color}"></div>
+              <div class="text-sm font-medium truncate">${escapeHtml(ev.title)}</div>
+            </div>
+            <div class="text-xs text-slate-600 mt-1">
+              ${date.toLocaleDateString('pl-PL')} ${ev.type === 'timed' ? `${ev.start}-${ev.end}` : 'całodniowe'}
+            </div>
+          </div>
+        `;
+      });
+      
+      els.searchResults.innerHTML = html;
+    }
+
+    // ---------------------------
+    // Operacje na wydarzeniach
+    // ---------------------------
+    function createEvent(data){
+      const startMin = timeToMinutes(data.start);
+      const endMin = timeToMinutes(data.end);
+      const fixedEnd = endMin <= startMin ? startMin + 30 : endMin;
+      
+      const ev = {
+        id: uid(),
+        title: data.title?.trim() || 'Bez nazwy',
+        date: data.date,
+        start: data.type === 'allday' ? '00:00' : data.start,
+        end: data.type === 'allday' ? '23:59' : minutesToTime(fixedEnd),
+        category: data.category,
+        notes: data.notes || '',
+        type: data.type || 'timed',
+        repeat: data.repeat || 'none'
+      };
+      
+      state.events.push(ev);
+      state.selectedId = ev.id;
+      saveToLocalStorage();
+      render();
+    }
+
+    function saveInspector(){
+      const ev = state.events.find(e=>e.id===state.selectedId);
+      if(!ev) return;
+      
+      ev.title = els.insTitle.value.trim() || 'Bez nazwy';
+      ev.date = els.insDate.value;
+      ev.type = els.insType.value;
+      ev.repeat = els.insRepeat.value;
+      ev.category = els.insCategory.value;
+      ev.notes = els.insNotes.value;
+      
+      if(ev.type === 'timed'){
+        ev.start = els.insStart.value;
+        ev.end = els.insEnd.value;
+        const s = timeToMinutes(ev.start);
+        const e = timeToMinutes(ev.end);
+        if(e <= s) ev.end = minutesToTime(s+30);
+      } else {
+        ev.start = '00:00';
+        ev.end = '23:59';
+      }
+      
+      saveToLocalStorage();
+      render();
+    }
+
+    function deleteSelected(){
+      const id = state.selectedId;
+      if(!id) return;
+      state.events = state.events.filter(e=>e.id!==id);
+      state.selectedId = null;
+      saveToLocalStorage();
+      render();
       renderInspector();
     }
 
     // ---------------------------
-    // Drag create/move/resize
+    // Przeciąganie
     // ---------------------------
-    function ensureGhost(container){
-      if(state.ui.ghostEl && state.ui.ghostEl.isConnected) return state.ui.ghostEl;
-      const g = document.createElement('div');
-      g.className = 'ghost';
-      container.appendChild(g);
-      state.ui.ghostEl = g;
-      return g;
-    }
-
-    function removeGhost(){
-      if(state.ui.ghostEl && state.ui.ghostEl.isConnected) state.ui.ghostEl.remove();
-      state.ui.ghostEl = null;
-    }
-
-    function pxToMinutes(timeGridEl, clientY){
-      const rect = timeGridEl.getBoundingClientRect();
-      const y = clamp(clientY - rect.top, 0, rect.height);
-      const hourHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height'));
-      const mins = (y / hourHeight) * 60;
-      // snap to 15 mins
-      return Math.round(mins / 15) * 15;
-    }
-
     function beginCreateDrag(e, timeGridEl){
-      // Only left click and only on background (not on event)
       if(e.button !== 0) return;
       if(e.target.closest('.event')) return;
 
@@ -834,26 +1105,6 @@
       window.addEventListener('keydown', onKeyCancelOnce);
     }
 
-    function updateCreateGhost(){
-      const d = state.ui.drag;
-      if(!d || d.type!=='create') return;
-      const a = d.startMin;
-      const b = d.currentMin;
-      const start = Math.min(a,b);
-      const end = Math.max(a,b);
-      const duration = Math.max(30, end-start);
-
-      const hourHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height'));
-      const topPx = (start/60) * hourHeight;
-      const heightPx = (duration/60) * hourHeight;
-
-      const g = ensureGhost(d.timeGridEl);
-      g.style.left = '6px';
-      g.style.right = '6px';
-      g.style.top = `${topPx}px`;
-      g.style.height = `${heightPx}px`;
-    }
-
     function beginMoveDrag(e, eventEl){
       if(e.button !== 0) return;
       if(e.target.closest('.resize-handle')) return;
@@ -867,13 +1118,20 @@
       selectEvent(id);
 
       const timeGridEl = eventEl.closest('[data-date]');
-      const date = timeGridEl?.dataset.date;
       const startMin = timeToMinutes(ev.start);
       const endMin = timeToMinutes(ev.end);
       const pointerMin = pxToMinutes(timeGridEl, e.clientY);
       const offsetMin = pointerMin - startMin;
 
-      state.ui.drag = { type:'move', id, timeGridEl, date, offsetMin, durationMin: Math.max(15, endMin-startMin) };
+      state.ui.drag = { 
+        type:'move', 
+        id, 
+        timeGridEl, 
+        date: ev.date, 
+        offsetMin, 
+        durationMin: Math.max(15, endMin-startMin) 
+      };
+      
       document.body.classList.add('no-select');
 
       window.addEventListener('mousemove', onDragMove);
@@ -902,6 +1160,48 @@
       window.addEventListener('keydown', onKeyCancelOnce);
     }
 
+    function pxToMinutes(timeGridEl, clientY){
+      const rect = timeGridEl.getBoundingClientRect();
+      const y = clamp(clientY - rect.top, 0, rect.height);
+      const hourHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height'));
+      const mins = (y / hourHeight) * 60;
+      return Math.round(mins / 15) * 15;
+    }
+
+    function ensureGhost(container){
+      if(state.ui.ghostEl && state.ui.ghostEl.isConnected) return state.ui.ghostEl;
+      const g = document.createElement('div');
+      g.className = 'ghost';
+      container.appendChild(g);
+      state.ui.ghostEl = g;
+      return g;
+    }
+
+    function removeGhost(){
+      if(state.ui.ghostEl && state.ui.ghostEl.isConnected) state.ui.ghostEl.remove();
+      state.ui.ghostEl = null;
+    }
+
+    function updateCreateGhost(){
+      const d = state.ui.drag;
+      if(!d || d.type!=='create') return;
+      const a = d.startMin;
+      const b = d.currentMin;
+      const start = Math.min(a,b);
+      const end = Math.max(a,b);
+      const duration = Math.max(30, end-start);
+
+      const hourHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cal-hour-height'));
+      const topPx = (start/60) * hourHeight;
+      const heightPx = (duration/60) * hourHeight;
+
+      const g = ensureGhost(d.timeGridEl);
+      g.style.left = '6px';
+      g.style.right = '6px';
+      g.style.top = `${topPx}px`;
+      g.style.height = `${heightPx}px`;
+    }
+
     function onDragMove(e){
       const d = state.ui.drag;
       if(!d) return;
@@ -917,7 +1217,7 @@
         if(ev){
           ev.start = minutesToTime(startMin);
           ev.end = minutesToTime(endMin);
-          // Date stays the same in this demo (no cross-day dragging)
+          saveToLocalStorage();
           render();
           selectEvent(d.id);
         }
@@ -927,6 +1227,7 @@
         const ev = state.events.find(x=>x.id===d.id);
         if(ev){
           ev.end = minutesToTime(endMin);
+          saveToLocalStorage();
           render();
           selectEvent(d.id);
         }
@@ -951,11 +1252,12 @@
         document.body.classList.remove('no-select');
 
         openModal({
-          title: 'New event',
+          title: 'Nowe wydarzenie',
           date: d.date,
           start: startT,
           end: endT,
           category: state.categories[0].id,
+          type: 'timed',
           notes: ''
         });
       } else {
@@ -979,80 +1281,38 @@
     }
 
     // ---------------------------
-    // Rendering root
+    // Modal
     // ---------------------------
-    function render(){
-      updateRangeLabel();
-      els.viewBtns.forEach(b=>{
-        const active = b.dataset.view === state.view;
-        b.classList.toggle('bg-slate-900', active);
-        b.classList.toggle('text-white', active);
-        b.classList.toggle('bg-white', !active);
-      });
-
-      renderCategories();
-
-      els.calendarRoot.innerHTML = '';
-      if(state.view === 'month') renderMonthView(els.calendarRoot);
-      else if(state.view === 'week') renderWeekView(els.calendarRoot);
-      else renderDayView(els.calendarRoot);
-
-      // Re-apply selection highlight if possible
-      if(state.selectedId){
-        const el = document.querySelector(`[data-event-id="${CSS.escape(state.selectedId)}"]`);
-        if(el) el.classList.add('ring-2','ring-blue-300');
+    function openModal(prefill={}){
+      els.modal.classList.remove('hidden');
+      const todayISO = toISODate(new Date());
+      els.mTitle.value = prefill.title ?? '';
+      els.mDate.value = prefill.date ?? todayISO;
+      els.mStart.value = prefill.start ?? '09:00';
+      els.mEnd.value = prefill.end ?? '10:00';
+      els.mCategory.value = prefill.category ?? state.categories[0].id;
+      els.mType.value = prefill.type ?? 'timed';
+      els.mRepeat.value = prefill.repeat ?? 'none';
+      els.mNotes.value = prefill.notes ?? '';
+      
+      if(prefill.type === 'allday' || prefill.type === undefined){
+        els.mTimeFields.classList.add('hidden');
+      } else {
+        els.mTimeFields.classList.remove('hidden');
       }
+      
+      setTimeout(()=> els.mTitle.focus(), 0);
     }
 
-    // ---------------------------
-    // Actions
-    // ---------------------------
-    function createEvent(data){
-      const startMin = timeToMinutes(data.start);
-      const endMin = timeToMinutes(data.end);
-      const fixedEnd = endMin <= startMin ? startMin + 30 : endMin;
-      const ev = {
-        id: uid(),
-        title: data.title?.trim() || 'Untitled',
-        date: data.date,
-        start: data.start,
-        end: minutesToTime(fixedEnd),
-        category: data.category,
-        notes: data.notes || ''
-      };
-      state.events.push(ev);
-      state.selectedId = ev.id;
-      render();
-      selectEvent(ev.id);
+    function closeModal(){
+      els.modal.classList.add('hidden');
     }
 
-    function saveInspector(){
-      const ev = state.events.find(e=>e.id===state.selectedId);
-      if(!ev) return;
-      ev.title = els.insTitle.value.trim() || 'Untitled';
-      ev.date = els.insDate.value;
-      ev.start = els.insStart.value;
-      ev.end = els.insEnd.value;
-      ev.category = els.insCategory.value;
-      ev.notes = els.insNotes.value;
-      // normalize
-      const s = timeToMinutes(ev.start);
-      const e = timeToMinutes(ev.end);
-      if(e <= s) ev.end = minutesToTime(s+30);
-      render();
-      selectEvent(ev.id);
-    }
-
-    function deleteSelected(){
-      const id = state.selectedId;
-      if(!id) return;
-      state.events = state.events.filter(e=>e.id!==id);
-      state.selectedId = null;
-      render();
+    function selectEvent(id){
+      state.selectedId = id;
       renderInspector();
     }
 
-    // Escape HTML for event titles
     function escapeHtml(str){
       return String(str)
         .replaceAll('&','&amp;')
@@ -1063,18 +1323,30 @@
     }
 
     // ---------------------------
-    // Wiring
+    // Inicjalizacja
     // ---------------------------
     function wire(){
+      // Nawigacja
       els.prevBtn.addEventListener('click', ()=> moveAnchor(-1));
       els.nextBtn.addEventListener('click', ()=> moveAnchor(1));
-      els.todayBtn.addEventListener('click', ()=>{ state.anchorDate = new Date(); render(); });
+      els.todayBtn.addEventListener('click', ()=>{ 
+        state.anchorDate = new Date(); 
+        render(); 
+      });
 
+      // Widoki
       els.viewBtns.forEach(b=> b.addEventListener('click', ()=> setView(b.dataset.view)));
 
-      els.newBtn.addEventListener('click', ()=> openModal({ date: toISODate(state.anchorDate) }));
+      // Nowe wydarzenie
+      els.newBtn.addEventListener('click', ()=> openModal({ 
+        date: toISODate(state.anchorDate) 
+      }));
 
-      els.resetFilters.addEventListener('click', ()=>{ state.filters = new Set(state.categories.map(c=>c.id)); render(); });
+      // Filtry
+      els.resetFilters.addEventListener('click', ()=>{ 
+        state.filters = new Set(state.categories.map(c=>c.id)); 
+        render(); 
+      });
 
       els.categoryList.addEventListener('change', (e)=>{
         const cb = e.target.closest('input[type="checkbox"][data-cat]');
@@ -1085,30 +1357,74 @@
         render();
       });
 
-      // quick add
+      // Szybkie dodawanie
       els.quickDate.value = toISODate(new Date());
       els.quickTime.value = '09:00';
       els.quickAddBtn.addEventListener('click', ()=>{
         const title = els.quickTitle.value.trim();
         const date = els.quickDate.value || toISODate(new Date());
-        const start = els.quickTime.value || '09:00';
-        const startMin = timeToMinutes(start);
-        const end = minutesToTime(startMin + 60);
+        const type = els.quickType.value;
         const category = els.quickCategory.value;
-        if(!title){ els.quickTitle.focus(); return; }
-        createEvent({ title, date, start, end, category, notes: '' });
+        
+        if(!title){ 
+          els.quickTitle.focus(); 
+          return; 
+        }
+        
+        let start, end;
+        if(type === 'allday'){
+          start = '00:00';
+          end = '23:59';
+        } else {
+          start = els.quickTime.value || '09:00';
+          const startMin = timeToMinutes(start);
+          end = minutesToTime(startMin + 60);
+        }
+        
+        createEvent({ 
+          title, 
+          date, 
+          start, 
+          end, 
+          category, 
+          type,
+          notes: '' 
+        });
+        
         els.quickTitle.value = '';
       });
 
-      // inspector
+      // Typ wydarzenia - pokaż/ukryj pola czasu
+      els.insType.addEventListener('change', function(){
+        if(this.value === 'allday'){
+          els.timeFields.classList.add('hidden');
+        } else {
+          els.timeFields.classList.remove('hidden');
+        }
+      });
+      
+      els.mType.addEventListener('change', function(){
+        if(this.value === 'allday'){
+          els.mTimeFields.classList.add('hidden');
+        } else {
+          els.mTimeFields.classList.remove('hidden');
+        }
+      });
+
+      // Edycja
       els.saveBtn.addEventListener('click', saveInspector);
       els.deleteBtn.addEventListener('click', deleteSelected);
 
-      // modal
-      const close = ()=> closeModal();
-      els.modalClose.addEventListener('click', close);
-      els.modalCancel.addEventListener('click', close);
-      els.modal.addEventListener('click', (e)=>{ if(e.target === els.modal) close(); });
+      // Wyszukiwanie
+      els.searchInput.addEventListener('input', performSearch);
+
+      // Modal
+      els.modalClose.addEventListener('click', closeModal);
+      els.modalCancel.addEventListener('click', closeModal);
+      els.modal.addEventListener('click', (e)=>{ 
+        if(e.target === els.modal) closeModal(); 
+      });
+      
       els.modalCreate.addEventListener('click', ()=>{
         createEvent({
           title: els.mTitle.value,
@@ -1116,37 +1432,45 @@
           start: els.mStart.value,
           end: els.mEnd.value,
           category: els.mCategory.value,
+          type: els.mType.value,
+          repeat: els.mRepeat.value,
           notes: els.mNotes.value
         });
         closeModal();
       });
 
-      // keyboard: delete
+      // Klawiatura
       window.addEventListener('keydown', (e)=>{
         const tag = document.activeElement?.tagName?.toLowerCase();
         const inInput = ['input','textarea','select'].includes(tag);
         if(inInput) return;
+        
         if((e.key === 'Backspace' || e.key === 'Delete') && state.selectedId){
           e.preventDefault();
           deleteSelected();
         }
       });
-
-      // clear selection on blank click in month view (root)
-      els.calendarRoot.addEventListener('click', (e)=>{
-        if(e.target.closest('[data-event-id]')) return;
-      });
     }
 
-    // ---------------------------
-    // Init
-    // ---------------------------
-    seedSampleEvents();
+    // Start
+    const savedEvents = loadFromLocalStorage();
+    if(savedEvents && savedEvents.length > 0){
+      state.events = savedEvents;
+    } else {
+      seedSampleEvents();
+    }
+    
     wire();
-    // Defaults
-    const now = new Date();
-    state.anchorDate = now;
     render();
+    
+    // Aktualizuj wskaźnik czasu co minutę
+    setInterval(() => {
+      if(state.view === 'week' || state.view === 'day'){
+        const now = new Date();
+        const container = els.calendarRoot;
+        if(container) updateNowIndicator(container);
+      }
+    }, 60000);
   </script>
 </body>
 </html>
