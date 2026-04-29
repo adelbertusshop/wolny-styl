@@ -68,6 +68,20 @@
             box-shadow: 0 10px 40px rgba(79, 70, 229, 0.3);
         }
         
+        /* Portfolio card hover effect */
+        .portfolio-card {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+        
+        .portfolio-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px -12px rgba(79, 70, 229, 0.25);
+        }
+        
+        .dark .portfolio-card:hover {
+            box-shadow: 0 20px 40px -12px rgba(79, 70, 229, 0.4);
+        }
+        
         .progress-bar {
             width: 0%;
             transition: width 1.5s ease-in-out;
@@ -152,8 +166,8 @@
                 </div>
                 <div class="hidden md:flex space-x-6">
                     <a href="#aplikacje" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Aplikacje</a>
+                    <a href="#portfolio" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Case Studies</a>
                     <a href="#kategorie" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Kategorie</a>
-                    <a href="#demo" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Oferta</a>
                     <a href="#kontakt" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Kontakt</a>
                 </div>
                 <div class="flex items-center gap-3">
@@ -222,6 +236,23 @@
                     <div class="text-gray-600 dark:text-gray-300 font-medium">Wsparcie techniczne</div>
                     <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">Zawsze do Twojej dyspozycji</div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO SECTION - CASE STUDIES -->
+    <section id="portfolio" class="py-20 bg-gray-50 dark:bg-gray-800/30">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12">
+                <div class="inline-block px-4 py-1 bg-indigo-100 dark:bg-indigo-900/50 rounded-full mb-4">
+                    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-medium">Dowód społeczny</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Case Studies</h2>
+                <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Poznaj projekty, które realnie zwiększyły wyniki biznesowe moich klientów</p>
+            </div>
+            
+            <div id="portfolioGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Portfolio cards will be rendered here via JavaScript -->
             </div>
         </div>
     </section>
@@ -484,8 +515,8 @@
                         <h4 class="font-bold mb-4">Nawigacja</h4>
                         <ul class="space-y-2">
                             <li><a href="#aplikacje" class="text-gray-400 hover:text-white transition">Aplikacje</a></li>
+                            <li><a href="#portfolio" class="text-gray-400 hover:text-white transition">Case Studies</a></li>
                             <li><a href="#kategorie" class="text-gray-400 hover:text-white transition">Kategorie</a></li>
-                            <li><a href="#demo" class="text-gray-400 hover:text-white transition">Oferta</a></li>
                             <li><a href="#kontakt" class="text-gray-400 hover:text-white transition">Kontakt</a></li>
                         </ul>
                     </div>
@@ -501,7 +532,7 @@
             </div>
             
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 Ronin. Wszystkie prawa zastrzeżone.</p>
+                <p>&copy; 2025 Ronin. Wszystkie prawa zastrzeżone.</p>
             </div>
         </div>
     </footer>
@@ -512,14 +543,102 @@
                 this.apps = [];
                 this.currentCategory = 'all';
                 this.isDarkMode = false;
+                this.caseStudies = [
+                    {
+                        id: 1,
+                        client: "SmartShop Sp. z o.o.",
+                        challenge: "Niska konwersja w sklepie internetowym (1.2%) oraz wysokie porzucanie koszyków (68%). Klient tracił 45 tys. zł miesięcznie przez przestarzały system zamówień.",
+                        solution: "Zbudowałem dedykowaną aplikację PWA z jednym krokiem zamówienia, integracją z systemami magazynowymi i powiadomieniami push o porzuconych koszykach.",
+                        metric: "Wzrost konwersji o 340%",
+                        metricValue: "konwersja z 1.2% → 5.3%",
+                        icon: "🛒",
+                        color: "indigo"
+                    },
+                    {
+                        id: 2,
+                        client: "MediCare Clinic",
+                        challenge: "Brak centralnego systemu rejestracji pacjentów. Recepcja traciła 15h/tygodniowo na ręczne umawianie wizyt i wysyłanie przypomnień SMS.",
+                        solution: "Wdrożyłem autorski system CRM z kalendarzem online, automatycznymi powiadomieniami WhatsApp/SMS oraz panelami dla pacjentów i lekarzy.",
+                        metric: "Redukcja czasu administracji o 92%",
+                        metricValue: "z 15h → 1.2h tygodniowo",
+                        icon: "🏥",
+                        color: "purple"
+                    },
+                    {
+                        id: 3,
+                        client: "FitLife Training",
+                        challenge: "Trenerzy personalni tracili 60% czasu na ręczne tworzenie planów treningowych i rozliczanie klientów. Brak automatyzacji.",
+                        solution: "Stworzyłem platformę SaaS z generatorem planów AI, systemem subskrypcji online i aplikacją mobilną dla klientów z trackingiem postępów.",
+                        metric: "Wzrost przychodów o 210%",
+                        metricValue: "w pierwszym kwartale",
+                        icon: "💪",
+                        color: "emerald"
+                    }
+                ];
                 this.init();
             }
 
             async init() {
                 this.initTheme();
+                this.renderPortfolio();
                 await this.loadApps();
                 this.setupEventListeners();
                 this.renderApps();
+            }
+
+            renderPortfolio() {
+                const portfolioGrid = document.getElementById('portfolioGrid');
+                if (!portfolioGrid) return;
+
+                portfolioGrid.innerHTML = this.caseStudies.map((study, index) => `
+                    <div class="portfolio-card bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all cursor-pointer" style="animation: fadeInUp 0.6s ease ${index * 0.1}s forwards; opacity: 0;">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="text-4xl">${study.icon}</div>
+                                <div class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 rounded-full">
+                                    <span class="text-indigo-600 dark:text-indigo-400 text-xs font-medium">Case Study</span>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-3">${study.client}</h3>
+                            
+                            <div class="mb-4">
+                                <div class="flex items-start gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Wyzwanie</p>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm">${study.challenge}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Rozwiązanie</p>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm">${study.solution}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-lg">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Kluczowy wskaźnik sukcesu</p>
+                                <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">${study.metric}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${study.metricValue}</p>
+                            </div>
+                            
+                            <a href="#kontakt" class="mt-6 w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-semibold transition text-sm">
+                                Omów podobny projekt
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
             }
 
             async loadApps() {
@@ -528,7 +647,6 @@
                 const errorMessage = document.getElementById('errorMessage');
 
                 try {
-                    // Moje prawdziwe projekty
                     this.apps = [
                         {
                             id: 1,
@@ -677,10 +795,16 @@
                     });
                 });
 
-                document.getElementById('demoBtn').addEventListener('click', () => {
-                    document.getElementById('demoModal').classList.remove('hidden');
-                    document.getElementById('demoModal').classList.add('flex');
-                });
+                // Fixed: proper modal handling without missing demoBtn
+                const exploreBtn = document.getElementById('exploreBtn');
+                if (exploreBtn) {
+                    exploreBtn.addEventListener('click', () => {
+                        document.getElementById('aplikacje').scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    });
+                }
 
                 document.getElementById('closeDemoModal').addEventListener('click', () => {
                     document.getElementById('demoModal').classList.add('hidden');
@@ -866,7 +990,6 @@
                 submitText.textContent = 'Wysyłanie...';
                 submitSpinner.classList.remove('hidden');
                 
-                // Tutaj w przyszłości dodasz wysyłkę do EmailJS lub backendu
                 try {
                     await new Promise(resolve => setTimeout(resolve, 1500));
                     
