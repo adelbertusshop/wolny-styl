@@ -485,139 +485,102 @@
             <p class="text-gray-400 text-sm mt-2">📞 604 296 360 | ✉️ frekig52@gmail.com</p>
         </div>
     </footer>
-
-    <script>
-        class RoninApp {
+<script>
+    class RoninApp {
             constructor() {
-                this.apps = [];
-                this.currentCategory = 'all';
-                this.isDarkMode = false;
                 this.isYearly = false;
-                this.prices = { monthly: [1999, 4999, 9999], yearly: [19190, 47990, 95990] };
+                this.currentCategory = 'all';
+                this.prices = {
+                    monthly: [1999, 4999, 9999],
+                    yearly: [1599, 3999, 7999]
+                };
+                this.apps = [
+                    { title: "E-Commerce System", category: "biznes", desc: "Kompleksowa platforma sprzedażowa z panelem admina.", icon: "🛒" },
+                    { title: "Task Master Pro", category: "produktywnosc", desc: "Aplikacja do zarządzania zespołem i czasem pracy.", icon: "📅" },
+                    { title: "Smart City Guide", category: "rozrywka", desc: "Interaktywny przewodnik po mieście z mapami offline.", icon: "📍" },
+                    { title: "Finance Tracker", category: "biznes", desc: "Narzędzie do monitorowania wydatków firmowych.", icon: "💰" },
+                    { title: "Deep Focus Music", category: "rozrywka", desc: "Generator dźwięków poprawiających koncentrację.", icon: "🎧" }
+                ];
                 this.init();
             }
 
-            async init() {
-                this.initTheme();
-                await this.loadApps();
-                this.setupEventListeners();
+            init() {
                 this.renderApps();
-                this.initPricing();
-            }
-
-            initTheme() {
-                this.isDarkMode = localStorage.getItem('darkMode') === 'true';
-                if (this.isDarkMode) {
-                    document.documentElement.classList.add('dark');
-                    document.getElementById('sunIcon').classList.add('hidden');
-                    document.getElementById('moonIcon').classList.remove('hidden');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    document.getElementById('sunIcon').classList.remove('hidden');
-                    document.getElementById('moonIcon').classList.add('hidden');
-                }
-            }
-
-            toggleTheme() {
-                this.isDarkMode = !this.isDarkMode;
-                if (this.isDarkMode) {
-                    document.documentElement.classList.add('dark');
-                    document.getElementById('sunIcon').classList.add('hidden');
-                    document.getElementById('moonIcon').classList.remove('hidden');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    document.getElementById('sunIcon').classList.remove('hidden');
-                    document.getElementById('moonIcon').classList.add('hidden');
-                }
-                localStorage.setItem('darkMode', this.isDarkMode);
-            }
-
-            async loadApps() {
-                this.apps = [
-                    { id: 1, name: "TaskFlow", category: "produktywnosc", description: "System zarządzania projektami", rating: 4.9, users: "200+", features: ["Zadania", "Raporty", "Powiadomienia"] },
-                    { id: 2, name: "ShopMaster", category: "biznes", description: "Platforma e-commerce", rating: 4.8, users: "150+", features: ["Płatności", "Magazyn", "Wysyłki"] },
-                    { id: 3, name: "GameHub", category: "rozrywka", description: "Platforma z grami", rating: 4.7, users: "5K+", features: ["Rankingi", "Czaty", "Turnieje"] },
-                    { id: 4, name: "SmartCRM", category: "biznes", description: "System CRM", rating: 4.9, users: "300+", features: ["Baza klientów", "Marketing", "Raporty"] },
-                    { id: 5, name: "FinanceApp", category: "biznes", description: "Finanse osobiste", rating: 4.6, users: "1K+", features: ["Budżet", "Analiza", "Oszczędności"] },
-                    { id: 6, name: "MediTrack", category: "produktywnosc", description: "Dla gabinetów", rating: 4.8, users: "80+", features: ["Wizyty", "Karty", "E-recepty"] }
-                ];
-                document.getElementById('appsGrid').innerHTML = this.apps.map((app, i) => `
-                    <div class="app-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6" style="animation-delay: ${i * 0.1}s">
-                        <h3 class="text-xl font-bold">${app.name}</h3>
-                        <p class="text-gray-600 dark:text-gray-300 mt-2">${app.description}</p>
-                        <div class="mt-4 flex justify-between items-center">
-                            <span class="text-yellow-500">★ ${app.rating}</span>
-                            <span class="text-sm text-gray-500">${app.users}</span>
-                        </div>
-                        <a href="#cennik" class="mt-4 block w-full bg-indigo-600 text-white py-2 rounded-lg text-center">Sprawdź cenę</a>
-                    </div>
-                `).join('');
+                this.setupEventListeners();
             }
 
             renderApps() {
-                const filtered = this.currentCategory === 'all' ? this.apps : this.apps.filter(a => a.category === this.currentCategory);
-                document.getElementById('appsGrid').innerHTML = filtered.map((app, i) => `
-                    <div class="app-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6" style="animation-delay: ${i * 0.1}s">
-                        <h3 class="text-xl font-bold">${app.name}</h3>
-                        <p class="text-gray-600 dark:text-gray-300 mt-2">${app.description}</p>
-                        <div class="mt-4 flex justify-between items-center">
-                            <span class="text-yellow-500">★ ${app.rating}</span>
-                            <span class="text-sm text-gray-500">${app.users}</span>
-                        </div>
-                        <a href="#cennik" class="mt-4 block w-full bg-indigo-600 text-white py-2 rounded-lg text-center">Sprawdź cenę</a>
-                    </div>
-                `).join('');
-            }
-
-            initPricing() {
-                const toggleBtn = document.getElementById('pricingToggle');
-                const toggleCircle = document.getElementById('toggleCircle');
-                toggleBtn.addEventListener('click', () => {
-                    this.isYearly = !this.isYearly;
-                    toggleCircle.style.transform = this.isYearly ? 'translateX(40px)' : 'translateX(0)';
-                    this.updatePrices();
+                const grid = document.getElementById('appsGrid');
+                if (!grid) return;
+                grid.innerHTML = '';
+                const filtered = this.currentCategory === 'all' ? this.apps : this.apps.filter(app => app.category === this.currentCategory);
+                
+                filtered.forEach((app, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'app-card bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md glow-hover border border-gray-100 dark:border-gray-800';
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.innerHTML = `
+                        <div class="text-4xl mb-4">${app.icon}</div>
+                        <h3 class="text-xl font-bold mb-2">${app.title}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">${app.desc}</p>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-500">${app.category}</span>
+                    `;
+                    grid.appendChild(card);
                 });
             }
 
             updatePrices() {
-                const prices = this.isYearly ? this.prices.yearly : this.prices.monthly;
+                const selectedPrices = this.isYearly ? this.prices.yearly : this.prices.monthly;
                 const period = this.isYearly ? ' zł/rok' : ' zł/mies';
                 for (let i = 1; i <= 3; i++) {
-                    document.getElementById(`price${i}`).textContent = prices[i-1];
-                    document.getElementById(`pricePeriod${i}`).textContent = period;
+                    const priceEl = document.getElementById(`price${i}`);
+                    const periodEl = document.getElementById(`pricePeriod${i}`);
+                    if (priceEl) priceEl.textContent = selectedPrices[i-1];
+                    if (periodEl) periodEl.textContent = period;
                 }
             }
 
             setupEventListeners() {
-                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
-                document.getElementById('exploreBtn').addEventListener('click', () => document.getElementById('aplikacje').scrollIntoView({ behavior: 'smooth' }));
+                // Przełącznik cen
+                document.getElementById('pricingToggle')?.addEventListener('click', (e) => {
+                    this.isYearly = !this.isYearly;
+                    e.currentTarget.classList.toggle('bg-indigo-500');
+                    const circle = document.getElementById('toggleCircle');
+                    if (circle) circle.style.transform = this.isYearly ? 'translateX(40px)' : 'translateX(0)';
+                    this.updatePrices();
+                });
+
+                // Theme Toggle
+                document.getElementById('themeToggle')?.addEventListener('click', () => {
+                    document.documentElement.classList.toggle('dark');
+                    document.getElementById('sunIcon')?.classList.toggle('hidden');
+                    document.getElementById('moonIcon')?.classList.toggle('hidden');
+                });
+
+                // Filtrowanie aplikacji
                 document.querySelectorAll('.category-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         this.currentCategory = e.currentTarget.dataset.category;
                         this.renderApps();
-                        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('ring-2', 'ring-indigo-500'));
-                        e.currentTarget.classList.add('ring-2', 'ring-indigo-500');
+                        document.getElementById('aplikacje')?.scrollIntoView({ behavior: 'smooth' });
                     });
                 });
-                document.querySelectorAll('.pricing-select-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const plan = e.currentTarget.dataset.plan;
-                        const period = this.isYearly ? 'rocznej' : 'miesięcznej';
-                        document.getElementById('message').value = `Jestem zainteresowany planem ${plan} w opcji ${period}. Proszę o kontakt.`;
-                        document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
-                        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
-                    });
-                });
-                document.getElementById('contactForm').addEventListener('submit', (e) => {
+
+                // Obsługa formularza
+                document.getElementById('contactForm')?.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    const success = document.getElementById('successMessage');
-                    success.classList.remove('hidden');
-                    setTimeout(() => success.classList.add('hidden'), 5000);
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                    alert('Dziękuję za wiadomość! Wojciech z Ronin odezwie się wkrótce.');
                     e.target.reset();
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
                 });
             }
         }
+
+        // Uruchomienie aplikacji po załadowaniu strony
         document.addEventListener('DOMContentLoaded', () => new RoninApp());
     </script>
 </body>
