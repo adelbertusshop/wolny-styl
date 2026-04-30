@@ -456,7 +456,7 @@
         </div>
     </section>
     <!-- Contact Section -->
-    <section id="kontakt" class="py-16">
+ <section id="kontakt" class="py-20">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-10">
@@ -605,45 +605,62 @@
                 }
             }
 
-            setupEventListeners() {
-                // Przełącznik cen
-                document.getElementById('pricingToggle')?.addEventListener('click', (e) => {
-                    this.isYearly = !this.isYearly;
-                    e.currentTarget.classList.toggle('bg-indigo-500');
-                    const circle = document.getElementById('toggleCircle');
-                    if (circle) circle.style.transform = this.isYearly ? 'translateX(40px)' : 'translateX(0)';
-                    this.updatePrices();
+          setupEventListeners() {
+                // 1. Przełącznik cen (Miesięcznie/Rocznie)
+                const pricingToggle = document.getElementById('pricingToggle');
+                if (pricingToggle) {
+                    pricingToggle.addEventListener('click', (e) => {
+                        this.isYearly = !this.isYearly;
+                        // Animacja przełącznika
+                        pricingToggle.classList.toggle('bg-indigo-600');
+                        const circle = document.getElementById('toggleCircle');
+                        if (circle) circle.style.transform = this.isYearly ? 'translateX(32px)' : 'translateX(0)';
+                        this.updatePrices();
+                    });
+                }
+
+                // 2. Obsługa przycisków "Wybierz plan"
+                document.querySelectorAll('.pricing-select-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const planName = e.currentTarget.getAttribute('data-plan');
+                        const periodText = this.isYearly ? 'rocznej' : 'miesięcznej';
+                        
+                        // Znajdź pole wiadomości i wpisz tekst
+                        const messageInput = document.querySelector('textarea'); // Szukamy textarea w formularzu
+                        if (messageInput) {
+                            messageInput.value = `Dzień dobry, jestem zainteresowany planem ${planName} w opcji ${periodText}. Proszę o więcej szczegółów.`;
+                        }
+
+                        // Przewiń do sekcji kontakt
+                        const contactSection = document.getElementById('kontakt');
+                        if (contactSection) {
+                            contactSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+
+                        // Opcjonalnie: efekt confetti przy wyborze
+                        if (typeof confetti === 'function') {
+                            confetti({ particleCount: 70, spread: 60, origin: { y: 0.8 } });
+                        }
+                    });
                 });
 
-                // Theme Toggle
+                // 3. Theme Toggle
                 document.getElementById('themeToggle')?.addEventListener('click', () => {
                     document.documentElement.classList.toggle('dark');
                     document.getElementById('sunIcon')?.classList.toggle('hidden');
                     document.getElementById('moonIcon')?.classList.toggle('hidden');
                 });
 
-                // Filtrowanie aplikacji
-                document.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        this.currentCategory = e.currentTarget.dataset.category;
-                        this.renderApps();
-                        document.getElementById('aplikacje')?.scrollIntoView({ behavior: 'smooth' });
-                    });
-                });
-
-                // Obsługa formularza
+                // 4. Formularz
                 document.getElementById('contactForm')?.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    confetti({
-                        particleCount: 150,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
-                    alert('Dziękuję za wiadomość! Wojciech z Ronin odezwie się wkrótce.');
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                    }
+                    alert('Wiadomość wysłana! Zaraz się z Tobą skontaktuję.');
                     e.target.reset();
                 });
             }
-        }
 
         // Uruchomienie aplikacji po załadowaniu strony
         document.addEventListener('DOMContentLoaded', () => new RoninApp());
