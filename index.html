@@ -12,13 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --secondary: #7e22ce;
-            --accent: #06b6d4;
-        }
-        
         * {
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
@@ -38,10 +31,7 @@
         }
         
         .hero-gradient {
-            background: linear-gradient(135deg, 
-                #4f46e5 0%, 
-                #7e22ce 50%, 
-                #06b6d4 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 50%, #06b6d4 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -54,10 +44,7 @@
         }
         
         @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .glow-hover:hover {
@@ -66,24 +53,6 @@
         
         .dark .glow-hover:hover {
             box-shadow: 0 10px 40px rgba(79, 70, 229, 0.3);
-        }
-        
-        .progress-bar {
-            width: 0%;
-            transition: width 1.5s ease-in-out;
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .category-transition {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .loader {
@@ -105,22 +74,46 @@
             100% { transform: rotate(360deg); }
         }
         
-        .download-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #4f46e5, #10b981);
-            transition: width 0.3s ease;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .price-card {
+            animation: slideIn 0.6s ease-out forwards;
         }
         
-        .pulse-animation {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pricing-card-featured {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card-featured::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #7e22ce, #06b6d4);
+        }
+        
+        .pricing-card-featured::after {
+            content: '⭐ Najpopularniejszy';
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: linear-gradient(90deg, #4f46e5, #7e22ce);
+            color: white;
+            padding: 4px 30px;
+            font-size: 12px;
+            font-weight: 600;
+            transform: rotate(45deg);
+            white-space: nowrap;
+        }
+        
+        .price-number {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
@@ -151,23 +144,18 @@
                     </div>
                 </div>
                 <div class="hidden md:flex space-x-6">
-                    <a href="#aplikacje" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Aplikacje</a>
-                    <a href="#kategorie" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Kategorie</a>
-                    <a href="#demo" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Oferta</a>
-                    <a href="#kontakt" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Kontakt</a>
+                    <a href="#aplikacje" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition font-medium">Aplikacje</a>
+                    <a href="#kategorie" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition font-medium">Kategorie</a>
+                    <a href="#cennik" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition font-medium">Cennik</a>
+                    <a href="#kontakt" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition font-medium">Kontakt</a>
                 </div>
                 <div class="flex items-center gap-3">
-                    <a href="tel:604296360" class="hidden md:flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-4 py-2 rounded-lg font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition">
+                    <a href="tel:604296360" class="hidden md:flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-4 py-2 rounded-lg font-medium hover:bg-indigo-100 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                         </svg>
                         604 296 360
                     </a>
-                    <button class="md:hidden">
-                        <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
                 </div>
             </div>
         </nav>
@@ -176,7 +164,7 @@
     <!-- Hero Section -->
     <section class="gradient-bg py-20 md:py-28">
         <div class="container mx-auto px-4 sm:px-6 text-center">
-            <div class="max-w-3xl mx-auto fade-in">
+            <div class="max-w-3xl mx-auto">
                 <div class="inline-block mb-4 px-4 py-1 bg-indigo-100 dark:bg-indigo-900/50 rounded-full">
                     <span class="text-indigo-600 dark:text-indigo-400 text-sm font-medium">Profesjonalne tworzenie aplikacji</span>
                 </div>
@@ -188,10 +176,10 @@
                     Tworzę aplikacje webowe i mobilne, które zwiększają efektywność Twojego biznesu. Ponad 50 zrealizowanych projektów.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="exploreBtn" class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white px-8 py-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    <button id="exploreBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg">
                         Zobacz moje aplikacje
                     </button>
-                    <a href="#kontakt" class="bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-400 px-8 py-4 rounded-xl font-semibold hover:bg-indigo-50 dark:hover:bg-gray-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2">
+                    <a href="#kontakt" class="bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 px-8 py-4 rounded-xl font-semibold hover:bg-indigo-50 transition-all transform hover:scale-105 shadow-lg inline-flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
@@ -207,20 +195,17 @@
     <section class="py-12">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover transition-all">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover">
                     <div class="text-5xl font-bold text-indigo-600 dark:text-indigo-400 mb-3">50+</div>
                     <div class="text-gray-600 dark:text-gray-300 font-medium">Zrealizowanych projektów</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">Zaufali mi liderzy branż</div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover transition-all">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover">
                     <div class="text-5xl font-bold text-indigo-600 dark:text-indigo-400 mb-3">100%</div>
                     <div class="text-gray-600 dark:text-gray-300 font-medium">Zadowolonych klientów</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">Realizuję w terminie</div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover transition-all">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center glow-hover">
                     <div class="text-5xl font-bold text-indigo-600 dark:text-indigo-400 mb-3">24/7</div>
                     <div class="text-gray-600 dark:text-gray-300 font-medium">Wsparcie techniczne</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">Zawsze do Twojej dyspozycji</div>
                 </div>
             </div>
         </div>
@@ -234,7 +219,7 @@
                 <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Specjalizuję się w tworzeniu aplikacji dopasowanych do Twoich potrzeb</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button class="category-btn category-transition bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400" data-category="all" aria-label="Pokaż wszystkie aplikacje">
+                <button class="category-btn bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500" data-category="all">
                     <div class="flex flex-col items-center">
                         <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg mb-4">
                             <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -244,7 +229,7 @@
                         <div class="font-semibold text-gray-700 dark:text-gray-200">Wszystkie</div>
                     </div>
                 </button>
-                <button class="category-btn category-transition bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400" data-category="biznes" aria-label="Aplikacje biznesowe">
+                <button class="category-btn bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500" data-category="biznes">
                     <div class="flex flex-col items-center">
                         <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg mb-4">
                             <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,7 +239,7 @@
                         <div class="font-semibold text-gray-700 dark:text-gray-200">Biznes</div>
                     </div>
                 </button>
-                <button class="category-btn category-transition bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400" data-category="produktywnosc" aria-label="Aplikacje do produktywności">
+                <button class="category-btn bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500" data-category="produktywnosc">
                     <div class="flex flex-col items-center">
                         <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg mb-4">
                             <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,7 +249,7 @@
                         <div class="font-semibold text-gray-700 dark:text-gray-200">Produktywność</div>
                     </div>
                 </button>
-                <button class="category-btn category-transition bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500 dark:hover:border-indigo-400" data-category="rozrywka" aria-label="Aplikacje rozrywkowe">
+                <button class="category-btn bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl border-2 border-transparent hover:border-indigo-500" data-category="rozrywka">
                     <div class="flex flex-col items-center">
                         <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg mb-4">
                             <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,74 +271,124 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Moje realizacje</h2>
                 <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Aplikacje, które stworzyłem dla zadowolonych klientów</p>
             </div>
-            
-            <div id="loadingIndicator" class="text-center py-12">
-                <div class="loader mx-auto mb-4"></div>
-                <p class="text-gray-600 dark:text-gray-400">Ładowanie aplikacji...</p>
-            </div>
-            
-            <div id="appsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 opacity-0 transition-opacity duration-500">
-                <!-- Apps will be loaded here -->
-            </div>
-            
-            <div id="errorMessage" class="hidden text-center py-12">
-                <div class="text-red-500 mb-4">
-                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Nie udało się załadować aplikacji</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-6">Spróbuj odświeżyć stronę lub skontaktuj się ze mną.</p>
-                <button id="retryBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium">
-                    Spróbuj ponownie
-                </button>
-            </div>
+            <div id="appsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
-    <!-- Demo Modal - Offer Section -->
-    <div id="demoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Co oferuję?</h3>
-                <button id="closeDemoModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+    <!-- Pricing Section -->
+    <section id="cennik" class="py-20">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+                    Proste, <span class="hero-gradient">przejrzyste ceny</span>
+                </h2>
+                <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+                    Wybierz plan dopasowany do Twoich potrzeb. Każdy plan można modyfikować indywidualnie.
+                </p>
+                
+                <!-- Toggle Switch -->
+                <div class="flex items-center justify-center gap-4 mb-12">
+                    <span class="text-lg font-medium text-gray-700 dark:text-gray-300">Miesięcznie</span>
+                    <button id="pricingToggle" class="relative w-20 h-10 rounded-full bg-gray-300 dark:bg-gray-600 transition-all duration-300">
+                        <span id="toggleCircle" class="absolute left-1 top-1 w-8 h-8 rounded-full bg-white shadow-md transition-transform duration-300 transform"></span>
+                    </button>
+                    <span class="text-lg font-medium text-gray-700 dark:text-gray-300">
+                        Rocznie 
+                        <span class="text-sm text-green-600 dark:text-green-400 font-semibold">(-20%)</span>
+                    </span>
+                </div>
             </div>
-            <div class="p-6">
-                <div class="aspect-video bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg mb-6 flex items-center justify-center">
-                    <div class="text-white text-center">
-                        <svg class="w-20 h-20 mx-auto mb-4 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                        </svg>
-                        <p class="text-xl font-semibold">Pełen cykl tworzenia aplikacji</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <!-- Plan 1 -->
+                <div class="price-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+                    <div class="p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">MVP Start</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Dla prostych projektów</p>
+                        </div>
+                        <div class="text-center mb-6">
+                            <span class="price-number text-5xl font-bold text-gray-800 dark:text-white" id="price1">1999</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-xl" id="pricePeriod1"> zł/mies</span>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">+ 23% VAT</p>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Do 3 stron aplikacji</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Podstawowe funkcje CRUD</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Responsywny design</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Podstawowe SEO</span></li>
+                        </ul>
+                        <button class="pricing-select-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold transition-all" data-plan="MVP Start">Wybierz plan</button>
                     </div>
                 </div>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">1.</div>
-                        <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Konsultacja i analiza</h4>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm">Omawiamy Twój pomysł, potrzeby i budżet</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">2.</div>
-                        <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Projektowanie i rozwój</h4>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm">Tworzę aplikację zgodnie z Twoimi wymaganiami</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">3.</div>
-                        <h4 class="font-semibold text-gray-800 dark:text-white mb-2">Wdrożenie i wsparcie</h4>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm">Uruchamiamy aplikację i zapewniam pomoc techniczną</p>
+                
+                <!-- Plan 2 - Featured -->
+                <div class="price-card pricing-card-featured bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300 border-2 border-indigo-500">
+                    <div class="p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Biznes Pro</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Najpopularniejszy wybór</p>
+                        </div>
+                        <div class="text-center mb-6">
+                            <span class="price-number text-5xl font-bold text-gray-800 dark:text-white" id="price2">4999</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-xl" id="pricePeriod2"> zł/mies</span>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">+ 23% VAT</p>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Do 15 stron aplikacji</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Panel administracyjny</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Integracja z płatnościami</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">API REST</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">6 miesięcy wsparcia</span></li>
+                        </ul>
+                        <button class="pricing-select-btn w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold transition-all shadow-lg" data-plan="Biznes Pro">Wybierz plan</button>
                     </div>
                 </div>
-                <div class="mt-8 p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg text-center">
-                    <p class="text-gray-700 dark:text-gray-300">📞 Zadzwoń do mnie: <a href="tel:604296360" class="font-bold text-indigo-600 dark:text-indigo-400">604 296 360</a> lub napisz: <a href="mailto:frekig52@gmail.com" class="font-bold text-indigo-600 dark:text-indigo-400">frekig52@gmail.com</a></p>
+                
+                <!-- Plan 3 -->
+                <div class="price-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+                    <div class="p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Enterprise</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Dla dużych systemów</p>
+                        </div>
+                        <div class="text-center mb-6">
+                            <span class="price-number text-5xl font-bold text-gray-800 dark:text-white" id="price3">9999</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-xl" id="pricePeriod3"> zł/mies</span>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">+ 23% VAT</p>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Nielimitowane strony</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Zaawansowana architektura</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Skalowalność enterprise</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">Dedykowany zespół</span></li>
+                            <li class="flex items-center gap-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg><span class="text-gray-600 dark:text-gray-300">12 miesięcy wsparcia</span></li>
+                        </ul>
+                        <button class="pricing-select-btn w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-semibold transition-all" data-plan="Enterprise">Wybierz plan</button>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-gray-500 dark:text-gray-400 text-sm">* Wszystkie plany można modyfikować indywidualnie. Skontaktuj się ze mną po niestandardową wycenę.</p>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Contact Section -->
     <section id="kontakt" class="py-16">
@@ -367,50 +402,47 @@
                 <div class="grid md:grid-cols-2 gap-8">
                     <!-- Contact Info -->
                     <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-6 md:p-8">
-                        <div class="mb-6">
-                            <div class="flex items-center gap-3 mb-6">
-                                <div class="p-3 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl">
-                                    <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Firma</p>
-                                    <p class="text-xl font-bold text-gray-800 dark:text-white">Ronin</p>
-                                </div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl">
+                                <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
                             </div>
-                            
-                            <div class="space-y-4">
-                                <a href="tel:604296360" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl hover:shadow-md transition group">
-                                    <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition">
-                                        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Telefon</p>
-                                        <p class="font-medium text-gray-800 dark:text-white">604 296 360</p>
-                                    </div>
-                                </a>
-                                
-                                <a href="mailto:frekig52@gmail.com" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl hover:shadow-md transition group">
-                                    <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition">
-                                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Email</p>
-                                        <p class="font-medium text-gray-800 dark:text-white">frekig52@gmail.com</p>
-                                    </div>
-                                </a>
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Firma</p>
+                                <p class="text-xl font-bold text-gray-800 dark:text-white">Ronin</p>
                             </div>
                         </div>
                         
-                        <div class="pt-6 border-t border-indigo-200 dark:border-indigo-800">
-                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">💡 Godziny kontaktu:</p>
+                        <div class="space-y-4">
+                            <a href="tel:604296360" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl hover:shadow-md transition">
+                                <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Telefon</p>
+                                    <p class="font-medium text-gray-800 dark:text-white">604 296 360</p>
+                                </div>
+                            </a>
+                            
+                            <a href="mailto:frekig52@gmail.com" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-xl hover:shadow-md transition">
+                                <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Email</p>
+                                    <p class="font-medium text-gray-800 dark:text-white">frekig52@gmail.com</p>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div class="pt-6 mt-6 border-t border-indigo-200 dark:border-indigo-800">
+                            <p class="text-sm text-gray-600 dark:text-gray-300">💡 Godziny kontaktu:</p>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Poniedziałek - Piątek: 9:00 - 18:00</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Weekend: umów się telefonicznie</p>
                         </div>
                     </div>
                     
@@ -418,38 +450,24 @@
                     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
                         <form id="contactForm" class="space-y-5">
                             <div>
-                                <label for="name" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Imię i nazwisko *</label>
-                                <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700 dark:text-white transition" required>
+                                <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Imię i nazwisko *</label>
+                                <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700" required>
                                 <div id="nameError" class="text-red-500 text-sm mt-2 hidden"></div>
                             </div>
-                            
                             <div>
-                                <label for="email" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Email *</label>
-                                <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700 dark:text-white transition" required>
+                                <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Email *</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700" required>
                                 <div id="emailError" class="text-red-500 text-sm mt-2 hidden"></div>
                             </div>
-                            
                             <div>
-                                <label for="phone" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Telefon (opcjonalnie)</label>
-                                <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700 dark:text-white transition">
-                            </div>
-                            
-                            <div>
-                                <label for="message" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Wiadomość *</label>
-                                <textarea id="message" rows="4" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700 dark:text-white transition" placeholder="Opisz swój pomysł na aplikację..." required></textarea>
+                                <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Wiadomość *</label>
+                                <textarea id="message" rows="4" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700" required></textarea>
                                 <div id="messageError" class="text-red-500 text-sm mt-2 hidden"></div>
                             </div>
-                            
-                            <div id="successMessage" class="hidden p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-green-500 dark:text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    <p class="text-green-700 dark:text-green-300">Dziękuję! Odpiszę najszybciej jak to możliwe.</p>
-                                </div>
+                            <div id="successMessage" class="hidden p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 rounded-lg">
+                                <p class="text-green-700 dark:text-green-300">Dziękuję! Odpiszę najszybciej jak to możliwe.</p>
                             </div>
-                            
-                            <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white py-4 rounded-xl font-semibold transition flex items-center justify-center">
+                            <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-semibold transition flex items-center justify-center">
                                 <span id="submitText">Wyślij wiadomość</span>
                                 <div id="submitSpinner" class="loader hidden ml-3"></div>
                             </button>
@@ -462,47 +480,9 @@
 
     <!-- Footer -->
     <footer class="bg-gray-800 dark:bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-4 sm:px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-8 md:mb-0">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="p-2 bg-indigo-600 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold">Ronin</h3>
-                            <p class="text-gray-400 text-sm">Tworzenie aplikacji na zamówienie</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 max-w-md">Tworzę aplikacje, które naprawdę działają. Od 2018 roku dostarczam rozwiązania dla biznesu.</p>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-8">
-                    <div>
-                        <h4 class="font-bold mb-4">Nawigacja</h4>
-                        <ul class="space-y-2">
-                            <li><a href="#aplikacje" class="text-gray-400 hover:text-white transition">Aplikacje</a></li>
-                            <li><a href="#kategorie" class="text-gray-400 hover:text-white transition">Kategorie</a></li>
-                            <li><a href="#demo" class="text-gray-400 hover:text-white transition">Oferta</a></li>
-                            <li><a href="#kontakt" class="text-gray-400 hover:text-white transition">Kontakt</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="font-bold mb-4">Kontakt</h4>
-                        <ul class="space-y-2">
-                            <li><a href="tel:604296360" class="text-gray-400 hover:text-white transition">📞 604 296 360</a></li>
-                            <li><a href="mailto:frekig52@gmail.com" class="text-gray-400 hover:text-white transition">✉️ frekig52@gmail.com</a></li>
-                            <li class="text-gray-400">⏰ Pon-Pt: 9:00-18:00</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 Ronin. Wszystkie prawa zastrzeżone.</p>
-            </div>
+        <div class="container mx-auto px-4 sm:px-6 text-center">
+            <p>&copy; 2024 Ronin. Wszystkie prawa zastrzeżone.</p>
+            <p class="text-gray-400 text-sm mt-2">📞 604 296 360 | ✉️ frekig52@gmail.com</p>
         </div>
     </footer>
 
@@ -512,6 +492,8 @@
                 this.apps = [];
                 this.currentCategory = 'all';
                 this.isDarkMode = false;
+                this.isYearly = false;
+                this.prices = { monthly: [1999, 4999, 9999], yearly: [19190, 47990, 95990] };
                 this.init();
             }
 
@@ -520,124 +502,11 @@
                 await this.loadApps();
                 this.setupEventListeners();
                 this.renderApps();
-            }
-
-            async loadApps() {
-                const loadingIndicator = document.getElementById('loadingIndicator');
-                const appsGrid = document.getElementById('appsGrid');
-                const errorMessage = document.getElementById('errorMessage');
-
-                try {
-                    // Moje prawdziwe projekty
-                    this.apps = [
-                        {
-                            id: 1,
-                            name: "TaskFlow",
-                            category: "produktywnosc",
-                            description: "System zarządzania projektami dla małych firm",
-                            rating: 4.9,
-                            users: "200+",
-                            features: ["Zarządzanie zadaniami", "Raporty PDF", "Powiadomienia email"],
-                            color: "indigo"
-                        },
-                        {
-                            id: 2,
-                            name: "ShopMaster",
-                            category: "biznes",
-                            description: "Platforma e-commerce dla sklepów internetowych",
-                            rating: 4.8,
-                            users: "150+",
-                            features: ["Integracja z płatnościami", "Zarządzanie magazynem", "Wysyłki"],
-                            color: "blue"
-                        },
-                        {
-                            id: 3,
-                            name: "GameHub",
-                            category: "rozrywka",
-                            description: "Platforma z grami przeglądarkowymi",
-                            rating: 4.7,
-                            users: "5K+",
-                            features: ["System rankingowy", "Czaty na żywo", "Turnieje"],
-                            color: "purple"
-                        },
-                        {
-                            id: 4,
-                            name: "SmartCRM",
-                            category: "biznes",
-                            description: "System CRM dla małych i średnich firm",
-                            rating: 4.9,
-                            users: "300+",
-                            features: ["Baza klientów", "Automatyzacja marketingu", "Raporty sprzedaży"],
-                            color: "green"
-                        },
-                        {
-                            id: 5,
-                            name: "FinanceApp",
-                            category: "biznes",
-                            description: "Aplikacja do zarządzania finansami osobistymi",
-                            rating: 4.6,
-                            users: "1K+",
-                            features: ["Budżetowanie", "Analiza wydatków", "Oszczędności"],
-                            color: "emerald"
-                        },
-                        {
-                            id: 6,
-                            name: "MediTrack",
-                            category: "produktywnosc",
-                            description: "System dla gabinetów lekarskich",
-                            rating: 4.8,
-                            users: "80+",
-                            features: ["Terminarz wizyt", "Karty pacjentów", "E-recepty"],
-                            color: "cyan"
-                        },
-                        {
-                            id: 7,
-                            name: "LearnApp",
-                            category: "rozrywka",
-                            description: "Platforma e-learningowa z kursami online",
-                            rating: 4.7,
-                            users: "2K+",
-                            features: ["Lekcje wideo", "Quizy", "Certyfikaty"],
-                            color: "orange"
-                        },
-                        {
-                            id: 8,
-                            name: "RestoHub",
-                            category: "biznes",
-                            description: "System dla restauracji i lokali gastronomicznych",
-                            rating: 4.9,
-                            users: "120+",
-                            features: ["Menu online", "Rezerwacje stolików", "System lojalnościowy"],
-                            color: "red"
-                        },
-                        {
-                            id: 9,
-                            name: "FitApp",
-                            category: "rozrywka",
-                            description: "Aplikacja treningowa z planami ćwiczeń",
-                            rating: 4.5,
-                            users: "3K+",
-                            features: ["Plany treningowe", "Śledzenie postępów", "Porady dietetyczne"],
-                            color: "pink"
-                        }
-                    ];
-
-                    await new Promise(resolve => setTimeout(resolve, 800));
-
-                    loadingIndicator.classList.add('hidden');
-                    appsGrid.classList.remove('opacity-0');
-                    appsGrid.classList.add('opacity-100');
-
-                } catch (error) {
-                    console.error('Failed to load apps:', error);
-                    loadingIndicator.classList.add('hidden');
-                    errorMessage.classList.remove('hidden');
-                }
+                this.initPricing();
             }
 
             initTheme() {
                 this.isDarkMode = localStorage.getItem('darkMode') === 'true';
-                
                 if (this.isDarkMode) {
                     document.documentElement.classList.add('dark');
                     document.getElementById('sunIcon').classList.add('hidden');
@@ -651,7 +520,6 @@
 
             toggleTheme() {
                 this.isDarkMode = !this.isDarkMode;
-                
                 if (this.isDarkMode) {
                     document.documentElement.classList.add('dark');
                     document.getElementById('sunIcon').classList.add('hidden');
@@ -661,251 +529,96 @@
                     document.getElementById('sunIcon').classList.remove('hidden');
                     document.getElementById('moonIcon').classList.add('hidden');
                 }
-                
                 localStorage.setItem('darkMode', this.isDarkMode);
             }
 
-            setupEventListeners() {
-                document.getElementById('themeToggle').addEventListener('click', () => {
-                    this.toggleTheme();
-                });
-
-                document.getElementById('exploreBtn').addEventListener('click', () => {
-                    document.getElementById('aplikacje').scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                });
-
-                document.getElementById('demoBtn').addEventListener('click', () => {
-                    document.getElementById('demoModal').classList.remove('hidden');
-                    document.getElementById('demoModal').classList.add('flex');
-                });
-
-                document.getElementById('closeDemoModal').addEventListener('click', () => {
-                    document.getElementById('demoModal').classList.add('hidden');
-                    document.getElementById('demoModal').classList.remove('flex');
-                });
-
-                document.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const category = e.currentTarget.dataset.category;
-                        this.filterApps(category);
-                        
-                        document.querySelectorAll('.category-btn').forEach(b => {
-                            b.classList.remove('ring-2', 'ring-indigo-500', 'border-indigo-500');
-                        });
-                        
-                        e.currentTarget.classList.add('ring-2', 'ring-indigo-500', 'border-indigo-500');
-                    });
-                });
-
-                document.getElementById('retryBtn')?.addEventListener('click', () => {
-                    this.loadApps();
-                });
-
-                document.getElementById('contactForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleFormSubmit(e);
-                });
-
-                ['name', 'email', 'message'].forEach(field => {
-                    const input = document.getElementById(field);
-                    if (input) {
-                        input.addEventListener('blur', () => this.validateField(field));
-                    }
-                });
-
-                document.getElementById('demoModal').addEventListener('click', (e) => {
-                    if (e.target === e.currentTarget) {
-                        e.currentTarget.classList.add('hidden');
-                        e.currentTarget.classList.remove('flex');
-                    }
-                });
-            }
-
-            async filterApps(category) {
-                this.currentCategory = category;
-                const appsGrid = document.getElementById('appsGrid');
-                
-                appsGrid.classList.add('opacity-0');
-                await new Promise(resolve => setTimeout(resolve, 300));
-                this.renderApps();
-                
-                setTimeout(() => {
-                    appsGrid.classList.remove('opacity-0');
-                    appsGrid.classList.add('opacity-100');
-                }, 10);
+            async loadApps() {
+                this.apps = [
+                    { id: 1, name: "TaskFlow", category: "produktywnosc", description: "System zarządzania projektami", rating: 4.9, users: "200+", features: ["Zadania", "Raporty", "Powiadomienia"] },
+                    { id: 2, name: "ShopMaster", category: "biznes", description: "Platforma e-commerce", rating: 4.8, users: "150+", features: ["Płatności", "Magazyn", "Wysyłki"] },
+                    { id: 3, name: "GameHub", category: "rozrywka", description: "Platforma z grami", rating: 4.7, users: "5K+", features: ["Rankingi", "Czaty", "Turnieje"] },
+                    { id: 4, name: "SmartCRM", category: "biznes", description: "System CRM", rating: 4.9, users: "300+", features: ["Baza klientów", "Marketing", "Raporty"] },
+                    { id: 5, name: "FinanceApp", category: "biznes", description: "Finanse osobiste", rating: 4.6, users: "1K+", features: ["Budżet", "Analiza", "Oszczędności"] },
+                    { id: 6, name: "MediTrack", category: "produktywnosc", description: "Dla gabinetów", rating: 4.8, users: "80+", features: ["Wizyty", "Karty", "E-recepty"] }
+                ];
+                document.getElementById('appsGrid').innerHTML = this.apps.map((app, i) => `
+                    <div class="app-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6" style="animation-delay: ${i * 0.1}s">
+                        <h3 class="text-xl font-bold">${app.name}</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mt-2">${app.description}</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-yellow-500">★ ${app.rating}</span>
+                            <span class="text-sm text-gray-500">${app.users}</span>
+                        </div>
+                        <a href="#cennik" class="mt-4 block w-full bg-indigo-600 text-white py-2 rounded-lg text-center">Sprawdź cenę</a>
+                    </div>
+                `).join('');
             }
 
             renderApps() {
-                const appsGrid = document.getElementById('appsGrid');
-                const filteredApps = this.currentCategory === 'all' 
-                    ? this.apps 
-                    : this.apps.filter(app => app.category === this.currentCategory);
-
-                appsGrid.innerHTML = filteredApps.map((app, index) => {
-                    const icon = '📱';
-                    const colorClass = `bg-indigo-100 dark:bg-indigo-900`;
-                    const textColorClass = `text-indigo-600 dark:text-indigo-400`;
-
-                    return `
-                        <div class="app-card" style="animation-delay: ${index * 0.1}s">
-                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden glow-hover h-full flex flex-col">
-                                <div class="p-8">
-                                    <div class="flex justify-between items-start mb-6">
-                                        <div class="p-4 ${colorClass} rounded-xl">
-                                            <span class="text-3xl">${icon}</span>
-                                        </div>
-                                        <span class="text-yellow-500 font-bold text-lg">★ ${app.rating}</span>
-                                    </div>
-                                    
-                                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-3">${app.name}</h3>
-                                    <p class="text-gray-600 dark:text-gray-300 mb-6">${app.description}</p>
-                                    
-                                    <div class="mb-6">
-                                        <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-3">Kluczowe funkcje:</h4>
-                                        <div class="flex flex-wrap gap-2">
-                                            ${app.features?.map(feature => `
-                                                <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">
-                                                    ${feature}
-                                                </span>
-                                            `).join('') || ''}
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-auto p-6 pt-0">
-                                    <div class="flex justify-between items-center mb-4">
-                                        <span class="text-gray-500 dark:text-gray-400 text-sm">
-                                            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
-                                            </svg>
-                                            ${app.users} użytkowników
-                                        </span>
-                                        <span class="text-sm ${textColorClass} font-medium">
-                                            ${app.category === 'biznes' ? 'Biznes' : 
-                                              app.category === 'produktywnosc' ? 'Produktywność' : 'Rozrywka'}
-                                        </span>
-                                    </div>
-                                    
-                                    <a href="#kontakt" class="download-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition-all text-center block">
-                                        Zapytaj o wycenę
-                                    </a>
-                                </div>
-                            </div>
+                const filtered = this.currentCategory === 'all' ? this.apps : this.apps.filter(a => a.category === this.currentCategory);
+                document.getElementById('appsGrid').innerHTML = filtered.map((app, i) => `
+                    <div class="app-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6" style="animation-delay: ${i * 0.1}s">
+                        <h3 class="text-xl font-bold">${app.name}</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mt-2">${app.description}</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-yellow-500">★ ${app.rating}</span>
+                            <span class="text-sm text-gray-500">${app.users}</span>
                         </div>
-                    `;
-                }).join('');
+                        <a href="#cennik" class="mt-4 block w-full bg-indigo-600 text-white py-2 rounded-lg text-center">Sprawdź cenę</a>
+                    </div>
+                `).join('');
             }
 
-            validateField(fieldName) {
-                const field = document.getElementById(fieldName);
-                const errorElement = document.getElementById(`${fieldName}Error`);
-                
-                if (!field) return true;
-                
-                let isValid = true;
-                let message = '';
-                
-                switch(fieldName) {
-                    case 'name':
-                        isValid = field.value.trim().length >= 2;
-                        message = isValid ? '' : 'Imię musi mieć co najmniej 2 znaki';
-                        break;
-                    case 'email':
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        isValid = emailRegex.test(field.value);
-                        message = isValid ? '' : 'Podaj poprawny adres email';
-                        break;
-                    case 'message':
-                        isValid = field.value.trim().length >= 10;
-                        message = isValid ? '' : 'Wiadomość musi mieć co najmniej 10 znaków';
-                        break;
-                }
-                
-                if (isValid) {
-                    field.classList.remove('border-red-500');
-                    field.classList.add('border-gray-300', 'dark:border-gray-600');
-                    if (errorElement) errorElement.classList.add('hidden');
-                } else {
-                    field.classList.remove('border-gray-300', 'dark:border-gray-600');
-                    field.classList.add('border-red-500');
-                    if (errorElement) {
-                        errorElement.textContent = message;
-                        errorElement.classList.remove('hidden');
-                    }
-                }
-                
-                return isValid;
-            }
-
-            async handleFormSubmit(e) {
-                e.preventDefault();
-                
-                const fields = ['name', 'email', 'message'];
-                let isValid = true;
-                
-                fields.forEach(field => {
-                    if (!this.validateField(field)) {
-                        isValid = false;
-                    }
+            initPricing() {
+                const toggleBtn = document.getElementById('pricingToggle');
+                const toggleCircle = document.getElementById('toggleCircle');
+                toggleBtn.addEventListener('click', () => {
+                    this.isYearly = !this.isYearly;
+                    toggleCircle.style.transform = this.isYearly ? 'translateX(40px)' : 'translateX(0)';
+                    this.updatePrices();
                 });
-                
-                if (!isValid) {
-                    return;
+            }
+
+            updatePrices() {
+                const prices = this.isYearly ? this.prices.yearly : this.prices.monthly;
+                const period = this.isYearly ? ' zł/rok' : ' zł/mies';
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`price${i}`).textContent = prices[i-1];
+                    document.getElementById(`pricePeriod${i}`).textContent = period;
                 }
-                
-                const form = e.target;
-                const submitBtn = document.getElementById('submitBtn');
-                const submitText = document.getElementById('submitText');
-                const submitSpinner = document.getElementById('submitSpinner');
-                const successMessage = document.getElementById('successMessage');
-                
-                submitBtn.disabled = true;
-                submitText.textContent = 'Wysyłanie...';
-                submitSpinner.classList.remove('hidden');
-                
-                // Tutaj w przyszłości dodasz wysyłkę do EmailJS lub backendu
-                try {
-                    await new Promise(resolve => setTimeout(resolve, 1500));
-                    
-                    successMessage.classList.remove('hidden');
-                    form.reset();
-                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                } catch (error) {
-                    console.error('Form submission error:', error);
-                    alert('Wystąpił błąd. Zadzwoń na 604 296 360');
-                } finally {
-                    submitBtn.disabled = false;
-                    submitText.textContent = 'Wyślij wiadomość';
-                    submitSpinner.classList.add('hidden');
-                    
-                    setTimeout(() => {
-                        successMessage.classList.add('hidden');
-                    }, 10000);
-                }
+            }
+
+            setupEventListeners() {
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+                document.getElementById('exploreBtn').addEventListener('click', () => document.getElementById('aplikacje').scrollIntoView({ behavior: 'smooth' }));
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.currentCategory = e.currentTarget.dataset.category;
+                        this.renderApps();
+                        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('ring-2', 'ring-indigo-500'));
+                        e.currentTarget.classList.add('ring-2', 'ring-indigo-500');
+                    });
+                });
+                document.querySelectorAll('.pricing-select-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const plan = e.currentTarget.dataset.plan;
+                        const period = this.isYearly ? 'rocznej' : 'miesięcznej';
+                        document.getElementById('message').value = `Jestem zainteresowany planem ${plan} w opcji ${period}. Proszę o kontakt.`;
+                        document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
+                        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+                    });
+                });
+                document.getElementById('contactForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const success = document.getElementById('successMessage');
+                    success.classList.remove('hidden');
+                    setTimeout(() => success.classList.add('hidden'), 5000);
+                    e.target.reset();
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                });
             }
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            new RoninApp();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const modal = document.getElementById('demoModal');
-                if (modal && !modal.classList.contains('hidden')) {
-                    modal.classList.add('hidden');
-                    modal.classList.remove('flex');
-                }
-            }
-            
-            if (e.key === 'Enter' && e.target.classList?.contains('category-btn')) {
-                e.target.click();
-            }
-        });
+        document.addEventListener('DOMContentLoaded', () => new RoninApp());
     </script>
 </body>
 </html>
