@@ -68,20 +68,6 @@
             box-shadow: 0 10px 40px rgba(79, 70, 229, 0.3);
         }
         
-        /* Portfolio card hover effect */
-        .portfolio-card {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-        }
-        
-        .portfolio-card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 20px 40px -12px rgba(79, 70, 229, 0.25);
-        }
-        
-        .dark .portfolio-card:hover {
-            box-shadow: 0 20px 40px -12px rgba(79, 70, 229, 0.4);
-        }
-        
         .progress-bar {
             width: 0%;
             transition: width 1.5s ease-in-out;
@@ -136,6 +122,67 @@
         .pulse-animation {
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
+
+        /* Pricing card animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .price-card {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        
+        .price-number {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .toggle-switch {
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background-color: #4f46e5;
+        }
+        
+        .feature-list {
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-card-featured {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card-featured::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #7e22ce, #06b6d4);
+        }
+        
+        .pricing-card-featured::after {
+            content: '⭐ Najpopularniejszy';
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: linear-gradient(90deg, #4f46e5, #7e22ce);
+            color: white;
+            padding: 4px 30px;
+            font-size: 12px;
+            font-weight: 600;
+            transform: rotate(45deg);
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-['Inter']">
@@ -166,8 +213,9 @@
                 </div>
                 <div class="hidden md:flex space-x-6">
                     <a href="#aplikacje" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Aplikacje</a>
-                    <a href="#portfolio" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Case Studies</a>
                     <a href="#kategorie" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Kategorie</a>
+                    <a href="#cennik" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Cennik</a>
+                    <a href="#demo" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Oferta</a>
                     <a href="#kontakt" class="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium">Kontakt</a>
                 </div>
                 <div class="flex items-center gap-3">
@@ -236,23 +284,6 @@
                     <div class="text-gray-600 dark:text-gray-300 font-medium">Wsparcie techniczne</div>
                     <div class="text-sm text-gray-500 dark:text-gray-400 mt-2">Zawsze do Twojej dyspozycji</div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PORTFOLIO SECTION - CASE STUDIES -->
-    <section id="portfolio" class="py-20 bg-gray-50 dark:bg-gray-800/30">
-        <div class="container mx-auto px-4 sm:px-6">
-            <div class="text-center mb-12">
-                <div class="inline-block px-4 py-1 bg-indigo-100 dark:bg-indigo-900/50 rounded-full mb-4">
-                    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-medium">Dowód społeczny</span>
-                </div>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Case Studies</h2>
-                <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Poznaj projekty, które realnie zwiększyły wyniki biznesowe moich klientów</p>
-            </div>
-            
-            <div id="portfolioGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Portfolio cards will be rendered here via JavaScript -->
             </div>
         </div>
     </section>
@@ -338,6 +369,214 @@
                 <button id="retryBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium">
                     Spróbuj ponownie
                 </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="cennik" class="py-20">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+                    Proste, <span class="hero-gradient">przejrzyste ceny</span>
+                </h2>
+                <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+                    Wybierz plan dopasowany do Twoich potrzeb. Każdy plan można modyfikować indywidualnie.
+                </p>
+                
+                <!-- Toggle Switch -->
+                <div class="flex items-center justify-center gap-4 mb-12">
+                    <span class="text-lg font-medium text-gray-700 dark:text-gray-300" id="monthlyLabel">Miesięcznie</span>
+                    <button id="pricingToggle" class="relative w-20 h-10 rounded-full bg-gray-300 dark:bg-gray-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <span id="toggleCircle" class="absolute left-1 top-1 w-8 h-8 rounded-full bg-white shadow-md transition-transform duration-300 transform"></span>
+                    </button>
+                    <span class="text-lg font-medium text-gray-700 dark:text-gray-300" id="yearlyLabel">
+                        Rocznie 
+                        <span class="text-sm text-green-600 dark:text-green-400 font-semibold">(-20%)</span>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <!-- Plan 1: MVP (Start) -->
+                <div class="price-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+                    <div class="p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">MVP Start</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Dla prostych projektów</p>
+                        </div>
+                        
+                        <div class="text-center mb-6">
+                            <div class="price-container">
+                                <span class="price-number text-5xl font-bold text-gray-800 dark:text-white" id="price1">1999</span>
+                                <span class="text-gray-500 dark:text-gray-400 text-xl" id="pricePeriod1"> zł/mies</span>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">+ 23% VAT</p>
+                        </div>
+                        
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Do 3 stron aplikacji</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Podstawowe funkcje CRUD</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Responsywny design</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Podstawowe SEO</span>
+                            </li>
+                        </ul>
+                        
+                        <button class="pricing-select-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold transition-all transform hover:scale-105" data-plan="MVP Start">
+                            Wybierz plan
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Plan 2: Biznes (Pro) - Wyróżniony -->
+                <div class="price-card pricing-card-featured bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300 border-2 border-indigo-500 dark:border-indigo-400 relative">
+                    <div class="p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Biznes Pro</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Najpopularniejszy wybór</p>
+                        </div>
+                        
+                        <div class="text-center mb-6">
+                            <div class="price-container">
+                                <span class="price-number text-5xl font-bold text-gray-800 dark:text-white" id="price2">4999</span>
+                                <span class="text-gray-500 dark:text-gray-400 text-xl" id="pricePeriod2"> zł/mies</span>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">+ 23% VAT</p>
+                        </div>
+                        
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Do 15 stron aplikacji</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Panel administracyjny</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Integracja z płatnościami</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">API REST</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">6 miesięcy wsparcia</span>
+                            </li>
+                        </ul>
+                        
+                        <button class="pricing-select-btn w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-lg" data-plan="Biznes Pro">
+                            Wybierz plan
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Plan 3: Enterprise -->
+                <div class="price-card bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+                    <div class="p-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Enterprise</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Dla dużych systemów</p>
+                        </div>
+                        
+                        <div class="text-center mb-6">
+                            <div class="price-container">
+                                <span class="price-number text-5xl font-bold text-gray-800 dark:text-white" id="price3">9999</span>
+                                <span class="text-gray-500 dark:text-gray-400 text-xl" id="pricePeriod3"> zł/mies</span>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">+ 23% VAT</p>
+                        </div>
+                        
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Nielimitowane strony</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Zaawansowana architektura</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Skalowalność enterprise</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">Dedykowany zespół</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-300">12 miesięcy wsparcia premium</span>
+                            </li>
+                        </ul>
+                        
+                        <button class="pricing-select-btn w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-semibold transition-all transform hover:scale-105" data-plan="Enterprise">
+                            Wybierz plan
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-gray-500 dark:text-gray-400 text-sm">
+                    * Wszystkie plany można modyfikować indywidualnie. Skontaktuj się ze mną po niestandardową wycenę.
+                </p>
             </div>
         </div>
     </section>
@@ -515,8 +754,8 @@
                         <h4 class="font-bold mb-4">Nawigacja</h4>
                         <ul class="space-y-2">
                             <li><a href="#aplikacje" class="text-gray-400 hover:text-white transition">Aplikacje</a></li>
-                            <li><a href="#portfolio" class="text-gray-400 hover:text-white transition">Case Studies</a></li>
                             <li><a href="#kategorie" class="text-gray-400 hover:text-white transition">Kategorie</a></li>
+                            <li><a href="#cennik" class="text-gray-400 hover:text-white transition">Cennik</a></li>
                             <li><a href="#kontakt" class="text-gray-400 hover:text-white transition">Kontakt</a></li>
                         </ul>
                     </div>
@@ -532,7 +771,7 @@
             </div>
             
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2025 Ronin. Wszystkie prawa zastrzeżone.</p>
+                <p>&copy; 2024 Ronin. Wszystkie prawa zastrzeżone.</p>
             </div>
         </div>
     </footer>
@@ -543,102 +782,20 @@
                 this.apps = [];
                 this.currentCategory = 'all';
                 this.isDarkMode = false;
-                this.caseStudies = [
-                    {
-                        id: 1,
-                        client: "SmartShop Sp. z o.o.",
-                        challenge: "Niska konwersja w sklepie internetowym (1.2%) oraz wysokie porzucanie koszyków (68%). Klient tracił 45 tys. zł miesięcznie przez przestarzały system zamówień.",
-                        solution: "Zbudowałem dedykowaną aplikację PWA z jednym krokiem zamówienia, integracją z systemami magazynowymi i powiadomieniami push o porzuconych koszykach.",
-                        metric: "Wzrost konwersji o 340%",
-                        metricValue: "konwersja z 1.2% → 5.3%",
-                        icon: "🛒",
-                        color: "indigo"
-                    },
-                    {
-                        id: 2,
-                        client: "MediCare Clinic",
-                        challenge: "Brak centralnego systemu rejestracji pacjentów. Recepcja traciła 15h/tygodniowo na ręczne umawianie wizyt i wysyłanie przypomnień SMS.",
-                        solution: "Wdrożyłem autorski system CRM z kalendarzem online, automatycznymi powiadomieniami WhatsApp/SMS oraz panelami dla pacjentów i lekarzy.",
-                        metric: "Redukcja czasu administracji o 92%",
-                        metricValue: "z 15h → 1.2h tygodniowo",
-                        icon: "🏥",
-                        color: "purple"
-                    },
-                    {
-                        id: 3,
-                        client: "FitLife Training",
-                        challenge: "Trenerzy personalni tracili 60% czasu na ręczne tworzenie planów treningowych i rozliczanie klientów. Brak automatyzacji.",
-                        solution: "Stworzyłem platformę SaaS z generatorem planów AI, systemem subskrypcji online i aplikacją mobilną dla klientów z trackingiem postępów.",
-                        metric: "Wzrost przychodów o 210%",
-                        metricValue: "w pierwszym kwartale",
-                        icon: "💪",
-                        color: "emerald"
-                    }
-                ];
+                this.isYearly = false; // Pricing toggle state
+                this.prices = {
+                    monthly: [1999, 4999, 9999],
+                    yearly: [19190, 47990, 95990] // 20% off: price * 12 * 0.8
+                };
                 this.init();
             }
 
             async init() {
                 this.initTheme();
-                this.renderPortfolio();
                 await this.loadApps();
                 this.setupEventListeners();
                 this.renderApps();
-            }
-
-            renderPortfolio() {
-                const portfolioGrid = document.getElementById('portfolioGrid');
-                if (!portfolioGrid) return;
-
-                portfolioGrid.innerHTML = this.caseStudies.map((study, index) => `
-                    <div class="portfolio-card bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all cursor-pointer" style="animation: fadeInUp 0.6s ease ${index * 0.1}s forwards; opacity: 0;">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="text-4xl">${study.icon}</div>
-                                <div class="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/50 rounded-full">
-                                    <span class="text-indigo-600 dark:text-indigo-400 text-xs font-medium">Case Study</span>
-                                </div>
-                            </div>
-                            
-                            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-3">${study.client}</h3>
-                            
-                            <div class="mb-4">
-                                <div class="flex items-start gap-2 mb-3">
-                                    <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <div>
-                                        <p class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Wyzwanie</p>
-                                        <p class="text-gray-600 dark:text-gray-400 text-sm">${study.challenge}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex items-start gap-2 mb-3">
-                                    <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <div>
-                                        <p class="font-semibold text-gray-700 dark:text-gray-200 text-sm">Rozwiązanie</p>
-                                        <p class="text-gray-600 dark:text-gray-400 text-sm">${study.solution}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-lg">
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Kluczowy wskaźnik sukcesu</p>
-                                <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">${study.metric}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${study.metricValue}</p>
-                            </div>
-                            
-                            <a href="#kontakt" class="mt-6 w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-semibold transition text-sm">
-                                Omów podobny projekt
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                `).join('');
+                this.initPricing();
             }
 
             async loadApps() {
@@ -783,6 +940,65 @@
                 localStorage.setItem('darkMode', this.isDarkMode);
             }
 
+            initPricing() {
+                const toggleBtn = document.getElementById('pricingToggle');
+                const toggleCircle = document.getElementById('toggleCircle');
+                
+                // Set initial state
+                this.updatePrices();
+                
+                toggleBtn.addEventListener('click', () => {
+                    this.isYearly = !this.isYearly;
+                    
+                    // Animate toggle
+                    if (this.isYearly) {
+                        toggleCircle.style.transform = 'translateX(40px)';
+                        toggleBtn.classList.add('bg-indigo-600');
+                        toggleBtn.classList.remove('bg-gray-300', 'dark:bg-gray-600');
+                    } else {
+                        toggleCircle.style.transform = 'translateX(0)';
+                        toggleBtn.classList.remove('bg-indigo-600');
+                        toggleBtn.classList.add('bg-gray-300', 'dark:bg-gray-600');
+                    }
+                    
+                    this.updatePrices();
+                });
+            }
+            
+            updatePrices() {
+                const prices = this.isYearly ? this.prices.yearly : this.prices.monthly;
+                const period = this.isYearly ? ' zł/rok' : ' zł/mies';
+                
+                // Animate price changes
+                for (let i = 1; i <= 3; i++) {
+                    const priceElement = document.getElementById(`price${i}`);
+                    const periodElement = document.getElementById(`pricePeriod${i}`);
+                    const oldValue = parseInt(priceElement.textContent);
+                    const newValue = prices[i-1];
+                    
+                    // Animate number change
+                    this.animateNumber(priceElement, oldValue, newValue, 300);
+                    periodElement.textContent = period;
+                }
+            }
+            
+            animateNumber(element, start, end, duration) {
+                const startTime = performance.now();
+                const updateNumber = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const current = Math.floor(start + (end - start) * progress);
+                    element.textContent = current;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(updateNumber);
+                    } else {
+                        element.textContent = end;
+                    }
+                };
+                requestAnimationFrame(updateNumber);
+            }
+
             setupEventListeners() {
                 document.getElementById('themeToggle').addEventListener('click', () => {
                     this.toggleTheme();
@@ -795,16 +1011,10 @@
                     });
                 });
 
-                // Fixed: proper modal handling without missing demoBtn
-                const exploreBtn = document.getElementById('exploreBtn');
-                if (exploreBtn) {
-                    exploreBtn.addEventListener('click', () => {
-                        document.getElementById('aplikacje').scrollIntoView({ 
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    });
-                }
+                document.getElementById('demoBtn').addEventListener('click', () => {
+                    document.getElementById('demoModal').classList.remove('hidden');
+                    document.getElementById('demoModal').classList.add('flex');
+                });
 
                 document.getElementById('closeDemoModal').addEventListener('click', () => {
                     document.getElementById('demoModal').classList.add('hidden');
@@ -845,6 +1055,29 @@
                         e.currentTarget.classList.add('hidden');
                         e.currentTarget.classList.remove('flex');
                     }
+                });
+                
+                // Pricing select buttons
+                document.querySelectorAll('.pricing-select-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const plan = e.currentTarget.dataset.plan;
+                        const messageField = document.getElementById('message');
+                        if (messageField) {
+                            const period = this.isYearly ? 'rocznej' : 'miesięcznej';
+                            messageField.value = `Jestem zainteresowany planem ${plan} w opcji ${period}. Proszę o kontakt.`;
+                        }
+                        document.getElementById('kontakt').scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Confetti effect for selection
+                        confetti({
+                            particleCount: 50,
+                            spread: 50,
+                            origin: { y: 0.7 }
+                        });
+                    });
                 });
             }
 
@@ -913,8 +1146,8 @@
                                         </span>
                                     </div>
                                     
-                                    <a href="#kontakt" class="download-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition-all text-center block">
-                                        Zapytaj o wycenę
+                                    <a href="#cennik" class="download-btn w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition-all text-center block">
+                                        Sprawdź cenę
                                     </a>
                                 </div>
                             </div>
@@ -996,6 +1229,13 @@
                     successMessage.classList.remove('hidden');
                     form.reset();
                     successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Confetti on successful form submission
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
                     
                 } catch (error) {
                     console.error('Form submission error:', error);
