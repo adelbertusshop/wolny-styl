@@ -340,16 +340,8 @@ html_code = '''<!DOCTYPE html>
     </style>
 </head>
 <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-['Inter']">
-'''
-
-# Save first part
-with open('/mnt/agents/output/ronin_website.html', 'w', encoding='utf-8') as f:
-    f.write(html_code)
-
-print("Part 1 saved successfully")
-print(f"Length: {len(html_code)} characters")
     
-html_part2 = '''    <!-- Cookie Consent Banner -->
+   <!-- Cookie Consent Banner -->
     <div id="cookieBanner" class="cookie-banner">
         <div class="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p class="text-sm text-gray-600 dark:text-gray-300 text-center sm:text-left">
@@ -482,15 +474,8 @@ html_part2 = '''    <!-- Cookie Consent Banner -->
             </div>
         </div>
     </section>
-'''
-
-with open('/mnt/agents/output/ronin_website.html', 'a', encoding='utf-8') as f:
-    f.write(html_part2)
-
-print("Part 2 saved successfully")
-print(f"Length: {len(html_part2)} characters")
     
-html_part3 = '''    <!-- Stats Section -->
+  <!-- Stats Section -->
     <section class="py-12">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -654,15 +639,7 @@ html_part3 = '''    <!-- Stats Section -->
             </div>
         </div>
     </section>
-'''
-
-with open('/mnt/agents/output/ronin_website.html', 'a', encoding='utf-8') as f:
-    f.write(html_part3)
-
-print("Part 3 saved successfully")
-print(f"Length: {len(html_part3)} characters")
-    
-html_part4 = '''    <!-- Apps Grid -->
+        <!-- Apps Griectiond -->
     <section id="aplikacje" class="py-16 bg-gray-50 dark:bg-gray-800/50">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="text-center mb-12" data-aos="fade-up">
@@ -873,15 +850,8 @@ html_part4 = '''    <!-- Apps Grid -->
             </div>
         </div>
     </section>
-'''
 
-with open('/mnt/agents/output/ronin_website.html', 'a', encoding='utf-8') as f:
-    f.write(html_part4)
-
-print("Part 4 saved successfully")
-print(f"Length: {len(html_part4)} characters")
-    
-html_part5 = '''    <!-- Pricing Section -->
+   <!-- Pricing Section -->
     <section id="cennik" class="py-20">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="text-center mb-12" data-aos="fade-up">
@@ -1086,15 +1056,8 @@ html_part5 = '''    <!-- Pricing Section -->
             </div>
         </div>
     </section>
-'''
-
-with open('/mnt/agents/output/ronin_website.html', 'a', encoding='utf-8') as f:
-    f.write(html_part5)
-
-print("Part 5 saved successfully")
-print(f"Length: {len(html_part5)} characters")
     
-html_part6 = '''    <!-- Contact Section -->
+ <!-- Contact Section -->
     <section id="kontakt" class="py-16 bg-gray-50 dark:bg-gray-800/50">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="max-w-4xl mx-auto">
@@ -1918,11 +1881,6 @@ html_part6 = '''    <!-- Contact Section -->
 </body>
 </html>'''
 
-with open('/mnt/agents/output/ronin_website.html', 'a', encoding='utf-8') as f:
-    f.write(html_part6)
-
-print("Part 6 saved successfully")
-print(f"Length: {len(html_part6)} characters")
 
 # Check total file size
 import os
