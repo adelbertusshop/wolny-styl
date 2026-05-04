@@ -32,6 +32,15 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KF743KZ6WX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KF743KZ6WX');
+    </script>
+    
     <style>
         * {
             transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -1430,7 +1439,9 @@
                     const msg = document.getElementById('message');
                     if (msg) msg.value = `Jestem zainteresowany wyceną około ${total.toLocaleString('pl-PL')} zł. Proszę o kontakt.`;
                     document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
-                    confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+                    if (typeof confetti !== 'undefined') {
+                        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+                    }
                 });
             }
 
@@ -1817,6 +1828,7 @@
                 const successMsg = document.getElementById('successMessage');
                 const errorMsg = document.getElementById('errorMessage');
                 
+                // Blokada przycisku podczas wysyłania
                 submitBtn.disabled = true;
                 submitText.textContent = this.currentLang === 'pl' ? 'Wysyłanie...' : 'Sending...';
                 submitSpinner.classList.remove('hidden');
@@ -1824,17 +1836,22 @@
                 errorMsg.classList.add('hidden');
                 
                 try {
-                    // Używamy nowego Template ID: template_dgg3fbn
-                    await emailjs.sendForm('service_kdttscu', 'template_dgg3fbn', '#contactForm');
+                    // EmailJS sendForm
+                    await emailjs.sendForm('service_kdttscu', 'template_v5jw1na', '#contactForm');
                     
                     successMsg.classList.remove('hidden');
                     document.getElementById('contactForm').reset();
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    
+                    // Odpalenie confetti po sukcesie
+                    if (typeof confetti !== 'undefined') {
+                        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                    }
                     
                 } catch (error) {
                     console.error('EmailJS Error:', error);
                     errorMsg.classList.remove('hidden');
                 } finally {
+                    // Odblokowanie przycisku
                     submitBtn.disabled = false;
                     submitText.textContent = this.currentLang === 'pl' ? 'Wyślij wiadomość' : 'Send message';
                     submitSpinner.classList.add('hidden');
@@ -1874,7 +1891,9 @@
                                 : `I am interested in the ${plan} plan with ${period} billing. Please contact me.`;
                         }
                         document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
-                        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+                        if (typeof confetti !== 'undefined') {
+                            confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+                        }
                     });
                 });
                 
