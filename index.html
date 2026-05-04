@@ -1247,7 +1247,7 @@
     </footer>
 
     <script>
-        // Inicjalizacja EmailJS
+        // Inicjalizacja EmailJS z Twoim kluczem publicznym
         emailjs.init("b8INQFoKRQeN2hO6M");
         
         // ============================================
@@ -1669,9 +1669,22 @@
                     document.querySelectorAll('[data-i18n]').forEach(el => {
                         const key = el.dataset.i18n;
                         if (translations[lang][key]) {
-                            el.textContent = translations[lang][key];
+                            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+                                if (el.placeholder !== undefined) {
+                                    el.placeholder = translations[lang][key];
+                                } else {
+                                    el.textContent = translations[lang][key];
+                                }
+                            } else {
+                                el.textContent = translations[lang][key];
+                            }
                         }
                     });
+                    // Update submit button text
+                    const submitText = document.getElementById('submitText');
+                    if (submitText && translations[lang].form_submit) {
+                        submitText.textContent = translations[lang].form_submit;
+                    }
                 };
                 
                 document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -1813,8 +1826,8 @@
                 errorMsg.classList.add('hidden');
                 
                 try {
-                    // Send email via EmailJS
-                    await emailjs.sendForm('service_kdttscu', 'template_v5jw1na', '#contactForm');
+                    // Send email via EmailJS - używamy Twoich danych: service_kdttscu, template_09llwfn
+                    await emailjs.sendForm('service_kdttscu', 'template_09llwfn', '#contactForm');
                     
                     // Success!
                     successMsg.classList.remove('hidden');
