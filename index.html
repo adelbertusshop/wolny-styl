@@ -1836,8 +1836,8 @@
                 errorMsg.classList.add('hidden');
                 
                 try {
-                    // EmailJS sendForm
-                    await emailjs.sendForm('service_kdttscu', 'template_v5jw1na', '#contactForm');
+                    // Używamy poprawnego template ID - ten który działał
+                    await emailjs.sendForm('service_kdttscu', 'template_dgg3fbn', '#contactForm');
                     
                     successMsg.classList.remove('hidden');
                     document.getElementById('contactForm').reset();
