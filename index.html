@@ -1161,11 +1161,11 @@
                             </div>
                             <div>
                                 <label for="phone" class="block text-gray-700 dark:text-gray-300 font-medium mb-2" data-i18n="form_phone">Telefon (opcjonalnie)</label>
-                                <input type="tel" id="phone" name="phone" placeholder="604 296 360" pattern="[0-9\s]{9,}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white">
+                                <input type="tel" id="phone" name="user_phone" placeholder="604 296 360" pattern="[0-9\s]{9,}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white">
                             </div>
                             <div>
                                 <label for="subject" class="block text-gray-700 dark:text-gray-300 font-medium mb-2" data-i18n="form_subject">Temat *</label>
-                                <select id="subject" name="subject" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white" required>
+                                <select id="subject" name="user_subject" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white" required>
                                     <option value="" data-i18n="form_select">Wybierz temat...</option>
                                     <option value="web" data-i18n="form_web">Aplikacja webowa</option>
                                     <option value="mobile" data-i18n="form_mobile">Aplikacja mobilna</option>
@@ -1680,7 +1680,6 @@
                             }
                         }
                     });
-                    // Update submit button text
                     const submitText = document.getElementById('submitText');
                     if (submitText && translations[lang].form_submit) {
                         submitText.textContent = translations[lang].form_submit;
@@ -1818,7 +1817,6 @@
                 const successMsg = document.getElementById('successMessage');
                 const errorMsg = document.getElementById('errorMessage');
                 
-                // Disable button and show spinner
                 submitBtn.disabled = true;
                 submitText.textContent = this.currentLang === 'pl' ? 'Wysyłanie...' : 'Sending...';
                 submitSpinner.classList.remove('hidden');
@@ -1826,10 +1824,9 @@
                 errorMsg.classList.add('hidden');
                 
                 try {
-                    // Send email via EmailJS - używamy Twoich danych: service_kdttscu, template_09llwfn
-                    await emailjs.sendForm('service_kdttscu', 'template_09llwfn', '#contactForm');
+                    // Używamy nowego Template ID: template_dgg3fbn
+                    await emailjs.sendForm('service_kdttscu', 'template_dgg3fbn', '#contactForm');
                     
-                    // Success!
                     successMsg.classList.remove('hidden');
                     document.getElementById('contactForm').reset();
                     confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
@@ -1838,7 +1835,6 @@
                     console.error('EmailJS Error:', error);
                     errorMsg.classList.remove('hidden');
                 } finally {
-                    // Re-enable button
                     submitBtn.disabled = false;
                     submitText.textContent = this.currentLang === 'pl' ? 'Wyślij wiadomość' : 'Send message';
                     submitSpinner.classList.add('hidden');
@@ -1846,17 +1842,14 @@
             }
 
             setupEventListeners() {
-                // Theme
                 const themeBtn = document.getElementById('themeToggle');
                 if (themeBtn) themeBtn.addEventListener('click', () => this.toggleTheme());
                 
-                // Explore
                 const exploreBtn = document.getElementById('exploreBtn');
                 if (exploreBtn) {
                     exploreBtn.addEventListener('click', () => document.getElementById('aplikacje').scrollIntoView({ behavior: 'smooth' }));
                 }
                 
-                // Categories
                 document.querySelectorAll('.category-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         this.currentCategory = e.currentTarget.dataset.category;
@@ -1870,7 +1863,6 @@
                     });
                 });
                 
-                // Pricing select
                 document.querySelectorAll('.pricing-select-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const plan = e.currentTarget.dataset.plan;
@@ -1886,7 +1878,6 @@
                     });
                 });
                 
-                // Contact form with EmailJS
                 const contactForm = document.getElementById('contactForm');
                 if (contactForm) {
                     contactForm.addEventListener('submit', async (e) => {
@@ -1907,4 +1898,3 @@
     </script>
 </body>
 </html>
-
